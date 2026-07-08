@@ -1,0 +1,16 @@
+{
+  "name": "神聖抽牌 · Sacred Thoth Tarot Oracle",
+  "short_name": "神聖抽牌",
+  "description": "托特塔羅牌線上抽牌工具：元辰宮、易經、脈輪三種占卜模式",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf6f0",
+  "theme_color": "#8b6914",
+  "lang": "zh-TW",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

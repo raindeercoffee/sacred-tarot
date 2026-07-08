@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>神聖抽牌 · Sacred Thoth Tarot Oracle</title>
+
+<!-- Favicon -->
+<link rel="icon" href="icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="icons/icon-48.png">
+
+<!-- Add to Home Screen (iOS) -->
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="神聖抽牌">
+
+<!-- Add to Home Screen (Android / PWA) -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8b6914">
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --gold: #8b6914;
+    --gold-light: #6b4f0a;
+    --gold-dim: #a07c20;
+    --bg: #faf6f0;
+    --bg2: #f3ece0;
+    --ink: #3d2b0e;
+    --ink-dim: #7a5c2a;
+    --border: rgba(139,105,20,0.22);
+    --red: #8b2020;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #faf6f0 !important;
+    color: #3d2b0e !important;
+    font-family: 'Noto Serif TC', 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,105,20,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(139,32,32,0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* ── Layout ── */
+  .wrapper {
+    position: relative; z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Header ── */
+  header { text-align: center; margin-bottom: 52px; }
+
+  .header-ornament {
+    color: var(--gold);
+    font-size: 1.1rem;
+    letter-spacing: 0.5em;
+    opacity: 0.65;
+    margin-bottom: 12px;
+  }
+
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 300;
+    color: var(--gold-light);
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  header h2 {
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    font-weight: 300;
+    color: var(--ink-dim);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 18px auto; max-width: 280px;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px;
+  }
+  .divider::before { background: linear-gradient(90deg, transparent, var(--gold-dim)); }
+  .divider::after  { background: linear-gradient(90deg, var(--gold-dim), transparent); }
+  .divider span { color: var(--gold); font-size: 0.8rem; }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 36px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border);
+    color: var(--ink-dim);
+    padding: 14px 20px;
+    cursor: pointer;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn.active {
+    background: rgba(139,105,20,0.1);
+    color: var(--gold-light);
+  }
+  .tab-btn::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .tab-btn.active::after { transform: scaleX(1); }
+  .tab-en {
+    display: block;
+    font-size: 0.66rem;
+    letter-spacing: 0.15em;
+    opacity: 0.55;
+    margin-top: 2px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+
+  /* ── Panels ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── Mode toggle ── */
+  .mode-toggle {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 24px;
+    padding: 13px 18px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: rgba(139,105,20,0.04);
+  }
+  .mode-toggle label {
+    font-size: 0.82rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.08em;
+  }
+  .toggle-group { display: flex; gap: 8px; margin-left: auto; }
+
+  .toggle-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    padding: 6px 18px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    border-radius: 2px;
+    transition: all 0.25s;
+    letter-spacing: 0.08em;
+  }
+  .toggle-btn.active {
+    background: rgba(139,105,20,0.15);
+    border-color: var(--gold-dim);
+    color: var(--gold-light);
+  }
+
+  /* ── Zone grid ── */
+  .select-all-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    padding: 7px 18px;
+    cursor: pointer;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+    transition: all 0.25s;
+    margin-bottom: 14px;
+  }
+  .select-all-btn:hover { border-color: var(--gold-dim); color: var(--ink); }
+
+  .zones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .zone-card {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: rgba(250,246,240,0.85);
+    position: relative; overflow: hidden;
+  }
+  .zone-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(139,105,20,0.1), transparent 70%);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .zone-card:hover::before, .zone-card.selected::before { opacity: 1; }
+  .zone-card:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
+  .zone-card.selected { border-color: var(--gold); background: rgba(139,105,20,0.08); }
+
+  .zone-icon  { font-size: 1.4rem; margin-bottom: 6px; display: block; }
+  .zone-name  { font-size: 0.85rem; color: #3d2b0e; letter-spacing: 0.08em; display: block; }
+  .zone-name-en {
+    font-size: 0.63rem; color: var(--ink-dim); letter-spacing: 0.1em;
+    font-style: italic; font-family: 'Cormorant Garamond', serif;
+    display: block; margin-top: 2px;
+  }
+
+  /* ── Draw button ── */
+  .draw-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(139,105,20,0.12), rgba(139,105,20,0.06));
+    border: 1px solid var(--gold-dim);
+    color: var(--gold-light);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s;
+    margin-bottom: 36px;
+  }
+  .draw-btn:hover {
+    background: linear-gradient(135deg, rgba(139,105,20,0.22), rgba(139,105,20,0.12));
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(139,105,20,0.1);
+    letter-spacing: 0.25em;
+  }
+  .draw-btn:disabled { opacity: 0.35; cursor: not-allowed; letter-spacing: 0.2em; }
+  .btn-en {
+    display: block; font-size: 0.68rem; letter-spacing: 0.22em;
+    opacity: 0.55; margin-top: 3px; font-style: italic;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes cardReveal {
+    from { opacity: 0; transform: translateY(18px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ── YCG Results ── */
+  .results-section { animation: fadeIn 0.5s ease; }
+
+  .result-zone-title { text-align: center; margin-bottom: 24px; }
+  .result-zone-title h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem; color: var(--gold-light);
+    font-weight: 300; letter-spacing: 0.15em;
+  }
+  .result-zone-title p {
+    font-size: 0.7rem; color: var(--ink-dim);
+    letter-spacing: 0.2em; text-transform: uppercase; margin-top: 4px;
+  }
+
+  .cards-row {
+    display: flex; gap: 14px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 20px;
+  }
+
+  .tarot-card {
+    width: 155px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg2);
+    animation: cardReveal 0.5s ease backwards;
+    text-align: center;
+  }
+  .tarot-card:nth-child(2) { animation-delay: 0.12s; }
+  .tarot-card:nth-child(3) { animation-delay: 0.24s; }
+
+  .card-face {
+    height: 210px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 16px;
+    background: linear-gradient(160deg, #ede3d0 0%, #e0d4bc 100%);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .card-face::before {
+    content: ''; position: absolute; inset: 6px;
+    border: 1px solid rgba(139,105,20,0.18); border-radius: 3px; pointer-events: none;
+  }
+
+  .card-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.72rem; color: var(--gold-dim);
+    letter-spacing: 0.2em; margin-bottom: 8px;
+  }
+  .card-symbol {
+    font-size: 2rem; margin-bottom: 8px;
+    filter: drop-shadow(0 0 6px rgba(139,105,20,0.25));
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.92rem; color: var(--gold-light);
+    letter-spacing: 0.06em; line-height: 1.3; font-style: italic;
+  }
+  .card-info { padding: 10px 12px; }
+  .card-suit {
+    font-size: 0.62rem; color: var(--ink-dim);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+  }
+  .card-position {
+    font-size: 0.7rem; color: var(--gold-dim);
+    letter-spacing: 0.08em; margin-top: 2px;
+  }
+
+  /* ── Chakra Panel ── */
+  .chakra-grid { display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; }
+
+  .chakra-row {
+    display: grid; grid-template-columns: 34px 1fr;
+    align-items: center; gap: 12px; padding: 11px 16px;
+    border: 1px solid var(--border); border-radius: 4px;
+    background: rgba(250,246,240,0.85);
+    cursor: pointer; transition: all 0.25s;
+  }
+  .chakra-row:hover { border-color: var(--gold-dim); }
+  .chakra-row.selected { border-color: var(--gold); background: rgba(139,105,20,0.08); }
+  .chakra-dot {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem; color: #fff; flex-shrink: 0; font-weight: 600;
+  }
+  .chakra-zh { font-size: 0.88rem; color: var(--ink); letter-spacing: 0.06em; }
+  .chakra-en {
+    font-size: 0.63rem; color: var(--ink-dim);
+    font-family: 'Cormorant Garamond', serif; font-style: italic; letter-spacing: 0.1em;
+  }
+
+  .chakra-results { display: flex; flex-direction: column; gap: 12px; animation: fadeIn 0.5s ease; }
+
+  .chakra-result-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; align-items: center; padding: 14px 16px;
+    border: 1px solid var(--border); border-radius: 4px;
+    background: rgba(250,246,240,0.85);
+    animation: fadeIn 0.5s ease backwards;
+  }
+  .chakra-result-row:nth-child(2) { animation-delay: 0.07s; }
+  .chakra-result-row:nth-child(3) { animation-delay: 0.14s; }
+  .chakra-result-row:nth-child(4) { animation-delay: 0.21s; }
+  .chakra-result-row:nth-child(5) { animation-delay: 0.28s; }
+  .chakra-result-row:nth-child(6) { animation-delay: 0.35s; }
+  .chakra-result-row:nth-child(7) { animation-delay: 0.42s; }
+
+  .chakra-label { display: flex; align-items: center; gap: 10px; }
+  .chakra-label-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .chakra-label-text .zh { font-size: 0.88rem; color: var(--ink); }
+  .chakra-label-text .en {
+    font-size: 0.62rem; color: var(--ink-dim);
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+  }
+  .chakra-card-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; color: var(--gold-light);
+    font-style: italic; letter-spacing: 0.06em;
+  }
+  .chakra-card-sub {
+    font-size: 0.65rem; color: var(--ink-dim);
+    letter-spacing: 0.08em; margin-top: 2px;
+  }
+
+  /* ── Summary ── */
+  .summary-btn {
+    background: linear-gradient(135deg, rgba(139,105,20,0.14), rgba(139,105,20,0.07));
+    border: 1px solid var(--gold-dim);
+    color: var(--gold-light);
+    padding: 11px 30px;
+    cursor: pointer;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.14em;
+    border-radius: 4px;
+    transition: all 0.25s;
+  }
+  .summary-btn:hover {
+    background: linear-gradient(135deg, rgba(139,105,20,0.24), rgba(139,105,20,0.14));
+    border-color: var(--gold);
+    box-shadow: 0 0 16px rgba(139,105,20,0.1);
+  }
+
+  .summary-box {
+    margin: 16px 0 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 22px;
+    background: rgba(139,105,20,0.04);
+    animation: fadeIn 0.4s ease;
+  }
+  .summary-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; color: var(--gold-light);
+    letter-spacing: 0.15em; font-style: italic;
+    margin-bottom: 14px;
+  }
+  .summary-text {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 0.9rem; color: var(--ink);
+    line-height: 2.1; letter-spacing: 0.04em;
+    white-space: pre-wrap; margin-bottom: 16px;
+  }
+  .copy-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    padding: 6px 20px;
+    cursor: pointer;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { border-color: var(--gold-dim); color: var(--ink); }
+
+  /* ── Reset / shared ── */
+  .reset-btn {
+    background: transparent;
+    border: 1px solid rgba(139,105,20,0.2);
+    color: var(--ink-dim);
+    padding: 8px 24px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.14em;
+    border-radius: 2px;
+    transition: all 0.25s;
+    display: block; margin: 20px auto 0;
+  }
+  .reset-btn:hover { border-color: var(--gold-dim); color: var(--ink); }
+
+  /* ── I Ching ── */
+  .iching-intro {
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.12em;
+    line-height: 1.9;
+    margin-bottom: 32px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: rgba(139,105,20,0.03);
+  }
+  .iching-intro-en {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    opacity: 0.6;
+    margin-top: 4px;
+  }
+
+  .iching-result {
+    animation: fadeIn 0.5s ease;
+    margin-bottom: 8px;
+  }
+
+  .iching-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: rgba(250,246,240,0.85);
+    animation: fadeIn 0.5s ease backwards;
+  }
+
+  .iching-label {
+    font-size: 0.88rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.15em;
+  }
+
+  .iching-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 300;
+    color: var(--gold-light);
+    letter-spacing: 0.25em;
+    line-height: 1;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 540px) {
+    .zones-grid { grid-template-columns: repeat(3, 1fr); }
+    .chakra-result-row { grid-template-columns: 1fr; }
+    .tarot-card { width: 138px; }
+    .card-face { height: 185px; }
+    .mode-toggle { flex-wrap: wrap; gap: 10px; }
+    .toggle-group { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Header -->
+  <header>
+    <div class="header-ornament">✦ ✦ ✦</div>
+    <h1>神聖抽牌</h1>
+    <h2>Sacred Thoth Tarot Oracle</h2>
+    <div class="divider"><span>☽</span></div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('ycg')">元辰宮</button>
+    <button class="tab-btn" onclick="switchTab('iching')">易經</button>
+    <button class="tab-btn" onclick="switchTab('chakra')">脈輪</button>
+  </div>
+
+  <!-- Panel: Yuan Chen Gong -->
+  <div class="panel active" id="panel-ycg">
+
+    <div class="mode-toggle">
+      <label>每區域抽牌數</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="mode1" onclick="setMode(1)">1 張</button>
+        <button class="toggle-btn"        id="mode3" onclick="setMode(3)">3 張</button>
+      </div>
+    </div>
+
+    <button class="select-all-btn" onclick="toggleAllZones()">全選 / 全清</button>
+
+    <div class="zones-grid" id="zones-grid"></div>
+
+    <button class="draw-btn" id="ycg-draw-btn" onclick="drawYCG()" disabled>
+      抽取能量牌
+    </button>
+
+    <div id="ycg-results"></div>
+  </div>
+
+  <!-- Panel: I Ching -->
+  <div class="panel" id="panel-iching">
+
+    <div class="iching-intro">
+      靜心，心中默想問題，按下占卜
+    </div>
+
+    <button class="draw-btn" onclick="divineIChing()">
+      占卜
+    </button>
+
+    <div id="iching-results"></div>
+  </div>
+
+  <!-- Panel: Chakra -->
+  <div class="panel" id="panel-chakra">
+
+    <button class="select-all-btn" onclick="toggleAllChakras()">全選 / 全清</button>
+
+    <div class="chakra-grid" id="chakra-preview"></div>
+
+    <button class="draw-btn" id="chakra-draw-btn" onclick="drawChakra()">
+      抽取脈輪能量牌
+    </button>
+
+    <div id="chakra-results"></div>
+  </div>
+
+</div><!-- /.wrapper -->
+
+<script>
+// ═══════════════════════════════════════════
+//  托特塔羅牌組 Thoth Tarot Deck (78 cards)
+// ═══════════════════════════════════════════
+const MAJOR = [
+  {n:'0',   zh:'愚者',       en:'The Fool',         sym:'🌬️'},
+  {n:'I',   zh:'魔法師',     en:'The Magus',         sym:'☿'},
+  {n:'II',  zh:'女祭司',     en:'The Priestess',     sym:'🌙'},
+  {n:'III', zh:'女皇',       en:'The Empress',       sym:'♀'},
+  {n:'IV',  zh:'皇帝',       en:'The Emperor',       sym:'♈'},
+  {n:'V',   zh:'教皇',       en:'The Hierophant',    sym:'♉'},
+  {n:'VI',  zh:'戀人',       en:'The Lovers',        sym:'♊'},
+  {n:'VII', zh:'戰車',       en:'The Chariot',       sym:'♋'},
+  {n:'VIII',zh:'力量（調整）',en:'Adjustment',        sym:'♎'},
+  {n:'IX',  zh:'隱者',       en:'The Hermit',        sym:'♍'},
+  {n:'X',   zh:'命運之輪',   en:'Wheel of Fortune',  sym:'♃'},
+  {n:'XI',  zh:'慾望',       en:'Lust',              sym:'♌'},
+  {n:'XII', zh:'吊人',       en:'The Hanged Man',    sym:'💧'},
+  {n:'XIII',zh:'死神',       en:'Death',             sym:'♏'},
+  {n:'XIV', zh:'藝術',       en:'Art',               sym:'♐'},
+  {n:'XV',  zh:'惡魔',       en:'The Devil',         sym:'♑'},
+  {n:'XVI', zh:'塔',         en:'The Tower',         sym:'♂'},
+  {n:'XVII',zh:'星星',       en:'The Star',          sym:'♒'},
+  {n:'XVIII',zh:'月亮',      en:'The Moon',          sym:'♓'},
+  {n:'XIX', zh:'太陽',       en:'The Sun',           sym:'☉'},
+  {n:'XX',  zh:'永恆之火',   en:'The Aeon',          sym:'🔥'},
+  {n:'XXI', zh:'宇宙',       en:'The Universe',      sym:'♄'},
+];
+
+const SUITS = [
+  {suit:'權杖', suitEn:'Wands',  sym:'🔥'},
+  {suit:'聖杯', suitEn:'Cups',   sym:'💧'},
+  {suit:'寶劍', suitEn:'Swords', sym:'⚡'},
+  {suit:'圓盤', suitEn:'Disks',  sym:'🌍'},
+];
+
+const MINOR = [];
+const COURT = ['騎士 Knight','王后 Queen','王子 Prince','公主 Princess'];
+for (const s of SUITS) {
+  for (let i = 1; i <= 10; i++) {
+    MINOR.push({
+      n: String(i),
+      zh: `${s.suit}${i === 1 ? '首牌' : i + '號'}`,
+      en: `${i === 1 ? 'Ace' : i} of ${s.suitEn}`,
+      sym: s.sym, suit: s.suit, suitEn: s.suitEn
+    });
+  }
+  for (const c of COURT) {
+    const [zh, en] = c.split(' ');
+    MINOR.push({
+      n: en[0],
+      zh: `${s.suit}${zh}`,
+      en: `${en} of ${s.suitEn}`,
+      sym: s.sym, suit: s.suit, suitEn: s.suitEn
+    });
+  }
+}
+
+const DECK = [...MAJOR, ...MINOR]; // 78 張
+
+// ═══════════════════════════════════════════
+//  元辰宮區域
+// ═══════════════════════════════════════════
+const ZONES = [
+  {zh:'天空',    en:'Sky',          icon:'🌌'},
+  {zh:'僕人',    en:'Servants',     icon:'🤝'},
+  {zh:'土地',    en:'Land',         icon:'🌿'},
+  {zh:'生命之樹',en:'Tree of Life', icon:'🌳'},
+  {zh:'水缸',    en:'Water Vessel', icon:'🪣'},
+  {zh:'米缸',    en:'Rice Vessel',  icon:'🌾'},
+  {zh:'廚房',    en:'Kitchen',      icon:'🍳'},
+  {zh:'臥室',    en:'Bedroom',      icon:'🌙'},
+  {zh:'客廳',    en:'Living Room',  icon:'🏮'},
+  {zh:'大門',    en:'Main Gate',    icon:'🚪'},
+  {zh:'書房',    en:'Study',        icon:'📚'},
+  {zh:'外部',    en:'Exterior',     icon:'🏔️'},
+];
+
+// ═══════════════════════════════════════════
+//  脈輪
+// ═══════════════════════════════════════════
+const CHAKRAS = [
+  {zh:'海底輪',    en:'Root · Muladhara',       color:'#c0392b'},
+  {zh:'臍輪',      en:'Sacral · Svadhisthana',  color:'#e67e22'},
+  {zh:'太陽神經叢',en:'Solar · Manipura',        color:'#d4a017'},
+  {zh:'心輪',      en:'Heart · Anahata',         color:'#27ae60'},
+  {zh:'喉輪',      en:'Throat · Vishuddha',      color:'#2980b9'},
+  {zh:'眉心輪',    en:'Third Eye · Ajna',        color:'#8e44ad'},
+  {zh:'頂輪',      en:'Crown · Sahasrara',       color:'#9b7ec8'},
+];
+
+// ═══════════════════════════════════════════
+//  State
+// ═══════════════════════════════════════════
+let cardMode      = 1;
+let selectedZones = new Set();
+let selectedChakras = new Set();
+let _ycgSummary   = [];
+let _chakraSummary = [];
+
+// ── Helpers ──────────────────────────────
+function drawRandom(n = 1) {
+  return [...DECK].sort(() => Math.random() - 0.5).slice(0, n).map(c => ({...c}));
+}
+
+// ── Tabs ─────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['ycg', 'iching', 'chakra'][i] === id);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+}
+
+// ── Mode ─────────────────────────────────
+function setMode(n) {
+  cardMode = n;
+  document.getElementById('mode1').classList.toggle('active', n === 1);
+  document.getElementById('mode3').classList.toggle('active', n === 3);
+}
+
+// ── Zone grid ────────────────────────────
+function renderZones() {
+  document.getElementById('zones-grid').innerHTML = ZONES.map((z, i) => `
+    <div class="zone-card ${selectedZones.has(i) ? 'selected' : ''}" onclick="toggleZone(${i})">
+      <span class="zone-icon">${z.icon}</span>
+      <span class="zone-name">${z.zh}</span>
+    </div>
+  `).join('');
+}
+
+function toggleZone(i) {
+  selectedZones.has(i) ? selectedZones.delete(i) : selectedZones.add(i);
+  renderZones();
+  document.getElementById('ycg-draw-btn').disabled = selectedZones.size === 0;
+}
+
+function toggleAllZones() {
+  if (selectedZones.size === ZONES.length) selectedZones.clear();
+  else ZONES.forEach((_, i) => selectedZones.add(i));
+  renderZones();
+  document.getElementById('ycg-draw-btn').disabled = selectedZones.size === 0;
+}
+
+// ── Draw YCG ─────────────────────────────
+function drawYCG() {
+  const pos = cardMode === 3 ? ['過去', '現在', '未來'] : ['能量'];
+  const posShort = cardMode === 3 ? ['過去', '現在', '未來'] : null;
+  const container = document.getElementById('ycg-results');
+  const sortedZones = [...selectedZones].sort((a, b) => a - b);
+  _ycgSummary = [];
+  let html = '';
+
+  for (const zi of sortedZones) {
+    const z = ZONES[zi];
+    const cards = drawRandom(cardMode);
+    _ycgSummary.push({z, cards});
+    html += `
+      <div class="results-section" style="margin-bottom:32px;">
+        <div class="result-zone-title">
+          <h3>${z.icon} ${z.zh}</h3>
+        </div>
+        <div class="cards-row">
+          ${cards.map((c, i) => `
+            <div class="tarot-card">
+              <div class="card-face">
+                <div class="card-number">${c.n}</div>
+                <div class="card-symbol">${c.sym}</div>
+                <div class="card-title">${c.zh}</div>
+              </div>
+              <div class="card-info">
+                <div class="card-suit">${c.suit ? c.suit : '大阿爾克那'}</div>
+                ${cardMode === 3 ? `<div class="card-position">${pos[i]}</div>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+
+  const lines = _ycgSummary.map(({z, cards}) => {
+    if (cardMode === 3) return cards.map((c, i) => `${z.icon} ${z.zh}（${posShort[i]}）：${c.zh}`).join('\n');
+    return `${z.icon} ${z.zh}：${cards[0].zh}`;
+  }).join('\n');
+  const escaped = lines.replace(/\\/g,'\\\\').replace(/`/g,'\\`');
+
+  html += `
+    <div class="summary-box">
+      <div class="summary-title">✨ 元辰宮能量總覽</div>
+      <pre class="summary-text">${lines}</pre>
+      <button class="copy-btn" onclick="copyText(this, \`${escaped}\`)">📋 複製文字</button>
+    </div>
+    <button class="reset-btn" onclick="resetYCG()">重新抽牌</button>
+  `;
+  container.innerHTML = html;
+  container.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+
+function showYCGSummary() {} // deprecated
+
+function resetYCG() {
+  document.getElementById('ycg-results').innerHTML = '';
+  _ycgSummary = [];
+}
+
+// ── Chakra preview ───────────────────────
+function renderChakraPreview() {
+  document.getElementById('chakra-preview').innerHTML = CHAKRAS.map((c, i) => `
+    <div class="chakra-row ${selectedChakras.has(i) ? 'selected' : ''}" onclick="toggleChakra(${i})">
+      <div class="chakra-dot" style="background:${c.color}; box-shadow:0 0 10px ${c.color}66;">${i + 1}</div>
+      <div>
+        <div class="chakra-zh">${c.zh}</div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('chakra-draw-btn').disabled = selectedChakras.size === 0;
+}
+
+function toggleChakra(i) {
+  selectedChakras.has(i) ? selectedChakras.delete(i) : selectedChakras.add(i);
+  renderChakraPreview();
+}
+
+function toggleAllChakras() {
+  if (selectedChakras.size === CHAKRAS.length) selectedChakras.clear();
+  else CHAKRAS.forEach((_, i) => selectedChakras.add(i));
+  renderChakraPreview();
+}
+
+// ── Draw Chakra ──────────────────────────
+function drawChakra() {
+  const indices = [...selectedChakras].sort((a, b) => a - b);
+  const cards = drawRandom(indices.length);
+  _chakraSummary = indices.map((idx, i) => ({ch: CHAKRAS[idx], c: cards[i]}));
+  const container = document.getElementById('chakra-results');
+  let html = '<div class="chakra-results">';
+
+  _chakraSummary.forEach(({ch, c}) => {
+    html += `
+      <div class="chakra-result-row">
+        <div class="chakra-label">
+          <div class="chakra-label-dot" style="background:${ch.color}; box-shadow:0 0 7px ${ch.color}66;"></div>
+          <div class="chakra-label-text">
+            <div class="zh">${ch.zh}</div>
+          </div>
+        </div>
+        <div>
+          <div class="chakra-card-name">${c.sym} ${c.zh}</div>
+          <div class="chakra-card-sub">${c.suit ? c.suit : '大阿爾克那'}</div>
+        </div>
+      </div>`;
+  });
+
+  const lines = _chakraSummary.map(({ch, c}) => `${c.sym} ${ch.zh}：${c.zh}`).join('\n');
+  const escaped = lines.replace(/\\/g,'\\\\').replace(/`/g,'\\`');
+
+  html += `</div>
+    <div class="summary-box">
+      <div class="summary-title">✨ 脈輪能量總覽</div>
+      <pre class="summary-text">${lines}</pre>
+      <button class="copy-btn" onclick="copyText(this, \`${escaped}\`)">📋 複製文字</button>
+    </div>
+    <button class="reset-btn" onclick="resetChakra()">重新抽牌</button>
+  `;
+  container.innerHTML = html;
+  container.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+
+function showChakraSummary() {} // deprecated
+
+function resetChakra() {
+  document.getElementById('chakra-results').innerHTML = '';
+  _chakraSummary = [];
+}
+
+// ── Copy ─────────────────────────────────
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ 已複製！';
+    setTimeout(() => { btn.textContent = '📋 複製文字'; }, 2000);
+  });
+}
+
+// ── I Ching ──────────────────────────────
+function divineIChing() {
+  const rand = () => String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
+  const groups = [rand(), rand(), rand()];
+  const labels = ['第一組', '第二組', '第三組'];
+  const lines = groups.map((n, i) => `${labels[i]}：${n}`).join('\n');
+  const escaped = lines.replace(/\\/g,'\\\\').replace(/`/g,'\\`');
+
+  document.getElementById('iching-results').innerHTML = `
+    <div class="iching-result">
+      ${groups.map((n, i) => `
+        <div class="iching-row" style="animation-delay:${i * 0.15}s">
+          <span class="iching-label">${labels[i]}</span>
+          <span class="iching-number">${n}</span>
+        </div>
+      `).join('')}
+      <div class="summary-box" style="margin-top:20px;">
+        <pre class="summary-text">${lines}</pre>
+        <button class="copy-btn" onclick="copyText(this, \`${escaped}\`)">📋 複製文字</button>
+      </div>
+      <button class="reset-btn" onclick="document.getElementById('iching-results').innerHTML=''">重新占卜</button>
+    </div>
+  `;
+  document.getElementById('iching-results').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── Init ─────────────────────────────────
+renderZones();
+CHAKRAS.forEach((_, i) => selectedChakras.add(i));
+renderChakraPreview();
+</script>
+</body>
+</html>
