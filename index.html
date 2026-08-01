@@ -1,924 +1,598 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>神聖抽牌 · Sacred Thoth Tarot Oracle</title>
-
-<!-- Favicon -->
-<link rel="icon" href="icons/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
-<link rel="icon" type="image/png" sizes="48x48" href="icons/icon-48.png">
-
-<!-- Add to Home Screen (iOS) -->
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="神聖抽牌">
-
-<!-- Add to Home Screen (Android / PWA) -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#8b6914">
-
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    color-scheme: light;
-    --gold: #8b6914;
-    --gold-light: #6b4f0a;
-    --gold-dim: #a07c20;
-    --bg: #faf6f0;
-    --bg2: #f3ece0;
-    --ink: #3d2b0e;
-    --ink-dim: #7a5c2a;
-    --border: rgba(139,105,20,0.22);
-    --red: #8b2020;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: #faf6f0 !important;
-    color: #3d2b0e !important;
-    font-family: 'Noto Serif TC', 'Cormorant Garamond', serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: 0;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,105,20,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(139,32,32,0.04) 0%, transparent 50%);
-    pointer-events: none;
-  }
-
-  /* ── Layout ── */
-  .wrapper {
-    position: relative; z-index: 1;
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 48px 24px 80px;
-  }
-
-  /* ── Header ── */
-  header { text-align: center; margin-bottom: 52px; }
-
-  .header-ornament {
-    color: var(--gold);
-    font-size: 1.1rem;
-    letter-spacing: 0.5em;
-    opacity: 0.65;
-    margin-bottom: 12px;
-  }
-
-  header h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 300;
-    color: var(--gold-light);
-    letter-spacing: 0.08em;
-    line-height: 1.2;
-    margin-bottom: 6px;
-  }
-
-  header h2 {
-    font-size: clamp(0.8rem, 2vw, 0.95rem);
-    font-weight: 300;
-    color: var(--ink-dim);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-  }
-
-  .divider {
-    display: flex; align-items: center; gap: 12px;
-    margin: 18px auto; max-width: 280px;
-  }
-  .divider::before, .divider::after {
-    content: ''; flex: 1; height: 1px;
-  }
-  .divider::before { background: linear-gradient(90deg, transparent, var(--gold-dim)); }
-  .divider::after  { background: linear-gradient(90deg, var(--gold-dim), transparent); }
-  .divider span { color: var(--gold); font-size: 0.8rem; }
-
-  /* ── Tabs ── */
-  .tabs {
-    display: flex;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 36px;
-  }
-
-  .tab-btn {
-    flex: 1;
-    background: transparent;
-    border: none;
-    border-right: 1px solid var(--border);
-    color: var(--ink-dim);
-    padding: 14px 20px;
-    cursor: pointer;
-    font-family: 'Noto Serif TC', serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.12em;
-    transition: all 0.3s;
-    position: relative;
-  }
-  .tab-btn:last-child { border-right: none; }
-  .tab-btn.active {
-    background: rgba(139,105,20,0.1);
-    color: var(--gold-light);
-  }
-  .tab-btn::after {
-    content: '';
-    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-    background: var(--gold);
-    transform: scaleX(0);
-    transition: transform 0.3s;
-  }
-  .tab-btn.active::after { transform: scaleX(1); }
-  .tab-en {
-    display: block;
-    font-size: 0.66rem;
-    letter-spacing: 0.15em;
-    opacity: 0.55;
-    margin-top: 2px;
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-  }
-
-  /* ── Panels ── */
-  .panel { display: none; }
-  .panel.active { display: block; }
-
-  /* ── Mode toggle ── */
-  .mode-toggle {
-    display: flex; align-items: center; gap: 16px;
-    margin-bottom: 24px;
-    padding: 13px 18px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: rgba(139,105,20,0.04);
-  }
-  .mode-toggle label {
-    font-size: 0.82rem;
-    color: var(--ink-dim);
-    letter-spacing: 0.08em;
-  }
-  .toggle-group { display: flex; gap: 8px; margin-left: auto; }
-
-  .toggle-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--ink-dim);
-    padding: 6px 18px;
-    cursor: pointer;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.9rem;
-    border-radius: 2px;
-    transition: all 0.25s;
-    letter-spacing: 0.08em;
-  }
-  .toggle-btn.active {
-    background: rgba(139,105,20,0.15);
-    border-color: var(--gold-dim);
-    color: var(--gold-light);
-  }
-
-  /* ── Zone grid ── */
-  .select-all-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--ink-dim);
-    padding: 7px 18px;
-    cursor: pointer;
-    font-family: 'Noto Serif TC', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    border-radius: 2px;
-    transition: all 0.25s;
-    margin-bottom: 14px;
-  }
-  .select-all-btn:hover { border-color: var(--gold-dim); color: var(--ink); }
-
-  .zones-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 10px;
-    margin-bottom: 28px;
-  }
-
-  .zone-card {
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 14px 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    background: rgba(250,246,240,0.85);
-    position: relative; overflow: hidden;
-  }
-  .zone-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 0%, rgba(139,105,20,0.1), transparent 70%);
-    opacity: 0; transition: opacity 0.3s;
-  }
-  .zone-card:hover::before, .zone-card.selected::before { opacity: 1; }
-  .zone-card:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
-  .zone-card.selected { border-color: var(--gold); background: rgba(139,105,20,0.08); }
-
-  .zone-icon  { font-size: 1.4rem; margin-bottom: 6px; display: block; }
-  .zone-name  { font-size: 0.85rem; color: #3d2b0e; letter-spacing: 0.08em; display: block; }
-  .zone-name-en {
-    font-size: 0.63rem; color: var(--ink-dim); letter-spacing: 0.1em;
-    font-style: italic; font-family: 'Cormorant Garamond', serif;
-    display: block; margin-top: 2px;
-  }
-
-  /* ── Draw button ── */
-  .draw-btn {
-    width: 100%;
-    padding: 15px;
-    background: linear-gradient(135deg, rgba(139,105,20,0.12), rgba(139,105,20,0.06));
-    border: 1px solid var(--gold-dim);
-    color: var(--gold-light);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
-    letter-spacing: 0.2em;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.3s;
-    margin-bottom: 36px;
-  }
-  .draw-btn:hover {
-    background: linear-gradient(135deg, rgba(139,105,20,0.22), rgba(139,105,20,0.12));
-    border-color: var(--gold);
-    box-shadow: 0 0 20px rgba(139,105,20,0.1);
-    letter-spacing: 0.25em;
-  }
-  .draw-btn:disabled { opacity: 0.35; cursor: not-allowed; letter-spacing: 0.2em; }
-  .btn-en {
-    display: block; font-size: 0.68rem; letter-spacing: 0.22em;
-    opacity: 0.55; margin-top: 3px; font-style: italic;
-  }
-
-  /* ── Animations ── */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes cardReveal {
-    from { opacity: 0; transform: translateY(18px) scale(0.95); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  /* ── YCG Results ── */
-  .results-section { animation: fadeIn 0.5s ease; }
-
-  .result-zone-title { text-align: center; margin-bottom: 24px; }
-  .result-zone-title h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem; color: var(--gold-light);
-    font-weight: 300; letter-spacing: 0.15em;
-  }
-  .result-zone-title p {
-    font-size: 0.7rem; color: var(--ink-dim);
-    letter-spacing: 0.2em; text-transform: uppercase; margin-top: 4px;
-  }
-
-  .cards-row {
-    display: flex; gap: 14px; justify-content: center;
-    flex-wrap: wrap; margin-bottom: 20px;
-  }
-
-  .tarot-card {
-    width: 155px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    background: var(--bg2);
-    animation: cardReveal 0.5s ease backwards;
-    text-align: center;
-  }
-  .tarot-card:nth-child(2) { animation-delay: 0.12s; }
-  .tarot-card:nth-child(3) { animation-delay: 0.24s; }
-
-  .card-face {
-    height: 210px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 16px;
-    background: linear-gradient(160deg, #ede3d0 0%, #e0d4bc 100%);
-    border-bottom: 1px solid var(--border);
-    position: relative;
-  }
-  .card-face::before {
-    content: ''; position: absolute; inset: 6px;
-    border: 1px solid rgba(139,105,20,0.18); border-radius: 3px; pointer-events: none;
-  }
-
-  .card-number {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.72rem; color: var(--gold-dim);
-    letter-spacing: 0.2em; margin-bottom: 8px;
-  }
-  .card-symbol {
-    font-size: 2rem; margin-bottom: 8px;
-    filter: drop-shadow(0 0 6px rgba(139,105,20,0.25));
-  }
-  .card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.92rem; color: var(--gold-light);
-    letter-spacing: 0.06em; line-height: 1.3; font-style: italic;
-  }
-  .card-info { padding: 10px 12px; }
-  .card-suit {
-    font-size: 0.62rem; color: var(--ink-dim);
-    letter-spacing: 0.1em; text-transform: uppercase;
-    font-family: 'Cormorant Garamond', serif; font-style: italic;
-  }
-  .card-position {
-    font-size: 0.7rem; color: var(--gold-dim);
-    letter-spacing: 0.08em; margin-top: 2px;
-  }
-
-  /* ── Chakra Panel ── */
-  .chakra-grid { display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; }
-
-  .chakra-row {
-    display: grid; grid-template-columns: 34px 1fr;
-    align-items: center; gap: 12px; padding: 11px 16px;
-    border: 1px solid var(--border); border-radius: 4px;
-    background: rgba(250,246,240,0.85);
-    cursor: pointer; transition: all 0.25s;
-  }
-  .chakra-row:hover { border-color: var(--gold-dim); }
-  .chakra-row.selected { border-color: var(--gold); background: rgba(139,105,20,0.08); }
-  .chakra-dot {
-    width: 24px; height: 24px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.72rem; color: #fff; flex-shrink: 0; font-weight: 600;
-  }
-  .chakra-zh { font-size: 0.88rem; color: var(--ink); letter-spacing: 0.06em; }
-  .chakra-en {
-    font-size: 0.63rem; color: var(--ink-dim);
-    font-family: 'Cormorant Garamond', serif; font-style: italic; letter-spacing: 0.1em;
-  }
-
-  .chakra-results { display: flex; flex-direction: column; gap: 12px; animation: fadeIn 0.5s ease; }
-
-  .chakra-result-row {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 12px; align-items: center; padding: 14px 16px;
-    border: 1px solid var(--border); border-radius: 4px;
-    background: rgba(250,246,240,0.85);
-    animation: fadeIn 0.5s ease backwards;
-  }
-  .chakra-result-row:nth-child(2) { animation-delay: 0.07s; }
-  .chakra-result-row:nth-child(3) { animation-delay: 0.14s; }
-  .chakra-result-row:nth-child(4) { animation-delay: 0.21s; }
-  .chakra-result-row:nth-child(5) { animation-delay: 0.28s; }
-  .chakra-result-row:nth-child(6) { animation-delay: 0.35s; }
-  .chakra-result-row:nth-child(7) { animation-delay: 0.42s; }
-
-  .chakra-label { display: flex; align-items: center; gap: 10px; }
-  .chakra-label-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .chakra-label-text .zh { font-size: 0.88rem; color: var(--ink); }
-  .chakra-label-text .en {
-    font-size: 0.62rem; color: var(--ink-dim);
-    font-family: 'Cormorant Garamond', serif; font-style: italic;
-  }
-  .chakra-card-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem; color: var(--gold-light);
-    font-style: italic; letter-spacing: 0.06em;
-  }
-  .chakra-card-sub {
-    font-size: 0.65rem; color: var(--ink-dim);
-    letter-spacing: 0.08em; margin-top: 2px;
-  }
-
-  /* ── Summary ── */
-  .summary-btn {
-    background: linear-gradient(135deg, rgba(139,105,20,0.14), rgba(139,105,20,0.07));
-    border: 1px solid var(--gold-dim);
-    color: var(--gold-light);
-    padding: 11px 30px;
-    cursor: pointer;
-    font-family: 'Noto Serif TC', serif;
-    font-size: 0.88rem;
-    letter-spacing: 0.14em;
-    border-radius: 4px;
-    transition: all 0.25s;
-  }
-  .summary-btn:hover {
-    background: linear-gradient(135deg, rgba(139,105,20,0.24), rgba(139,105,20,0.14));
-    border-color: var(--gold);
-    box-shadow: 0 0 16px rgba(139,105,20,0.1);
-  }
-
-  .summary-box {
-    margin: 16px 0 8px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 20px 22px;
-    background: rgba(139,105,20,0.04);
-    animation: fadeIn 0.4s ease;
-  }
-  .summary-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem; color: var(--gold-light);
-    letter-spacing: 0.15em; font-style: italic;
-    margin-bottom: 14px;
-  }
-  .summary-text {
-    font-family: 'Noto Serif TC', serif;
-    font-size: 0.9rem; color: var(--ink);
-    line-height: 2.1; letter-spacing: 0.04em;
-    white-space: pre-wrap; margin-bottom: 16px;
-  }
-  .copy-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--ink-dim);
-    padding: 6px 20px;
-    cursor: pointer;
-    font-family: 'Noto Serif TC', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    border-radius: 2px;
-    transition: all 0.2s;
-  }
-  .copy-btn:hover { border-color: var(--gold-dim); color: var(--ink); }
-
-  /* ── Reset / shared ── */
-  .reset-btn {
-    background: transparent;
-    border: 1px solid rgba(139,105,20,0.2);
-    color: var(--ink-dim);
-    padding: 8px 24px;
-    cursor: pointer;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.14em;
-    border-radius: 2px;
-    transition: all 0.25s;
-    display: block; margin: 20px auto 0;
-  }
-  .reset-btn:hover { border-color: var(--gold-dim); color: var(--ink); }
-
-  /* ── I Ching ── */
-  .iching-intro {
-    text-align: center;
-    font-size: 0.88rem;
-    color: var(--ink-dim);
-    letter-spacing: 0.12em;
-    line-height: 1.9;
-    margin-bottom: 32px;
-    padding: 18px 20px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: rgba(139,105,20,0.03);
-  }
-  .iching-intro-en {
-    display: block;
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    opacity: 0.6;
-    margin-top: 4px;
-  }
-
-  .iching-result {
-    animation: fadeIn 0.5s ease;
-    margin-bottom: 8px;
-  }
-
-  .iching-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 28px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: rgba(250,246,240,0.85);
-    animation: fadeIn 0.5s ease backwards;
-  }
-
-  .iching-label {
-    font-size: 0.88rem;
-    color: var(--ink-dim);
-    letter-spacing: 0.15em;
-  }
-
-  .iching-number {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.4rem;
-    font-weight: 300;
-    color: var(--gold-light);
-    letter-spacing: 0.25em;
-    line-height: 1;
-  }
-
-  /* ── Mobile ── */
-  @media (max-width: 540px) {
-    .zones-grid { grid-template-columns: repeat(3, 1fr); }
-    .chakra-result-row { grid-template-columns: 1fr; }
-    .tarot-card { width: 138px; }
-    .card-face { height: 185px; }
-    .mode-toggle { flex-wrap: wrap; gap: 10px; }
-    .toggle-group { margin-left: 0; }
-  }
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
 </head>
 <body>
-<div class="wrapper">
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes flipIn { 0% { transform: rotateY(180deg); } 100% { transform: rotateY(0deg); } }
+    @keyframes glow { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
+    @keyframes twinkle { 0%,100% { opacity: 0.3; } 50% { opacity: 0.9; } }
+    @keyframes twinkleSlow { 0%,100% { opacity: 0.15; } 50% { opacity: 0.7; } }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes spinRev { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+    @keyframes drift { 0% { transform: translateX(-8%); } 50% { transform: translateX(8%); } 100% { transform: translateX(-8%); } }
+    @keyframes driftAlt { 0% { transform: translateX(10%); } 50% { transform: translateX(-10%); } 100% { transform: translateX(10%); } }
+    @keyframes pulseGlow { 0%,100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 0.95; transform: scale(1.1); } }
+    @keyframes hueDrift { 0%,100% { filter: hue-rotate(0deg); } 50% { filter: hue-rotate(15deg); } }
+    body { margin: 0; background: #0a0d1a; color: #efe6d0; }
+    a, a:visited { color: #d8b978; }
+    a:hover { color: #f2d99a; }
+  </style>
+</helmet>
 
-  <!-- Header -->
-  <header>
-    <div class="header-ornament">✦ ✦ ✦</div>
-    <h1>神聖抽牌</h1>
-    <h2>Sacred Thoth Tarot Oracle</h2>
-    <div class="divider"><span>☽</span></div>
-  </header>
+<div style="position:relative; min-height:100vh; font-family:'Noto Serif TC','Cormorant Garamond',serif; background:radial-gradient(ellipse 100% 60% at 50% -10%, #1a1e3a 0%, #0a0d1a 55%), #0a0d1a; color:#efe6d0; overflow-x:hidden;">
+  <div style="position:fixed; inset:0; z-index:0; pointer-events:none; background:radial-gradient(circle at 50% 8%, rgba(216,185,120,0.16) 0%, transparent 42%), radial-gradient(ellipse 70% 40% at 15% 90%, rgba(107,88,180,0.18) 0%, transparent 55%), radial-gradient(ellipse 60% 40% at 85% 75%, rgba(200,204,214,0.08) 0%, transparent 55%);"></div>
+  <!-- stars layer 1 (fast twinkle) -->
+  <div style="position:fixed; inset:0; z-index:0; pointer-events:none; background-image: radial-gradient(1px 1px at 12% 22%, rgba(255,248,220,0.8), transparent), radial-gradient(1px 1px at 78% 14%, rgba(255,248,220,0.6), transparent), radial-gradient(1.5px 1.5px at 34% 68%, rgba(255,248,220,0.7), transparent), radial-gradient(1px 1px at 62% 82%, rgba(255,248,220,0.5), transparent), radial-gradient(1px 1px at 88% 55%, rgba(255,248,220,0.65), transparent), radial-gradient(1px 1px at 6% 72%, rgba(255,248,220,0.5), transparent), radial-gradient(1px 1px at 50% 40%, rgba(255,248,220,0.45), transparent); animation:twinkle 4s ease-in-out infinite;"></div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('ycg')">元辰宮</button>
-    <button class="tab-btn" onclick="switchTab('iching')">易經</button>
-    <button class="tab-btn" onclick="switchTab('chakra')">脈輪</button>
-  </div>
+  <!-- stars layer 2 (slow twinkle, offset positions) -->
+  <div style="position:fixed; inset:0; z-index:0; pointer-events:none; background-image: radial-gradient(1px 1px at 22% 8%, rgba(255,248,220,0.55), transparent), radial-gradient(1.5px 1.5px at 44% 28%, rgba(255,248,220,0.5), transparent), radial-gradient(1px 1px at 70% 32%, rgba(255,248,220,0.6), transparent), radial-gradient(1px 1px at 92% 78%, rgba(255,248,220,0.5), transparent), radial-gradient(1.5px 1.5px at 28% 52%, rgba(255,248,220,0.55), transparent), radial-gradient(1px 1px at 58% 62%, rgba(255,248,220,0.6), transparent), radial-gradient(1px 1px at 82% 92%, rgba(255,248,220,0.45), transparent), radial-gradient(1px 1px at 16% 90%, rgba(255,248,220,0.5), transparent); animation:twinkleSlow 7s ease-in-out infinite;"></div>
 
-  <!-- Panel: Yuan Chen Gong -->
-  <div class="panel active" id="panel-ycg">
+  <!-- stars layer 3 (very slow, sparse bright) -->
+  <div style="position:fixed; inset:0; z-index:0; pointer-events:none; background-image: radial-gradient(2px 2px at 38% 18%, rgba(232,215,180,0.7), transparent), radial-gradient(2px 2px at 66% 58%, rgba(232,215,180,0.6), transparent), radial-gradient(2px 2px at 20% 80%, rgba(232,215,180,0.55), transparent); animation:twinkleSlow 9s ease-in-out infinite;"></div>
 
-    <div class="mode-toggle">
-      <label>每區域抽牌數</label>
-      <div class="toggle-group">
-        <button class="toggle-btn active" id="mode1" onclick="setMode(1)">1 張</button>
-        <button class="toggle-btn"        id="mode3" onclick="setMode(3)">3 張</button>
+  <div style="position:relative; z-index:1; max-width:780px; margin:0 auto; padding:64px 24px 96px;">
+
+    <!-- Header -->
+    <header style="text-align:center; margin-bottom:52px;">
+      <div style="color:#d8b978; font-size:1.1rem; letter-spacing:0.8em; opacity:0.7; margin-bottom:18px; padding-left:0.8em;">✦ ☾ ✦</div>
+      <h1 style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-weight:500; font-size:clamp(2.2rem,5vw,3.4rem); background:linear-gradient(180deg, #f2d99a 0%, #c9a86a 55%, #8b6914 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:0.14em; line-height:1.15; margin:0 0 12px; text-shadow:0 0 40px rgba(216,185,120,0.25);">神聖抽牌</h1>
+      <h2 style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-weight:400; font-size:clamp(0.75rem,2vw,0.88rem); color:#a8a08a; letter-spacing:0.4em; text-transform:uppercase; margin:0;">Sacred Thoth Tarot Oracle</h2>
+      <div style="display:flex; align-items:center; gap:16px; margin:26px auto 0; max-width:280px;">
+        <div style="flex:1; height:1px; background:linear-gradient(90deg, transparent, #c9a86a);"></div>
+        <span style="color:#d8b978; font-size:0.95rem; letter-spacing:0.3em;">☽ ✧ ☾</span>
+        <div style="flex:1; height:1px; background:linear-gradient(90deg, #c9a86a, transparent);"></div>
       </div>
+    </header>
+
+    <!-- Tabs -->
+    <div style="display:flex; border:1px solid rgba(201,168,106,0.3); border-radius:2px; overflow:hidden; margin-bottom:16px; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08);">
+      <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="3">
+        <button
+          onClick="{{ tab.onClick }}"
+          style="flex:1; background:transparent; border:none; border-right:1px solid rgba(201,168,106,0.2); color:#a8a08a; padding:18px 12px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:0.16em; transition:all 0.3s;"
+          style-hover="color:#f2d99a; background:rgba(216,185,120,0.06);"
+        >
+          {{ tab.label }}
+          <span style="display:block; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; letter-spacing:0.22em; opacity:0.6; margin-top:5px; text-transform:uppercase;">{{ tab.labelEn }}</span>
+        </button>
+      </sc-for>
     </div>
 
-    <button class="select-all-btn" onclick="toggleAllZones()">全選 / 全清</button>
-
-    <div class="zones-grid" id="zones-grid"></div>
-
-    <button class="draw-btn" id="ycg-draw-btn" onclick="drawYCG()" disabled>
-      抽取能量牌
-    </button>
-
-    <div id="ycg-results"></div>
-  </div>
-
-  <!-- Panel: I Ching -->
-  <div class="panel" id="panel-iching">
-
-    <div class="iching-intro">
-      靜心，心中默想問題，按下占卜
+    <!-- Secondary row -->
+    <div style="display:flex; border:1px solid rgba(201,168,106,0.3); border-radius:2px; overflow:hidden; margin-bottom:40px; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08);">
+      <button style="flex:1; background:transparent; border:none; border-right:1px solid rgba(201,168,106,0.2); color:#a8a08a; padding:18px 12px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:0.16em;">&nbsp;</button>
+      <button onClick="{{ setTarotTab }}" style="flex:1; background:transparent; border:none; border-right:1px solid rgba(201,168,106,0.2); color:#a8a08a; padding:18px 12px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:0.16em; transition:all 0.3s;" style-hover="color:#f2d99a; background:rgba(216,185,120,0.06);">
+        塔羅
+        <span style="display:block; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; letter-spacing:0.22em; opacity:0.6; margin-top:5px; text-transform:uppercase;">Tarot</span>
+      </button>
+      <button style="flex:1; background:transparent; border:none; color:#a8a08a; padding:18px 12px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:0.16em;">&nbsp;</button>
     </div>
 
-    <button class="draw-btn" onclick="divineIChing()">
-      占卜
-    </button>
-
-    <div id="iching-results"></div>
-  </div>
-
-  <!-- Panel: Chakra -->
-  <div class="panel" id="panel-chakra">
-
-    <button class="select-all-btn" onclick="toggleAllChakras()">全選 / 全清</button>
-
-    <div class="chakra-grid" id="chakra-preview"></div>
-
-    <button class="draw-btn" id="chakra-draw-btn" onclick="drawChakra()">
-      抽取脈輪能量牌
-    </button>
-
-    <div id="chakra-results"></div>
-  </div>
-
-</div><!-- /.wrapper -->
-
-<script>
-// ═══════════════════════════════════════════
-//  托特塔羅牌組 Thoth Tarot Deck (78 cards)
-// ═══════════════════════════════════════════
-const MAJOR = [
-  {n:'0',   zh:'愚者',       en:'The Fool',         sym:'🌬️'},
-  {n:'I',   zh:'魔法師',     en:'The Magus',         sym:'☿'},
-  {n:'II',  zh:'女祭司',     en:'The Priestess',     sym:'🌙'},
-  {n:'III', zh:'女皇',       en:'The Empress',       sym:'♀'},
-  {n:'IV',  zh:'皇帝',       en:'The Emperor',       sym:'♈'},
-  {n:'V',   zh:'教皇',       en:'The Hierophant',    sym:'♉'},
-  {n:'VI',  zh:'戀人',       en:'The Lovers',        sym:'♊'},
-  {n:'VII', zh:'戰車',       en:'The Chariot',       sym:'♋'},
-  {n:'VIII',zh:'力量（調整）',en:'Adjustment',        sym:'♎'},
-  {n:'IX',  zh:'隱者',       en:'The Hermit',        sym:'♍'},
-  {n:'X',   zh:'命運之輪',   en:'Wheel of Fortune',  sym:'♃'},
-  {n:'XI',  zh:'慾望',       en:'Lust',              sym:'♌'},
-  {n:'XII', zh:'吊人',       en:'The Hanged Man',    sym:'💧'},
-  {n:'XIII',zh:'死神',       en:'Death',             sym:'♏'},
-  {n:'XIV', zh:'藝術',       en:'Art',               sym:'♐'},
-  {n:'XV',  zh:'惡魔',       en:'The Devil',         sym:'♑'},
-  {n:'XVI', zh:'塔',         en:'The Tower',         sym:'♂'},
-  {n:'XVII',zh:'星星',       en:'The Star',          sym:'♒'},
-  {n:'XVIII',zh:'月亮',      en:'The Moon',          sym:'♓'},
-  {n:'XIX', zh:'太陽',       en:'The Sun',           sym:'☉'},
-  {n:'XX',  zh:'永恆之火',   en:'The Aeon',          sym:'🔥'},
-  {n:'XXI', zh:'宇宙',       en:'The Universe',      sym:'♄'},
-];
-
-const SUITS = [
-  {suit:'權杖', suitEn:'Wands',  sym:'🔥'},
-  {suit:'聖杯', suitEn:'Cups',   sym:'💧'},
-  {suit:'寶劍', suitEn:'Swords', sym:'⚡'},
-  {suit:'圓盤', suitEn:'Disks',  sym:'🌍'},
-];
-
-const MINOR = [];
-const COURT = ['騎士 Knight','王后 Queen','王子 Prince','公主 Princess'];
-for (const s of SUITS) {
-  for (let i = 1; i <= 10; i++) {
-    MINOR.push({
-      n: String(i),
-      zh: `${s.suit}${i === 1 ? '首牌' : i + '號'}`,
-      en: `${i === 1 ? 'Ace' : i} of ${s.suitEn}`,
-      sym: s.sym, suit: s.suit, suitEn: s.suitEn
-    });
-  }
-  for (const c of COURT) {
-    const [zh, en] = c.split(' ');
-    MINOR.push({
-      n: en[0],
-      zh: `${s.suit}${zh}`,
-      en: `${en} of ${s.suitEn}`,
-      sym: s.sym, suit: s.suit, suitEn: s.suitEn
-    });
-  }
-}
-
-const DECK = [...MAJOR, ...MINOR]; // 78 張
-
-// ═══════════════════════════════════════════
-//  元辰宮區域
-// ═══════════════════════════════════════════
-const ZONES = [
-  {zh:'天空',    en:'Sky',          icon:'🌌'},
-  {zh:'僕人',    en:'Servants',     icon:'🤝'},
-  {zh:'土地',    en:'Land',         icon:'🌿'},
-  {zh:'生命之樹',en:'Tree of Life', icon:'🌳'},
-  {zh:'水缸',    en:'Water Vessel', icon:'🪣'},
-  {zh:'米缸',    en:'Rice Vessel',  icon:'🌾'},
-  {zh:'廚房',    en:'Kitchen',      icon:'🍳'},
-  {zh:'臥室',    en:'Bedroom',      icon:'🌙'},
-  {zh:'客廳',    en:'Living Room',  icon:'🏮'},
-  {zh:'大門',    en:'Main Gate',    icon:'🚪'},
-  {zh:'書房',    en:'Study',        icon:'📚'},
-  {zh:'外部',    en:'Exterior',     icon:'🏔️'},
-];
-
-// ═══════════════════════════════════════════
-//  脈輪
-// ═══════════════════════════════════════════
-const CHAKRAS = [
-  {zh:'海底輪',    en:'Root · Muladhara',       color:'#c0392b'},
-  {zh:'臍輪',      en:'Sacral · Svadhisthana',  color:'#e67e22'},
-  {zh:'太陽神經叢',en:'Solar · Manipura',        color:'#d4a017'},
-  {zh:'心輪',      en:'Heart · Anahata',         color:'#27ae60'},
-  {zh:'喉輪',      en:'Throat · Vishuddha',      color:'#2980b9'},
-  {zh:'眉心輪',    en:'Third Eye · Ajna',        color:'#8e44ad'},
-  {zh:'頂輪',      en:'Crown · Sahasrara',       color:'#9b7ec8'},
-];
-
-// ═══════════════════════════════════════════
-//  State
-// ═══════════════════════════════════════════
-let cardMode      = 1;
-let selectedZones = new Set();
-let selectedChakras = new Set();
-let _ycgSummary   = [];
-let _chakraSummary = [];
-
-// ── Helpers ──────────────────────────────
-function drawRandom(n = 1) {
-  return [...DECK].sort(() => Math.random() - 0.5).slice(0, n).map(c => ({...c}));
-}
-
-// ── Tabs ─────────────────────────────────
-function switchTab(id) {
-  document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', ['ycg', 'iching', 'chakra'][i] === id);
-  });
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + id).classList.add('active');
-}
-
-// ── Mode ─────────────────────────────────
-function setMode(n) {
-  cardMode = n;
-  document.getElementById('mode1').classList.toggle('active', n === 1);
-  document.getElementById('mode3').classList.toggle('active', n === 3);
-}
-
-// ── Zone grid ────────────────────────────
-function renderZones() {
-  document.getElementById('zones-grid').innerHTML = ZONES.map((z, i) => `
-    <div class="zone-card ${selectedZones.has(i) ? 'selected' : ''}" onclick="toggleZone(${i})">
-      <span class="zone-icon">${z.icon}</span>
-      <span class="zone-name">${z.zh}</span>
-    </div>
-  `).join('');
-}
-
-function toggleZone(i) {
-  selectedZones.has(i) ? selectedZones.delete(i) : selectedZones.add(i);
-  renderZones();
-  document.getElementById('ycg-draw-btn').disabled = selectedZones.size === 0;
-}
-
-function toggleAllZones() {
-  if (selectedZones.size === ZONES.length) selectedZones.clear();
-  else ZONES.forEach((_, i) => selectedZones.add(i));
-  renderZones();
-  document.getElementById('ycg-draw-btn').disabled = selectedZones.size === 0;
-}
-
-// ── Draw YCG ─────────────────────────────
-function drawYCG() {
-  const pos = cardMode === 3 ? ['過去', '現在', '未來'] : ['能量'];
-  const posShort = cardMode === 3 ? ['過去', '現在', '未來'] : null;
-  const container = document.getElementById('ycg-results');
-  const sortedZones = [...selectedZones].sort((a, b) => a - b);
-  _ycgSummary = [];
-  let html = '';
-
-  for (const zi of sortedZones) {
-    const z = ZONES[zi];
-    const cards = drawRandom(cardMode);
-    _ycgSummary.push({z, cards});
-    html += `
-      <div class="results-section" style="margin-bottom:32px;">
-        <div class="result-zone-title">
-          <h3>${z.icon} ${z.zh}</h3>
-        </div>
-        <div class="cards-row">
-          ${cards.map((c, i) => `
-            <div class="tarot-card">
-              <div class="card-face">
-                <div class="card-number">${c.n}</div>
-                <div class="card-symbol">${c.sym}</div>
-                <div class="card-title">${c.zh}</div>
-              </div>
-              <div class="card-info">
-                <div class="card-suit">${c.suit ? c.suit : '大阿爾克那'}</div>
-                ${cardMode === 3 ? `<div class="card-position">${pos[i]}</div>` : ''}
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>`;
-  }
-
-  const lines = _ycgSummary.map(({z, cards}) => {
-    if (cardMode === 3) return cards.map((c, i) => `${z.icon} ${z.zh}（${posShort[i]}）：${c.zh}`).join('\n');
-    return `${z.icon} ${z.zh}：${cards[0].zh}`;
-  }).join('\n');
-  const escaped = lines.replace(/\\/g,'\\\\').replace(/`/g,'\\`');
-
-  html += `
-    <div class="summary-box">
-      <div class="summary-title">✨ 元辰宮能量總覽</div>
-      <pre class="summary-text">${lines}</pre>
-      <button class="copy-btn" onclick="copyText(this, \`${escaped}\`)">📋 複製文字</button>
-    </div>
-    <button class="reset-btn" onclick="resetYCG()">重新抽牌</button>
-  `;
-  container.innerHTML = html;
-  container.scrollIntoView({behavior: 'smooth', block: 'start'});
-}
-
-function showYCGSummary() {} // deprecated
-
-function resetYCG() {
-  document.getElementById('ycg-results').innerHTML = '';
-  _ycgSummary = [];
-}
-
-// ── Chakra preview ───────────────────────
-function renderChakraPreview() {
-  document.getElementById('chakra-preview').innerHTML = CHAKRAS.map((c, i) => `
-    <div class="chakra-row ${selectedChakras.has(i) ? 'selected' : ''}" onclick="toggleChakra(${i})">
-      <div class="chakra-dot" style="background:${c.color}; box-shadow:0 0 10px ${c.color}66;">${i + 1}</div>
+    <!-- Panel: 元辰宮 -->
+    <sc-if value="{{ isYCG }}" hint-placeholder-val="{{ true }}">
       <div>
-        <div class="chakra-zh">${c.zh}</div>
+        <button onClick="{{ toggleAllZones }}" style="background:transparent; border:1px solid rgba(201,168,106,0.28); color:#a8a08a; padding:9px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.15em; border-radius:2px; margin-bottom:18px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">全選 / 全清</button>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(132px,1fr)); gap:12px; margin-bottom:36px;">
+          <sc-for list="{{ zones }}" as="z" hint-placeholder-count="12">
+            <div
+              onClick="{{ z.onClick }}"
+              style="border:1px solid {{ z.borderColor }}; border-radius:3px; padding:18px 10px; text-align:center; cursor:pointer; transition:all 0.3s; background:{{ z.bg }}; position:relative; box-shadow:{{ z.shadow }};"
+              style-hover="border-color:#d8b978; transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.5), 0 0 20px rgba(216,185,120,0.15);"
+            >
+              <span style="font-size:1.6rem; margin-bottom:8px; display:block; filter:drop-shadow(0 0 8px rgba(216,185,120,0.3));">{{ z.icon }}</span>
+              <span style="font-size:0.88rem; color:#efe6d0; letter-spacing:0.1em; display:block;">{{ z.zh }}</span>
+              <span style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.6rem; color:#a8a08a; letter-spacing:0.16em; display:block; margin-top:4px; text-transform:uppercase;">{{ z.en }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <button
+          onClick="{{ drawYCG }}"
+          disabled="{{ ycgDrawDisabled }}"
+          style="width:100%; padding:18px; background:linear-gradient(135deg, rgba(216,185,120,0.18), rgba(139,105,20,0.12)); border:1px solid #c9a86a; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.1rem; letter-spacing:0.28em; cursor:pointer; border-radius:2px; transition:all 0.35s; margin-bottom:40px; opacity:{{ ycgDrawOpacity }}; box-shadow:0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,200,0.1); text-transform:uppercase;"
+          style-hover="background:linear-gradient(135deg, rgba(216,185,120,0.32), rgba(139,105,20,0.2)); border-color:#f2d99a; box-shadow:0 0 32px rgba(216,185,120,0.3), inset 0 1px 0 rgba(255,240,200,0.15);"
+        >
+          抽取能量牌
+          <span style="display:block; font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.3em; opacity:0.65; margin-top:5px; font-style:italic; text-transform:none;">Draw Energy Cards</span>
+        </button>
+
+        <sc-if value="{{ hasYcgResults }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:fadeUp 0.5s ease;">
+            <sc-for list="{{ ycgResults }}" as="zr" hint-placeholder-count="0">
+              <div style="margin-bottom:40px;">
+                <div style="text-align:center; margin-bottom:24px;">
+                  <h3 style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.35rem; color:#f2d99a; font-weight:500; letter-spacing:0.2em; margin:0;">{{ zr.icon }} &nbsp; {{ zr.zh }}</h3>
+                  <p style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.68rem; color:#a8a08a; letter-spacing:0.28em; text-transform:uppercase; margin:6px 0 0;">{{ zr.en }}</p>
+                </div>
+                <div style="display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-bottom:8px;">
+                  <sc-for list="{{ zr.cards }}" as="c" hint-placeholder-count="1">
+                    <div style="width:172px;">
+                      <div style="perspective:1200px; width:172px; height:264px; margin-bottom:12px;">
+                        <div style="position:relative; width:100%; height:100%; transform-style:preserve-3d; animation:flipIn 0.9s cubic-bezier(0.4,0.1,0.3,1.1) {{ c.delay }} both;">
+                          <!-- FACE -->
+                          <div style="position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:6px; overflow:hidden; background:linear-gradient(160deg, #1c2038 0%, #12142a 100%); border:1px solid rgba(216,185,120,0.35); box-shadow:0 12px 30px rgba(0,0,0,0.6), 0 0 24px rgba(216,185,120,0.12);">
+                            <div style="position:absolute; inset:9px; border:1px solid rgba(216,185,120,0.5); border-radius:3px; pointer-events:none;"></div>
+                            <div style="position:absolute; inset:14px; border:1px solid rgba(216,185,120,0.18); border-radius:2px; pointer-events:none;"></div>
+                            <div style="position:absolute; top:20px; left:0; right:0; text-align:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.72rem; color:#d8b978; letter-spacing:0.28em;">{{ c.n }}</div>
+                            <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 18px 40px;">
+                              <div style="font-size:2.6rem; margin-bottom:14px; filter:drop-shadow(0 0 10px rgba(216,185,120,0.5));">{{ c.sym }}</div>
+                              <div style="font-family:'Cormorant Garamond',serif; font-size:1.02rem; color:#f2d99a; letter-spacing:0.08em; line-height:1.3; font-style:italic; text-align:center;">{{ c.zh }}</div>
+                            </div>
+                            <div style="position:absolute; bottom:18px; left:0; right:0; text-align:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.6rem; color:#a8a08a; letter-spacing:0.22em; text-transform:uppercase;">{{ c.en }}</div>
+                          </div>
+                          <!-- BACK -->
+                          <div style="position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; transform:rotateY(180deg); border-radius:6px; overflow:hidden; background:linear-gradient(140deg, #14172a 0%, #0e1020 60%, #1a1c34 100%); border:1px solid rgba(216,185,120,0.4); box-shadow:0 12px 30px rgba(0,0,0,0.6), inset 0 0 40px rgba(216,185,120,0.05);">
+                            <div style="position:absolute; inset:8px; border:1px solid rgba(216,185,120,0.55); border-radius:3px;"></div>
+                            <div style="position:absolute; inset:14px; border:1px solid rgba(216,185,120,0.22); border-radius:2px;"></div>
+                            <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;">
+                              <div style="color:#d8b978; font-size:0.9rem; letter-spacing:0.5em; opacity:0.7;">✦ ✦ ✦</div>
+                              <div style="font-size:2.6rem; color:#d8b978; filter:drop-shadow(0 0 14px rgba(216,185,120,0.55));">☾</div>
+                              <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; color:#a8a08a; letter-spacing:0.4em; text-transform:uppercase; opacity:0.75;">Thoth</div>
+                              <div style="color:#d8b978; font-size:0.9rem; letter-spacing:0.5em; opacity:0.7;">✦ ✦ ✦</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style="text-align:center;">
+                        <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; color:#a8a08a; letter-spacing:0.2em; text-transform:uppercase;">{{ c.suitLabel }}</div>
+                        <sc-if value="{{ c.showPosition }}" hint-placeholder-val="{{ false }}">
+                          <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.78rem; color:#d8b978; letter-spacing:0.14em; margin-top:4px;">{{ c.position }}</div>
+                        </sc-if>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+
+            <div style="margin:22px 0 10px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; padding:24px 26px; background:linear-gradient(180deg, rgba(28,32,58,0.65), rgba(20,23,42,0.65)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08); animation:fadeUp 0.4s ease;">
+              <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.02rem; color:#f2d99a; letter-spacing:0.22em; margin-bottom:16px; text-transform:uppercase;">✦ 元辰宮能量總覽</div>
+              <pre style="font-family:'Noto Serif TC',serif; font-size:0.92rem; color:#efe6d0; line-height:2.1; letter-spacing:0.05em; white-space:pre-wrap; margin:0 0 18px;">{{ ycgSummaryText }}</pre>
+              <button onClick="{{ copyYcg }}" style="background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ ycgCopyLabel }}</button>
+            </div>
+            <button onClick="{{ resetYcg }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
+          </div>
+        </sc-if>
       </div>
-    </div>
-  `).join('');
-  document.getElementById('chakra-draw-btn').disabled = selectedChakras.size === 0;
-}
+    </sc-if>
 
-function toggleChakra(i) {
-  selectedChakras.has(i) ? selectedChakras.delete(i) : selectedChakras.add(i);
-  renderChakraPreview();
-}
-
-function toggleAllChakras() {
-  if (selectedChakras.size === CHAKRAS.length) selectedChakras.clear();
-  else CHAKRAS.forEach((_, i) => selectedChakras.add(i));
-  renderChakraPreview();
-}
-
-// ── Draw Chakra ──────────────────────────
-function drawChakra() {
-  const indices = [...selectedChakras].sort((a, b) => a - b);
-  const cards = drawRandom(indices.length);
-  _chakraSummary = indices.map((idx, i) => ({ch: CHAKRAS[idx], c: cards[i]}));
-  const container = document.getElementById('chakra-results');
-  let html = '<div class="chakra-results">';
-
-  _chakraSummary.forEach(({ch, c}) => {
-    html += `
-      <div class="chakra-result-row">
-        <div class="chakra-label">
-          <div class="chakra-label-dot" style="background:${ch.color}; box-shadow:0 0 7px ${ch.color}66;"></div>
-          <div class="chakra-label-text">
-            <div class="zh">${ch.zh}</div>
+    <!-- Panel: 塔羅 -->
+    <sc-if value="{{ isTarot }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="display:flex; align-items:center; gap:18px; margin-bottom:28px; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
+          <label style="font-family:'Noto Serif TC',serif; font-size:0.86rem; color:#a8a08a; letter-spacing:0.14em;">抽牌數</label>
+          <div style="display:flex; gap:10px; margin-left:auto;">
+            <button onClick="{{ setTarotMode1 }}" style="background:{{ tarotMode1Bg }}; border:1px solid {{ tarotMode1Border }}; color:{{ tarotMode1Color }}; padding:8px 22px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">1 張</button>
+            <button onClick="{{ setTarotMode3 }}" style="background:{{ tarotMode3Bg }}; border:1px solid {{ tarotMode3Border }}; color:{{ tarotMode3Color }}; padding:8px 22px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">3 張</button>
           </div>
         </div>
-        <div>
-          <div class="chakra-card-name">${c.sym} ${c.zh}</div>
-          <div class="chakra-card-sub">${c.suit ? c.suit : '大阿爾克那'}</div>
-        </div>
-      </div>`;
-  });
 
-  const lines = _chakraSummary.map(({ch, c}) => `${c.sym} ${ch.zh}：${c.zh}`).join('\n');
-  const escaped = lines.replace(/\\/g,'\\\\').replace(/`/g,'\\`');
+        <button
+          onClick="{{ drawTarot }}"
+          style="width:100%; padding:18px; background:linear-gradient(135deg, rgba(216,185,120,0.18), rgba(139,105,20,0.12)); border:1px solid #c9a86a; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.1rem; letter-spacing:0.28em; cursor:pointer; border-radius:2px; transition:all 0.35s; margin-bottom:40px; box-shadow:0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,200,0.1); text-transform:uppercase;"
+          style-hover="background:linear-gradient(135deg, rgba(216,185,120,0.32), rgba(139,105,20,0.2)); border-color:#f2d99a; box-shadow:0 0 32px rgba(216,185,120,0.3), inset 0 1px 0 rgba(255,240,200,0.15);"
+        >
+          抽取塔羅牌
+          <span style="display:block; font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.3em; opacity:0.65; margin-top:5px; font-style:italic; text-transform:none;">Draw Tarot Cards</span>
+        </button>
 
-  html += `</div>
-    <div class="summary-box">
-      <div class="summary-title">✨ 脈輪能量總覽</div>
-      <pre class="summary-text">${lines}</pre>
-      <button class="copy-btn" onclick="copyText(this, \`${escaped}\`)">📋 複製文字</button>
-    </div>
-    <button class="reset-btn" onclick="resetChakra()">重新抽牌</button>
-  `;
-  container.innerHTML = html;
-  container.scrollIntoView({behavior: 'smooth', block: 'start'});
-}
+        <sc-if value="{{ hasTarotResults }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:fadeUp 0.5s ease;">
+            <div style="display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-bottom:8px;">
+              <sc-for list="{{ tarotResults }}" as="c" hint-placeholder-count="1">
+                <div style="width:172px;">
+                  <div style="perspective:1200px; width:172px; height:264px; margin-bottom:12px;">
+                    <div style="position:relative; width:100%; height:100%; transform-style:preserve-3d; animation:flipIn 0.9s cubic-bezier(0.4,0.1,0.3,1.1) {{ c.delay }} both;">
+                      <div style="position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:6px; overflow:hidden; background:linear-gradient(160deg, #1c2038 0%, #12142a 100%); border:1px solid rgba(216,185,120,0.35); box-shadow:0 12px 30px rgba(0,0,0,0.6), 0 0 24px rgba(216,185,120,0.12);">
+                        <div style="position:absolute; inset:9px; border:1px solid rgba(216,185,120,0.5); border-radius:3px; pointer-events:none;"></div>
+                        <div style="position:absolute; inset:14px; border:1px solid rgba(216,185,120,0.18); border-radius:2px; pointer-events:none;"></div>
+                        <div style="position:absolute; top:20px; left:0; right:0; text-align:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.72rem; color:#d8b978; letter-spacing:0.28em;">{{ c.n }}</div>
+                        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 18px 40px;">
+                          <div style="font-size:2.6rem; margin-bottom:14px; filter:drop-shadow(0 0 10px rgba(216,185,120,0.5));">{{ c.sym }}</div>
+                          <div style="font-family:'Cormorant Garamond',serif; font-size:1.02rem; color:#f2d99a; letter-spacing:0.08em; line-height:1.3; font-style:italic; text-align:center;">{{ c.zh }}</div>
+                        </div>
+                        <div style="position:absolute; bottom:18px; left:0; right:0; text-align:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.6rem; color:#a8a08a; letter-spacing:0.22em; text-transform:uppercase;">{{ c.en }}</div>
+                      </div>
+                      <div style="position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; transform:rotateY(180deg); border-radius:6px; overflow:hidden; background:linear-gradient(140deg, #14172a 0%, #0e1020 60%, #1a1c34 100%); border:1px solid rgba(216,185,120,0.4); box-shadow:0 12px 30px rgba(0,0,0,0.6), inset 0 0 40px rgba(216,185,120,0.05);">
+                        <div style="position:absolute; inset:8px; border:1px solid rgba(216,185,120,0.55); border-radius:3px;"></div>
+                        <div style="position:absolute; inset:14px; border:1px solid rgba(216,185,120,0.22); border-radius:2px;"></div>
+                        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;">
+                          <div style="color:#d8b978; font-size:0.9rem; letter-spacing:0.5em; opacity:0.7;">✦ ✦ ✦</div>
+                          <div style="font-size:2.6rem; color:#d8b978; filter:drop-shadow(0 0 14px rgba(216,185,120,0.55));">☾</div>
+                          <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; color:#a8a08a; letter-spacing:0.4em; text-transform:uppercase; opacity:0.75;">Thoth</div>
+                          <div style="color:#d8b978; font-size:0.9rem; letter-spacing:0.5em; opacity:0.7;">✦ ✦ ✦</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="text-align:center;">
+                    <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; color:#a8a08a; letter-spacing:0.2em; text-transform:uppercase;">{{ c.suitLabel }}</div>
+                    <sc-if value="{{ c.showPosition }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.78rem; color:#d8b978; letter-spacing:0.14em; margin-top:4px;">{{ c.position }}</div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
 
-function showChakraSummary() {} // deprecated
-
-function resetChakra() {
-  document.getElementById('chakra-results').innerHTML = '';
-  _chakraSummary = [];
-}
-
-// ── Copy ─────────────────────────────────
-function copyText(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✅ 已複製！';
-    setTimeout(() => { btn.textContent = '📋 複製文字'; }, 2000);
-  });
-}
-
-// ── I Ching ──────────────────────────────
-function divineIChing() {
-  const rand = () => String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
-  const groups = [rand(), rand(), rand()];
-  const labels = ['第一組', '第二組', '第三組'];
-  const lines = groups.map((n, i) => `${labels[i]}：${n}`).join('\n');
-  const escaped = lines.replace(/\\/g,'\\\\').replace(/`/g,'\\`');
-
-  document.getElementById('iching-results').innerHTML = `
-    <div class="iching-result">
-      ${groups.map((n, i) => `
-        <div class="iching-row" style="animation-delay:${i * 0.15}s">
-          <span class="iching-label">${labels[i]}</span>
-          <span class="iching-number">${n}</span>
-        </div>
-      `).join('')}
-      <div class="summary-box" style="margin-top:20px;">
-        <pre class="summary-text">${lines}</pre>
-        <button class="copy-btn" onclick="copyText(this, \`${escaped}\`)">📋 複製文字</button>
+            <div style="margin:22px 0 10px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; padding:24px 26px; background:linear-gradient(180deg, rgba(28,32,58,0.65), rgba(20,23,42,0.65)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08);">
+              <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.02rem; color:#f2d99a; letter-spacing:0.22em; margin-bottom:16px; text-transform:uppercase;">✦ 塔羅牌總覽</div>
+              <pre style="font-family:'Noto Serif TC',serif; font-size:0.92rem; color:#efe6d0; line-height:2.1; letter-spacing:0.05em; white-space:pre-wrap; margin:0 0 18px;">{{ tarotSummaryText }}</pre>
+              <button onClick="{{ copyTarot }}" style="background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ tarotCopyLabel }}</button>
+            </div>
+            <button onClick="{{ resetTarot }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
+          </div>
+        </sc-if>
       </div>
-      <button class="reset-btn" onclick="document.getElementById('iching-results').innerHTML=''">重新占卜</button>
-    </div>
-  `;
-  document.getElementById('iching-results').scrollIntoView({behavior:'smooth', block:'start'});
+    </sc-if>
+
+    <!-- Panel: 易經 -->
+    <sc-if value="{{ isIChing }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="text-align:center; font-family:'Noto Serif TC',serif; font-size:0.94rem; color:#efe6d0; letter-spacing:0.16em; line-height:2; margin-bottom:36px; padding:22px 24px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
+          靜心，心中默想問題，按下占卜
+          <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.75rem; color:#a8a08a; letter-spacing:0.24em; margin-top:8px;">Still the mind. Ask. Cast.</div>
+        </div>
+        <button
+          onClick="{{ divineIChing }}"
+          style="width:100%; padding:18px; background:linear-gradient(135deg, rgba(216,185,120,0.18), rgba(139,105,20,0.12)); border:1px solid #c9a86a; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.1rem; letter-spacing:0.28em; cursor:pointer; border-radius:2px; transition:all 0.35s; margin-bottom:40px; box-shadow:0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,200,0.1); text-transform:uppercase;"
+          style-hover="background:linear-gradient(135deg, rgba(216,185,120,0.32), rgba(139,105,20,0.2)); border-color:#f2d99a; box-shadow:0 0 32px rgba(216,185,120,0.3), inset 0 1px 0 rgba(255,240,200,0.15);"
+        >
+          占卜
+          <span style="display:block; font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.3em; opacity:0.65; margin-top:5px; font-style:italic; text-transform:none;">Cast the Oracle</span>
+        </button>
+
+        <sc-if value="{{ hasIchingResults }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:fadeUp 0.5s ease;">
+            <sc-for list="{{ ichingGroups }}" as="g" hint-placeholder-count="0">
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:22px 32px; margin-bottom:14px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:0 6px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(216,185,120,0.06);">
+                <span style="font-family:'Noto Serif TC',serif; font-size:0.9rem; color:#a8a08a; letter-spacing:0.2em;">{{ g.label }}</span>
+                <span style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:2.6rem; font-weight:400; color:#f2d99a; letter-spacing:0.28em; line-height:1; text-shadow:0 0 24px rgba(216,185,120,0.4);">{{ g.number }}</span>
+              </div>
+            </sc-for>
+            <div style="margin:22px 0 10px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; padding:24px 26px; background:linear-gradient(180deg, rgba(28,32,58,0.65), rgba(20,23,42,0.65));">
+              <pre style="font-family:'Noto Serif TC',serif; font-size:0.92rem; color:#efe6d0; line-height:2.1; letter-spacing:0.05em; white-space:pre-wrap; margin:0 0 18px;">{{ ichingSummaryText }}</pre>
+              <button onClick="{{ copyIching }}" style="background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ ichingCopyLabel }}</button>
+            </div>
+            <button onClick="{{ resetIching }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新占卜</button>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- Panel: 脈輪 -->
+    <sc-if value="{{ isChakra }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <button onClick="{{ toggleAllChakras }}" style="background:transparent; border:1px solid rgba(201,168,106,0.28); color:#a8a08a; padding:9px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.15em; border-radius:2px; margin-bottom:18px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">全選 / 全清</button>
+
+        <div style="display:flex; flex-direction:column; gap:11px; margin-bottom:36px;">
+          <sc-for list="{{ chakras }}" as="ch" hint-placeholder-count="7">
+            <div
+              onClick="{{ ch.onClick }}"
+              style="display:grid; grid-template-columns:38px 1fr; align-items:center; gap:14px; padding:14px 20px; border:1px solid {{ ch.borderColor }}; border-radius:3px; background:{{ ch.bg }}; cursor:pointer; transition:all 0.3s; box-shadow:{{ ch.shadow }};"
+              style-hover="border-color:#d8b978;"
+            >
+              <div style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.78rem; color:#fff; font-weight:500; background:radial-gradient(circle at 30% 30%, {{ ch.colorLight }}, {{ ch.color }} 70%); box-shadow:0 0 14px {{ ch.glow }};">{{ ch.index }}</div>
+              <div>
+                <div style="font-family:'Noto Serif TC',serif; font-size:0.92rem; color:#efe6d0; letter-spacing:0.08em;">{{ ch.zh }}</div>
+                <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; color:#a8a08a; letter-spacing:0.18em; text-transform:uppercase; margin-top:2px;">{{ ch.en }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <button
+          onClick="{{ drawChakra }}"
+          disabled="{{ chakraDrawDisabled }}"
+          style="width:100%; padding:18px; background:linear-gradient(135deg, rgba(216,185,120,0.18), rgba(139,105,20,0.12)); border:1px solid #c9a86a; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.1rem; letter-spacing:0.28em; cursor:pointer; border-radius:2px; transition:all 0.35s; margin-bottom:40px; opacity:{{ chakraDrawOpacity }}; box-shadow:0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,200,0.1); text-transform:uppercase;"
+          style-hover="background:linear-gradient(135deg, rgba(216,185,120,0.32), rgba(139,105,20,0.2)); border-color:#f2d99a; box-shadow:0 0 32px rgba(216,185,120,0.3), inset 0 1px 0 rgba(255,240,200,0.15);"
+        >
+          抽取脈輪能量牌
+          <span style="display:block; font-family:'Cormorant Garamond',serif; font-size:0.72rem; letter-spacing:0.3em; opacity:0.65; margin-top:5px; font-style:italic; text-transform:none;">Draw Chakra Cards</span>
+        </button>
+
+        <sc-if value="{{ hasChakraResults }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; gap:14px; animation:fadeUp 0.5s ease; margin-bottom:8px;">
+            <sc-for list="{{ chakraResults }}" as="cr" hint-placeholder-count="0">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:center; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:0 6px 20px rgba(0,0,0,0.3);">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="width:12px; height:12px; border-radius:50%; background:radial-gradient(circle at 30% 30%, {{ cr.colorLight }}, {{ cr.color }} 70%); box-shadow:0 0 10px {{ cr.glow }};"></div>
+                  <div style="font-family:'Noto Serif TC',serif; font-size:0.9rem; color:#efe6d0;">{{ cr.zh }}</div>
+                </div>
+                <div>
+                  <div style="font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:#f2d99a; font-style:italic; letter-spacing:0.08em;">{{ cr.sym }} {{ cr.cardZh }}</div>
+                  <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; color:#a8a08a; letter-spacing:0.16em; text-transform:uppercase; margin-top:3px;">{{ cr.suitLabel }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin:22px 0 10px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; padding:24px 26px; background:linear-gradient(180deg, rgba(28,32,58,0.65), rgba(20,23,42,0.65)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08);">
+            <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.02rem; color:#f2d99a; letter-spacing:0.22em; margin-bottom:16px; text-transform:uppercase;">✦ 脈輪能量總覽</div>
+            <pre style="font-family:'Noto Serif TC',serif; font-size:0.92rem; color:#efe6d0; line-height:2.1; letter-spacing:0.05em; white-space:pre-wrap; margin:0 0 18px;">{{ chakraSummaryText }}</pre>
+            <button onClick="{{ copyChakra }}" style="background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ chakraCopyLabel }}</button>
+          </div>
+          <button onClick="{{ resetChakra }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
+        </sc-if>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+let dataModPromise = null;
+function loadData() {
+  if (!dataModPromise) dataModPromise = import('./tarot-data.js');
+  return dataModPromise;
 }
 
-// ── Init ─────────────────────────────────
-renderZones();
-CHAKRAS.forEach((_, i) => selectedChakras.add(i));
-renderChakraPreview();
+function lighten(hex, amt = 0.35) {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+  const nr = Math.min(255, Math.round(r + (255 - r) * amt));
+  const ng = Math.min(255, Math.round(g + (255 - g) * amt));
+  const nb = Math.min(255, Math.round(b + (255 - b) * amt));
+  return '#' + [nr, ng, nb].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+class Component extends DCLogic {
+  state = {
+    ready: false,
+    activeTab: 'ycg',
+    selectedZones: [],
+    selectedChakras: [],
+    tarotMode: 1,
+    tarotResults: null,
+    tarotSummaryText: '',
+    tarotCopied: false,
+    ycgResults: null,
+    ycgSummaryText: '',
+    ycgCopied: false,
+    ichingGroups: null,
+    ichingSummaryText: '',
+    ichingCopied: false,
+    chakraResults: null,
+    chakraSummaryText: '',
+    chakraCopied: false,
+  };
+
+  componentDidMount() {
+    loadData().then(mod => {
+      this.data = mod;
+      this.setState({ ready: true, selectedChakras: mod.CHAKRAS.map((_, i) => i) });
+    });
+  }
+
+  setTab(tab) { this.setState({ activeTab: tab }); }
+  setTarotMode(n) { this.setState({ tarotMode: n }); }
+
+  toggleZone(i) {
+    this.setState(s => {
+      const has = s.selectedZones.includes(i);
+      return { selectedZones: has ? s.selectedZones.filter(x => x !== i) : [...s.selectedZones, i] };
+    });
+  }
+  toggleAllZones() {
+    const total = this.data ? this.data.ZONES.length : 0;
+    this.setState(s => ({ selectedZones: s.selectedZones.length === total ? [] : this.data.ZONES.map((_, i) => i) }));
+  }
+
+  toggleChakra(i) {
+    this.setState(s => {
+      const has = s.selectedChakras.includes(i);
+      return { selectedChakras: has ? s.selectedChakras.filter(x => x !== i) : [...s.selectedChakras, i] };
+    });
+  }
+  toggleAllChakras() {
+    const total = this.data ? this.data.CHAKRAS.length : 0;
+    this.setState(s => ({ selectedChakras: s.selectedChakras.length === total ? [] : this.data.CHAKRAS.map((_, i) => i) }));
+  }
+
+  drawTarot() {
+    const { drawRandom } = this.data;
+    const mode = this.state.tarotMode;
+    const pos = ['過去', '現在', '未來'];
+    const cards = drawRandom(mode).map((c, i) => ({
+      ...c,
+      suitLabel: c.suit ? c.suit : '大阿爾克那',
+      showPosition: mode === 3,
+      position: mode === 3 ? pos[i] : '',
+      delay: `${0.1 + i * 0.18}s`,
+    }));
+    const lines = mode === 3
+      ? cards.map((c, i) => `${pos[i]}：${c.zh}`).join('\n')
+      : `抽牌：${cards[0].zh}`;
+    this.setState({ tarotResults: cards, tarotSummaryText: lines, tarotCopied: false });
+  }
+  resetTarot() { this.setState({ tarotResults: null, tarotSummaryText: '' }); }
+  copyTarot() {
+    navigator.clipboard.writeText(this.state.tarotSummaryText);
+    this.setState({ tarotCopied: true });
+    setTimeout(() => this.setState({ tarotCopied: false }), 2000);
+  }
+
+  drawYCG() {
+    const { ZONES, drawRandom } = this.data;
+    const sorted = [...this.state.selectedZones].sort((a, b) => a - b);
+    let globalIdx = 0;
+    const results = sorted.map(zi => {
+      const z = ZONES[zi];
+      const cards = drawRandom(1).map(c => {
+        const delay = `${0.1 + globalIdx * 0.12}s`;
+        globalIdx++;
+        return {
+          ...c,
+          suitLabel: c.suit ? c.suit : '大阿爾克那',
+          showPosition: false,
+          position: '',
+          delay,
+        };
+      });
+      return { ...z, cards };
+    });
+    const lines = results.map(zr => `${zr.icon} ${zr.zh}：${zr.cards[0].zh}`).join('\n');
+    this.setState({ ycgResults: results, ycgSummaryText: lines, ycgCopied: false });
+  }
+  resetYCG() { this.setState({ ycgResults: null, ycgSummaryText: '' }); }
+  copyYcg() {
+    navigator.clipboard.writeText(this.state.ycgSummaryText);
+    this.setState({ ycgCopied: true });
+    setTimeout(() => this.setState({ ycgCopied: false }), 2000);
+  }
+
+  divineIChing() {
+    const rand = () => String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
+    const groups = [rand(), rand(), rand()];
+    const labels = ['第一組', '第二組', '第三組'];
+    const g = groups.map((n, i) => ({ label: labels[i], number: n }));
+    const lines = g.map(x => `${x.label}：${x.number}`).join('\n');
+    this.setState({ ichingGroups: g, ichingSummaryText: lines, ichingCopied: false });
+  }
+  resetIChing() { this.setState({ ichingGroups: null, ichingSummaryText: '' }); }
+  copyIching() {
+    navigator.clipboard.writeText(this.state.ichingSummaryText);
+    this.setState({ ichingCopied: true });
+    setTimeout(() => this.setState({ ichingCopied: false }), 2000);
+  }
+
+  drawChakra() {
+    const { CHAKRAS, drawRandom } = this.data;
+    const indices = [...this.state.selectedChakras].sort((a, b) => a - b);
+    const cards = drawRandom(indices.length);
+    const results = indices.map((idx, i) => ({
+      ...CHAKRAS[idx],
+      cardZh: cards[i].zh,
+      sym: cards[i].sym,
+      suitLabel: cards[i].suit ? cards[i].suit : '大阿爾克那',
+      colorLight: lighten(CHAKRAS[idx].color, 0.4),
+      glow: CHAKRAS[idx].color + '80',
+    }));
+    const lines = results.map(r => `${r.sym} ${r.zh}：${r.cardZh}`).join('\n');
+    this.setState({ chakraResults: results, chakraSummaryText: lines, chakraCopied: false });
+  }
+  resetChakra() { this.setState({ chakraResults: null, chakraSummaryText: '' }); }
+  copyChakra() {
+    navigator.clipboard.writeText(this.state.chakraSummaryText);
+    this.setState({ chakraCopied: true });
+    setTimeout(() => this.setState({ chakraCopied: false }), 2000);
+  }
+
+  renderVals() {
+    const s = this.state;
+    if (!s.ready || !this.data) {
+      return {
+        tabs: [], zones: [], chakras: [],
+        isYCG: true, isIChing: false, isChakra: false, isTarot: false,
+        ycgDrawDisabled: true, ycgDrawOpacity: 0.35,
+        chakraDrawDisabled: true, chakraDrawOpacity: 0.35,
+        hasYcgResults: false, hasIchingResults: false, hasChakraResults: false, hasTarotResults: false,
+        ycgResults: [], ichingGroups: [], chakraResults: [], tarotResults: [],
+        ycgSummaryText: '', ichingSummaryText: '', chakraSummaryText: '', tarotSummaryText: '',
+        ycgCopyLabel: '📋 複製文字', ichingCopyLabel: '📋 複製文字', chakraCopyLabel: '📋 複製文字', tarotCopyLabel: '📋 複製文字',
+        tarotMode1Bg: 'rgba(216,185,120,0.2)', tarotMode1Border: '#c9a86a', tarotMode1Color: '#f2d99a',
+        tarotMode3Bg: 'transparent', tarotMode3Border: 'rgba(201,168,106,0.3)', tarotMode3Color: '#a8a08a',
+      };
+    }
+    const { ZONES, CHAKRAS } = this.data;
+
+    const tabDefs = [
+      { key: 'ycg',    label: '元辰宮', labelEn: 'Yuan Chen' },
+      { key: 'iching', label: '易經',   labelEn: 'I Ching' },
+      { key: 'chakra', label: '脈輪',   labelEn: 'Chakra' },
+    ];
+    const tabs = tabDefs.map(t => ({
+      label: t.label, labelEn: t.labelEn,
+      onClick: () => this.setTab(t.key),
+    }));
+
+    const zones = ZONES.map((z, i) => {
+      const sel = s.selectedZones.includes(i);
+      return {
+        ...z,
+        borderColor: sel ? '#d8b978' : 'rgba(201,168,106,0.25)',
+        bg: sel ? 'linear-gradient(180deg, rgba(216,185,120,0.14), rgba(216,185,120,0.06))' : 'linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55))',
+        shadow: sel ? '0 0 20px rgba(216,185,120,0.2), inset 0 1px 0 rgba(216,185,120,0.1)' : '0 4px 14px rgba(0,0,0,0.35)',
+        onClick: () => this.toggleZone(i),
+      };
+    });
+
+    const chakras = CHAKRAS.map((c, i) => {
+      const sel = s.selectedChakras.includes(i);
+      return {
+        ...c,
+        index: i + 1,
+        colorLight: lighten(c.color, 0.4),
+        glow: c.color + '80',
+        borderColor: sel ? '#d8b978' : 'rgba(201,168,106,0.25)',
+        bg: sel ? 'linear-gradient(180deg, rgba(216,185,120,0.12), rgba(216,185,120,0.05))' : 'linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55))',
+        shadow: sel ? '0 0 18px rgba(216,185,120,0.15)' : '0 4px 12px rgba(0,0,0,0.3)',
+        onClick: () => this.toggleChakra(i),
+      };
+    });
+
+    return {
+      tabs, zones, chakras,
+      isYCG:    s.activeTab === 'ycg',
+      isIChing: s.activeTab === 'iching',
+      isChakra: s.activeTab === 'chakra',
+      isTarot:  s.activeTab === 'tarot',
+      setTarotTab:   () => this.setTab('tarot'),
+      setTarotMode1: () => this.setTarotMode(1),
+      setTarotMode3: () => this.setTarotMode(3),
+      tarotMode1Bg:     s.tarotMode === 1 ? 'rgba(216,185,120,0.2)'  : 'transparent',
+      tarotMode1Border: s.tarotMode === 1 ? '#c9a86a'                 : 'rgba(201,168,106,0.3)',
+      tarotMode1Color:  s.tarotMode === 1 ? '#f2d99a'                 : '#a8a08a',
+      tarotMode3Bg:     s.tarotMode === 3 ? 'rgba(216,185,120,0.2)'  : 'transparent',
+      tarotMode3Border: s.tarotMode === 3 ? '#c9a86a'                 : 'rgba(201,168,106,0.3)',
+      tarotMode3Color:  s.tarotMode === 3 ? '#f2d99a'                 : '#a8a08a',
+      drawTarot:  () => this.drawTarot(),
+      resetTarot: () => this.resetTarot(),
+      copyTarot:  () => this.copyTarot(),
+      hasTarotResults: !!s.tarotResults,
+      tarotResults: s.tarotResults || [],
+      tarotSummaryText: s.tarotSummaryText,
+      tarotCopyLabel: s.tarotCopied ? '✅ 已複製！' : '📋 複製文字',
+      toggleAllZones:   () => this.toggleAllZones(),
+      toggleAllChakras: () => this.toggleAllChakras(),
+      ycgDrawDisabled: s.selectedZones.length === 0,
+      ycgDrawOpacity:  s.selectedZones.length === 0 ? 0.35 : 1,
+      chakraDrawDisabled: s.selectedChakras.length === 0,
+      chakraDrawOpacity:  s.selectedChakras.length === 0 ? 0.35 : 1,
+      drawYCG:      () => this.drawYCG(),
+      resetYcg:     () => this.resetYCG(),
+      copyYcg:      () => this.copyYcg(),
+      divineIChing: () => this.divineIChing(),
+      resetIching:  () => this.resetIChing(),
+      copyIching:   () => this.copyIching(),
+      drawChakra:   () => this.drawChakra(),
+      resetChakra:  () => this.resetChakra(),
+      copyChakra:   () => this.copyChakra(),
+      hasYcgResults: !!s.ycgResults,
+      ycgResults: s.ycgResults || [],
+      ycgSummaryText: s.ycgSummaryText,
+      ycgCopyLabel: s.ycgCopied ? '✅ 已複製！' : '📋 複製文字',
+      hasIchingResults: !!s.ichingGroups,
+      ichingGroups: s.ichingGroups || [],
+      ichingSummaryText: s.ichingSummaryText,
+      ichingCopyLabel: s.ichingCopied ? '✅ 已複製！' : '📋 複製文字',
+      hasChakraResults: !!s.chakraResults,
+      chakraResults: s.chakraResults || [],
+      chakraSummaryText: s.chakraSummaryText,
+      chakraCopyLabel: s.chakraCopied ? '✅ 已複製！' : '📋 複製文字',
+    };
+  }
+}
+
 </script>
 </body>
 </html>
