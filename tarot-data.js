@@ -80,5 +80,11 @@ export const CHAKRAS = [
 ];
 
 export function drawRandom(n = 1) {
-  return [...DECK].sort(() => Math.random() - 0.5).slice(0, n).map(c => ({...c}));
+  // 公平洗牌 Fisher–Yates：每張牌被抽到的機率完全相等
+  const d = [...DECK];
+  for (let i = d.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [d[i], d[j]] = [d[j], d[i]];
+  }
+  return d.slice(0, n).map(c => ({...c}));
 }
