@@ -594,5 +594,26 @@ class Component extends DCLogic {
 }
 
 </script>
+
+<!-- 右上角即時時鐘（依使用者裝置時間） -->
+<div id="live-clock" aria-hidden="true" style="position:fixed; top:14px; right:16px; z-index:50; text-align:right; font-family:'Cormorant Garamond','Noto Serif TC',serif; color:#d8b978; pointer-events:none; text-shadow:0 0 18px rgba(216,185,120,0.35); line-height:1.25;">
+  <div id="live-clock-time" style="font-size:1.15rem; letter-spacing:0.12em; font-variant-numeric:tabular-nums;">--:--:--</div>
+  <div id="live-clock-date" style="font-size:0.66rem; letter-spacing:0.18em; opacity:0.72;">----</div>
+</div>
+<script>
+(function () {
+  var WK = ['日','一','二','三','四','五','六'];
+  var t = document.getElementById('live-clock-time');
+  var d = document.getElementById('live-clock-date');
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  function tick() {
+    var now = new Date();
+    if (t) t.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+    if (d) d.textContent = now.getFullYear() + '.' + pad(now.getMonth() + 1) + '.' + pad(now.getDate()) + ' 週' + WK[now.getDay()];
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
 </body>
 </html>
