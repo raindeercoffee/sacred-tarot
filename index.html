@@ -194,6 +194,16 @@
           </div>
         </div>
 
+        <sc-if value="{{ isTarot3 }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; align-items:center; gap:18px; margin-bottom:28px; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
+            <label style="font-family:'Noto Serif TC',serif; font-size:0.86rem; color:#a8a08a; letter-spacing:0.14em;">牌陣</label>
+            <div style="display:flex; gap:10px; margin-left:auto;">
+              <button onClick="{{ setTarotSpreadTime }}" style="background:{{ spreadTimeBg }}; border:1px solid {{ spreadTimeBorder }}; color:{{ spreadTimeColor }}; padding:8px 22px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">時間</button>
+              <button onClick="{{ setTarotSpreadRandom }}" style="background:{{ spreadRandomBg }}; border:1px solid {{ spreadRandomBorder }}; color:{{ spreadRandomColor }}; padding:8px 22px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">隨機</button>
+            </div>
+          </div>
+        </sc-if>
+
         <button
           onClick="{{ drawTarot }}"
           style="width:100%; padding:18px; background:linear-gradient(135deg, rgba(216,185,120,0.18), rgba(139,105,20,0.12)); border:1px solid #c9a86a; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.1rem; letter-spacing:0.28em; cursor:pointer; border-radius:2px; transition:all 0.35s; margin-bottom:40px; box-shadow:0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,200,0.1); text-transform:uppercase;"
@@ -370,6 +380,7 @@ class Component extends DCLogic {
     selectedZones: [],
     selectedChakras: [],
     tarotMode: 1,
+    tarotSpread: 'time',
     tarotResults: null,
     tarotSummaryText: '',
     tarotCopied: false,
@@ -393,6 +404,7 @@ class Component extends DCLogic {
 
   setTab(tab) { this.setState({ activeTab: tab }); }
   setTarotMode(n) { this.setState({ tarotMode: n }); }
+  setTarotSpread(m) { this.setState({ tarotSpread: m }); }
 
   toggleZone(i) {
     this.setState(s => {
@@ -419,7 +431,9 @@ class Component extends DCLogic {
   drawTarot() {
     const { drawRandom } = this.data;
     const mode = this.state.tarotMode;
-    const pos = ['過去', '現在', '未來'];
+    const pos = this.state.tarotSpread === 'random'
+      ? ['牌1', '牌2', '牌3']
+      : ['過去', '現在', '未來'];
     const cards = drawRandom(mode).map((c, i) => ({
       ...c,
       suitLabel: c.suit ? c.suit : '大阿爾克那',
@@ -519,6 +533,9 @@ class Component extends DCLogic {
         ycgCopyLabel: '📋 複製文字', ichingCopyLabel: '📋 複製文字', chakraCopyLabel: '📋 複製文字', tarotCopyLabel: '📋 複製文字',
         tarotMode1Bg: 'rgba(216,185,120,0.2)', tarotMode1Border: '#c9a86a', tarotMode1Color: '#f2d99a',
         tarotMode3Bg: 'transparent', tarotMode3Border: 'rgba(201,168,106,0.3)', tarotMode3Color: '#a8a08a',
+        isTarot3: false,
+        spreadTimeBg: 'rgba(216,185,120,0.2)', spreadTimeBorder: '#c9a86a', spreadTimeColor: '#f2d99a',
+        spreadRandomBg: 'transparent', spreadRandomBorder: 'rgba(201,168,106,0.3)', spreadRandomColor: '#a8a08a',
       };
     }
     const { ZONES, CHAKRAS } = this.data;
@@ -573,6 +590,15 @@ class Component extends DCLogic {
       tarotMode3Bg:     s.tarotMode === 3 ? 'rgba(216,185,120,0.2)'  : 'transparent',
       tarotMode3Border: s.tarotMode === 3 ? '#c9a86a'                 : 'rgba(201,168,106,0.3)',
       tarotMode3Color:  s.tarotMode === 3 ? '#f2d99a'                 : '#a8a08a',
+      isTarot3: s.tarotMode === 3,
+      setTarotSpreadTime:   () => this.setTarotSpread('time'),
+      setTarotSpreadRandom: () => this.setTarotSpread('random'),
+      spreadTimeBg:       s.tarotSpread === 'time'   ? 'rgba(216,185,120,0.2)' : 'transparent',
+      spreadTimeBorder:   s.tarotSpread === 'time'   ? '#c9a86a'               : 'rgba(201,168,106,0.3)',
+      spreadTimeColor:    s.tarotSpread === 'time'   ? '#f2d99a'               : '#a8a08a',
+      spreadRandomBg:     s.tarotSpread === 'random' ? 'rgba(216,185,120,0.2)' : 'transparent',
+      spreadRandomBorder: s.tarotSpread === 'random' ? '#c9a86a'               : 'rgba(201,168,106,0.3)',
+      spreadRandomColor:  s.tarotSpread === 'random' ? '#f2d99a'               : '#a8a08a',
       drawTarot:  () => this.drawTarot(),
       resetTarot: () => this.resetTarot(),
       copyTarot:  () => this.copyTarot(),
