@@ -139,10 +139,11 @@
     <!-- Panel: 元辰宮 -->
     <sc-if value="{{ isYCG }}" hint-placeholder-val="{{ true }}">
       <div>
-        <div style="display:flex; align-items:center; gap:18px; margin-bottom:22px; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
-          <div style="display:flex; gap:10px; margin:0 auto;">
-            <button onClick="{{ setYcgThoth }}" style="background:{{ ycgSysThothBg }}; border:1px solid {{ ycgSysThothBorder }}; color:{{ ycgSysThothColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">托特</button>
-            <button onClick="{{ setYcgFlower }}" style="background:{{ ycgSysFlowerBg }}; border:1px solid {{ ycgSysFlowerBorder }}; color:{{ ycgSysFlowerColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">花精</button>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:14px; margin-bottom:22px; padding:18px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
+          <div style="font-family:'Noto Serif TC',serif; font-size:0.9rem; color:#c9b98a; letter-spacing:0.1em; text-align:center; line-height:1.7;">今天，你想要探索內心，還是分析狀況呢？</div>
+          <div style="display:flex; gap:10px; justify-content:center;">
+            <button onClick="{{ setYcgFlower }}" style="background:{{ ycgSysFlowerBg }}; border:1px solid {{ ycgSysFlowerBorder }}; color:{{ ycgSysFlowerColor }}; padding:9px 22px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.92rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">探索內心</button>
+            <button onClick="{{ setYcgThoth }}" style="background:{{ ycgSysThothBg }}; border:1px solid {{ ycgSysThothBorder }}; color:{{ ycgSysThothColor }}; padding:9px 22px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.92rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">分析狀況</button>
           </div>
         </div>
 
@@ -361,10 +362,11 @@
     <!-- Panel: 脈輪 -->
     <sc-if value="{{ isChakra }}" hint-placeholder-val="{{ false }}">
       <div>
-        <div style="display:flex; align-items:center; gap:18px; margin-bottom:22px; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
-          <div style="display:flex; gap:10px; margin:0 auto;">
-            <button onClick="{{ setChakraThoth }}" style="background:{{ chakraSysThothBg }}; border:1px solid {{ chakraSysThothBorder }}; color:{{ chakraSysThothColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">托特</button>
-            <button onClick="{{ setChakraFlower }}" style="background:{{ chakraSysFlowerBg }}; border:1px solid {{ chakraSysFlowerBorder }}; color:{{ chakraSysFlowerColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">花精</button>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:14px; margin-bottom:22px; padding:18px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
+          <div style="font-family:'Noto Serif TC',serif; font-size:0.9rem; color:#c9b98a; letter-spacing:0.1em; text-align:center; line-height:1.7;">今天，你想要探索內心，還是分析狀況呢？</div>
+          <div style="display:flex; gap:10px; justify-content:center;">
+            <button onClick="{{ setChakraFlower }}" style="background:{{ chakraSysFlowerBg }}; border:1px solid {{ chakraSysFlowerBorder }}; color:{{ chakraSysFlowerColor }}; padding:9px 22px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.92rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">探索內心</button>
+            <button onClick="{{ setChakraThoth }}" style="background:{{ chakraSysThothBg }}; border:1px solid {{ chakraSysThothBorder }}; color:{{ chakraSysThothColor }}; padding:9px 22px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.92rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">分析狀況</button>
           </div>
         </div>
 
