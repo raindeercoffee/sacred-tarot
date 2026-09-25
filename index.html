@@ -97,6 +97,14 @@
     <!-- Panel: 元辰宮 -->
     <sc-if value="{{ isYCG }}" hint-placeholder-val="{{ true }}">
       <div>
+        <div style="display:flex; align-items:center; gap:18px; margin-bottom:22px; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
+          <label style="font-family:'Noto Serif TC',serif; font-size:0.86rem; color:#a8a08a; letter-spacing:0.14em;">系統</label>
+          <div style="display:flex; gap:10px; margin-left:auto;">
+            <button onClick="{{ setYcgThoth }}" style="background:{{ ycgSysThothBg }}; border:1px solid {{ ycgSysThothBorder }}; color:{{ ycgSysThothColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">托特</button>
+            <button onClick="{{ setYcgFlower }}" style="background:{{ ycgSysFlowerBg }}; border:1px solid {{ ycgSysFlowerBorder }}; color:{{ ycgSysFlowerColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">花精</button>
+          </div>
+        </div>
+
         <button onClick="{{ toggleAllZones }}" style="background:transparent; border:1px solid rgba(201,168,106,0.28); color:#a8a08a; padding:9px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.15em; border-radius:2px; margin-bottom:18px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">全選 / 全清</button>
 
         <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(132px,1fr)); gap:12px; margin-bottom:36px;">
@@ -176,6 +184,8 @@
               <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.02rem; color:#f2d99a; letter-spacing:0.22em; margin-bottom:16px; text-transform:uppercase;">✦ 元辰宮能量總覽</div>
               <pre style="font-family:'Noto Serif TC',serif; font-size:0.92rem; color:#efe6d0; line-height:2.1; letter-spacing:0.05em; white-space:pre-wrap; margin:0 0 18px;">{{ ycgSummaryText }}</pre>
               <button onClick="{{ copyYcg }}" style="background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ ycgCopyLabel }}</button>
+              <button onClick="{{ copyWithPrompt }}" style="background:transparent; border:1px solid rgba(201,168,106,0.45); color:#d8b978; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; margin:8px 0 0 8px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">📋 複製文字＋指令</button>
+              <button onClick="{{ contactMe }}" style="background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; margin:8px 0 0 8px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">✦ 真人解讀</button>
             </div>
             <button onClick="{{ resetYcg }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
           </div>
@@ -256,6 +266,8 @@
               <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.02rem; color:#f2d99a; letter-spacing:0.22em; margin-bottom:16px; text-transform:uppercase;">✦ 塔羅牌總覽</div>
               <pre style="font-family:'Noto Serif TC',serif; font-size:0.92rem; color:#efe6d0; line-height:2.1; letter-spacing:0.05em; white-space:pre-wrap; margin:0 0 18px;">{{ tarotSummaryText }}</pre>
               <button onClick="{{ copyTarot }}" style="background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ tarotCopyLabel }}</button>
+              <button onClick="{{ copyWithPrompt }}" style="background:transparent; border:1px solid rgba(201,168,106,0.45); color:#d8b978; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; margin:8px 0 0 8px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">📋 複製文字＋指令</button>
+              <button onClick="{{ contactMe }}" style="background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; margin:8px 0 0 8px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">✦ 真人解讀</button>
             </div>
             <button onClick="{{ resetTarot }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
           </div>
@@ -290,6 +302,8 @@
             <div style="margin:22px 0 10px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; padding:24px 26px; background:linear-gradient(180deg, rgba(28,32,58,0.65), rgba(20,23,42,0.65));">
               <pre style="font-family:'Noto Serif TC',serif; font-size:0.92rem; color:#efe6d0; line-height:2.1; letter-spacing:0.05em; white-space:pre-wrap; margin:0 0 18px;">{{ ichingSummaryText }}</pre>
               <button onClick="{{ copyIching }}" style="background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ ichingCopyLabel }}</button>
+              <button onClick="{{ copyWithPrompt }}" style="background:transparent; border:1px solid rgba(201,168,106,0.45); color:#d8b978; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; margin:8px 0 0 8px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">📋 複製文字＋指令</button>
+              <button onClick="{{ contactMe }}" style="background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; margin:8px 0 0 8px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">✦ 真人解讀</button>
             </div>
             <button onClick="{{ resetIching }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新占卜</button>
           </div>
@@ -300,6 +314,14 @@
     <!-- Panel: 脈輪 -->
     <sc-if value="{{ isChakra }}" hint-placeholder-val="{{ false }}">
       <div>
+        <div style="display:flex; align-items:center; gap:18px; margin-bottom:22px; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
+          <label style="font-family:'Noto Serif TC',serif; font-size:0.86rem; color:#a8a08a; letter-spacing:0.14em;">系統</label>
+          <div style="display:flex; gap:10px; margin-left:auto;">
+            <button onClick="{{ setChakraThoth }}" style="background:{{ chakraSysThothBg }}; border:1px solid {{ chakraSysThothBorder }}; color:{{ chakraSysThothColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">托特</button>
+            <button onClick="{{ setChakraFlower }}" style="background:{{ chakraSysFlowerBg }}; border:1px solid {{ chakraSysFlowerBorder }}; color:{{ chakraSysFlowerColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">花精</button>
+          </div>
+        </div>
+
         <button onClick="{{ toggleAllChakras }}" style="background:transparent; border:1px solid rgba(201,168,106,0.28); color:#a8a08a; padding:9px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.15em; border-radius:2px; margin-bottom:18px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">全選 / 全清</button>
 
         <div style="display:flex; flex-direction:column; gap:11px; margin-bottom:36px;">
@@ -347,6 +369,8 @@
             <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.02rem; color:#f2d99a; letter-spacing:0.22em; margin-bottom:16px; text-transform:uppercase;">✦ 脈輪能量總覽</div>
             <pre style="font-family:'Noto Serif TC',serif; font-size:0.92rem; color:#efe6d0; line-height:2.1; letter-spacing:0.05em; white-space:pre-wrap; margin:0 0 18px;">{{ chakraSummaryText }}</pre>
             <button onClick="{{ copyChakra }}" style="background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ chakraCopyLabel }}</button>
+              <button onClick="{{ copyWithPrompt }}" style="background:transparent; border:1px solid rgba(201,168,106,0.45); color:#d8b978; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; margin:8px 0 0 8px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">📋 複製文字＋指令</button>
+              <button onClick="{{ contactMe }}" style="background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:8px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.14em; border-radius:2px; margin:8px 0 0 8px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">✦ 真人解讀</button>
           </div>
           <button onClick="{{ resetChakra }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
         </sc-if>
@@ -390,6 +414,89 @@ function lighten(hex, amt = 0.35) {
   return '#' + [nr, ng, nb].map(x => x.toString(16).padStart(2, '0')).join('');
 }
 
+const IG_URL = 'https://www.instagram.com/sowilo_priestess_riva';
+
+const PROMPTS = {
+  ycg_thoth: `你是一位溫柔且充滿鼓勵的塔羅師，總是帶著開明而健康的視角看待世間。請依據元辰宮所對應的每個空間，並以托特塔羅為解析依據，解讀以下這段文字，作為占卜者未來三個月的能量狀態。請不要帶有刻板印象，針對每一個部分都給予溫柔的解讀，無須解釋牌義，而是運用森林、動物與遊戲的可愛比喻。
+請先給約 100 字的整體能量摘錄，再針對每張牌卡整合後說明，格式如下：
+
+｜外部 X 愚者｜
+（說明此空間的優勢並給予鼓勵）→約 40 字
+（也給予一個溫柔的提醒）→約 20 字
+
+最後，請再給約 100 字的結論與整體建議。
+
+以下是我的占卜結果：`,
+  ycg_flower: `你是一位溫柔且充滿鼓勵的花精療癒師，總是帶著開明而健康的視角看待世間。請依據元辰宮所對應的每個空間，並以巴哈花精為解析依據，解讀以下這段文字，作為占卜者未來三個月的能量狀態。請不要帶有刻板印象，針對每一個部分都給予溫柔的解讀，無須解釋花精屬性，而是運用森林、動物與遊戲的可愛比喻。
+請先給約 100 字的整體能量摘錄，再針對每個空間對應的花精整合後說明，格式如下：
+
+｜外部 X 龍芽草｜
+（說明此空間的優勢並給予鼓勵）→約 40 字
+（也給予一個溫柔的提醒）→約 20 字
+
+最後，請再給約 100 字的結論與整體建議。
+
+以下是我的占卜結果：`,
+  chakra_thoth: `你是一位溫柔且充滿鼓勵的塔羅師，總是帶著開明而健康的視角看待世間。請依據七個脈輪所對應的能量中心，並以托特塔羅為解析依據，解讀以下這段文字，作為占卜者未來三個月的能量狀態。請不要帶有刻板印象，針對每一個部分都給予溫柔的解讀，無須解釋牌義，而是運用森林、動物與遊戲的可愛比喻。
+請先給約 100 字的整體能量摘錄，再針對每張牌卡整合後說明，格式如下：
+
+｜海底輪 X 愚者｜
+（說明此脈輪的優勢並給予鼓勵）→約 40 字
+（也給予一個溫柔的提醒）→約 20 字
+
+最後，請再給約 100 字的結論與整體建議。
+
+以下是我的占卜結果：`,
+  chakra_flower: `你是一位溫柔且充滿鼓勵的花精療癒師，總是帶著開明而健康的視角看待世間。請依據七個脈輪所對應的能量中心，並以巴哈花精為解析依據，解讀以下這段文字，作為占卜者未來三個月的能量狀態。請不要帶有刻板印象，針對每一個部分都給予溫柔的解讀，無須解釋花精屬性，而是運用森林、動物與遊戲的可愛比喻。
+請先給約 100 字的整體能量摘錄，再針對每個脈輪對應的花精整合後說明，格式如下：
+
+｜海底輪 X 龍芽草｜
+（說明此脈輪的優勢並給予鼓勵）→約 40 字
+（也給予一個溫柔的提醒）→約 20 字
+
+最後，請再給約 100 字的結論與整體建議。
+
+以下是我的占卜結果：`,
+  tarot_time: `你是一位溫柔且充滿鼓勵的塔羅師，總是帶著開明而健康的視角看待世間。以下已抽出「過去、現在、未來」時間牌陣，以托特塔羅為解析依據。
+請先不要急著解讀——請主動且溫暖地詢問占卜者：「今天，你心裡最想問的一個問題是什麼呢？」待對方回答後，再結合他的問題與牌面進行解讀。請不要帶有刻板印象，給予溫柔而具體的解讀，無須解釋牌義。
+解讀時請先給約 100 字的整體能量摘錄，再針對每張牌卡整合後說明，格式如下：
+
+｜現在 X 慾望｜
+（說明此位置的優勢並給予鼓勵）→約 40 字
+（也給予一個溫柔的提醒）→約 20 字
+
+最後，請再給約 100 字的結論與整體建議。
+
+以下是我抽到的牌：`,
+  tarot_random: `你是一位溫柔且充滿鼓勵的塔羅師，總是帶著開明而健康的視角看待世間。以下是三張並列抽出的塔羅牌，以托特塔羅為解析依據。
+請先不要急著解讀——請主動且溫暖地詢問占卜者：「今天，你心裡最想問的一個問題是什麼呢？」待對方回答後，再結合他的問題與這三張牌進行解讀。請不要帶有刻板印象，給予溫柔而具體的解讀，無須解釋牌義。
+解讀時請先給約 100 字的整體能量摘錄，再針對每張牌卡整合後說明，格式如下：
+
+｜牌1 X 藝術｜
+（說明這張牌的優勢並給予鼓勵）→約 40 字
+（也給予一個溫柔的提醒）→約 20 字
+
+最後，請再給約 100 字的結論與整體建議。
+
+以下是我抽到的牌：`,
+  tarot_one: `你是一位溫柔且充滿鼓勵的塔羅師，總是帶著開明而健康的視角看待世間。以下抽出一張塔羅牌，以托特塔羅為解析依據。
+請先不要急著解讀——請主動且溫暖地詢問占卜者：「今天，你心裡最想問的一個問題是什麼呢？」待對方回答後，再結合他的問題與這張牌進行解讀。請不要帶有刻板印象，給予溫柔而具體的解讀，無須解釋牌義。
+請先給約 100 字的整體能量摘錄與說明，最後再給約 100 字的結論與整體建議。
+
+以下是我抽到的牌：`,
+  iching: `你是一位熟知梅花易數 X 易經占卜的老師，帶著開明而健康的視角看待世間，說話明快、熱情爽朗、果斷俐落。以下已起出卦象（三組數字，可依梅花易數起卦）。
+請先不要急著解讀——請主動、爽快地詢問占卜者：「今天，你最想問的一個問題是什麼？」待對方回答後，再結合他的問題與卦象進行解讀。請不要帶有刻板印象，給予清晰有力的解讀，無須解釋卦辭本身。
+解讀時請先給約 100 字的整體能量摘錄，再針對每個卦象整合後說明，格式如下：
+
+｜（卦名）｜
+（點出優勢並給予鼓勵）→約 40 字
+（也給予一個明確的提醒）→約 20 字
+
+最後，請再給約 100 字的結論與整體建議。
+
+以下是我起到的卦：`,
+};
+
 class Component extends DCLogic {
   state = {
     ready: false,
@@ -401,6 +508,8 @@ class Component extends DCLogic {
     tarotResults: null,
     tarotSummaryText: '',
     tarotCopied: false,
+    ycgSystem: 'thoth',
+    chakraSystem: 'thoth',
     ycgResults: null,
     ycgSummaryText: '',
     ycgCopied: false,
@@ -422,6 +531,8 @@ class Component extends DCLogic {
   setTab(tab) { this.setState({ activeTab: tab }); }
   setTarotMode(n) { this.setState({ tarotMode: n }); }
   setTarotSpread(m) { this.setState({ tarotSpread: m }); }
+  setYcgSystem(sys) { this.setState({ ycgSystem: sys, ycgResults: null, ycgSummaryText: '' }); }
+  setChakraSystem(sys) { this.setState({ chakraSystem: sys, chakraResults: null, chakraSummaryText: '' }); }
 
   toggleZone(i) {
     this.setState(s => {
@@ -521,17 +632,18 @@ class Component extends DCLogic {
   }
 
   drawYCG() {
-    const { ZONES, drawRandom } = this.data;
+    const { ZONES } = this.data;
+    const draw = this.state.ycgSystem === 'flower' ? this.data.drawFlowers : this.data.drawRandom;
     const sorted = [...this.state.selectedZones].sort((a, b) => a - b);
     let globalIdx = 0;
     const results = sorted.map(zi => {
       const z = ZONES[zi];
-      const cards = drawRandom(1).map(c => {
+      const cards = draw(1).map(c => {
         const delay = `${0.1 + globalIdx * 0.12}s`;
         globalIdx++;
         return {
           ...c,
-          suitLabel: c.suit ? c.suit : '大阿爾克那',
+          suitLabel: c.suitLabel || (c.suit ? c.suit : '大阿爾克那'),
           showPosition: false,
           position: '',
           delay,
@@ -565,14 +677,15 @@ class Component extends DCLogic {
   }
 
   drawChakra() {
-    const { CHAKRAS, drawRandom } = this.data;
+    const { CHAKRAS } = this.data;
+    const draw = this.state.chakraSystem === 'flower' ? this.data.drawFlowers : this.data.drawRandom;
     const indices = [...this.state.selectedChakras].sort((a, b) => a - b);
-    const cards = drawRandom(indices.length);
+    const cards = draw(indices.length);
     const results = indices.map((idx, i) => ({
       ...CHAKRAS[idx],
       cardZh: cards[i].zh,
       sym: cards[i].sym,
-      suitLabel: cards[i].suit ? cards[i].suit : '大阿爾克那',
+      suitLabel: cards[i].suitLabel || (cards[i].suit ? cards[i].suit : '大阿爾克那'),
       colorLight: lighten(CHAKRAS[idx].color, 0.4),
       glow: CHAKRAS[idx].color + '80',
     }));
@@ -584,6 +697,34 @@ class Component extends DCLogic {
     navigator.clipboard.writeText(this.state.chakraSummaryText);
     this.setState({ chakraCopied: true });
     setTimeout(() => this.setState({ chakraCopied: false }), 2000);
+  }
+
+  // ── CTA：複製文字＋指令、真人解讀 ──
+  contactMe() { this.shareOpen(IG_URL); }
+  promptFor() {
+    const s = this.state;
+    if (s.activeTab === 'ycg')    return s.ycgSystem === 'flower' ? PROMPTS.ycg_flower : PROMPTS.ycg_thoth;
+    if (s.activeTab === 'chakra') return s.chakraSystem === 'flower' ? PROMPTS.chakra_flower : PROMPTS.chakra_thoth;
+    if (s.activeTab === 'iching') return PROMPTS.iching;
+    if (s.activeTab === 'tarot') {
+      if (s.tarotMode === 1) return PROMPTS.tarot_one;
+      return s.tarotSpread === 'random' ? PROMPTS.tarot_random : PROMPTS.tarot_time;
+    }
+    return '';
+  }
+  summaryFor() {
+    const s = this.state;
+    if (s.activeTab === 'ycg')    return s.ycgSummaryText;
+    if (s.activeTab === 'chakra') return s.chakraSummaryText;
+    if (s.activeTab === 'iching') return s.ichingSummaryText;
+    if (s.activeTab === 'tarot')  return s.tarotSummaryText;
+    return '';
+  }
+  copyWithPrompt() {
+    const blob = this.promptFor() + '\n' + this.summaryFor();
+    this.shareClipboard(blob)
+      .then(() => this.shareToast('已複製「解讀指令＋結果」，貼給 AI 就能解讀 ✦'))
+      .catch(() => this.shareToast('複製失敗，請長按手動選取 ✦'));
   }
 
   renderVals() {
@@ -605,6 +746,13 @@ class Component extends DCLogic {
         spreadRandomBg: 'transparent', spreadRandomBorder: 'rgba(201,168,106,0.3)', spreadRandomColor: '#a8a08a',
         shareCopy: () => this.shareCopy(), shareLine: () => this.shareLine(),
         shareThreads: () => this.shareThreads(), shareIg: () => this.shareIg(),
+        copyWithPrompt: () => this.copyWithPrompt(), contactMe: () => this.contactMe(),
+        setYcgThoth: () => this.setYcgSystem('thoth'), setYcgFlower: () => this.setYcgSystem('flower'),
+        setChakraThoth: () => this.setChakraSystem('thoth'), setChakraFlower: () => this.setChakraSystem('flower'),
+        ycgSysThothBg: 'rgba(216,185,120,0.2)', ycgSysThothBorder: '#c9a86a', ycgSysThothColor: '#f2d99a',
+        ycgSysFlowerBg: 'transparent', ycgSysFlowerBorder: 'rgba(201,168,106,0.3)', ycgSysFlowerColor: '#a8a08a',
+        chakraSysThothBg: 'rgba(216,185,120,0.2)', chakraSysThothBorder: '#c9a86a', chakraSysThothColor: '#f2d99a',
+        chakraSysFlowerBg: 'transparent', chakraSysFlowerBorder: 'rgba(201,168,106,0.3)', chakraSysFlowerColor: '#a8a08a',
       };
     }
     const { ZONES, CHAKRAS } = this.data;
@@ -694,6 +842,24 @@ class Component extends DCLogic {
       drawChakra:   () => this.drawChakra(),
       resetChakra:  () => this.resetChakra(),
       copyChakra:   () => this.copyChakra(),
+      copyWithPrompt: () => this.copyWithPrompt(),
+      contactMe:      () => this.contactMe(),
+      setYcgThoth:    () => this.setYcgSystem('thoth'),
+      setYcgFlower:   () => this.setYcgSystem('flower'),
+      setChakraThoth:  () => this.setChakraSystem('thoth'),
+      setChakraFlower: () => this.setChakraSystem('flower'),
+      ycgSysThothBg:     s.ycgSystem === 'thoth'  ? 'rgba(216,185,120,0.2)' : 'transparent',
+      ycgSysThothBorder: s.ycgSystem === 'thoth'  ? '#c9a86a'               : 'rgba(201,168,106,0.3)',
+      ycgSysThothColor:  s.ycgSystem === 'thoth'  ? '#f2d99a'               : '#a8a08a',
+      ycgSysFlowerBg:     s.ycgSystem === 'flower' ? 'rgba(216,185,120,0.2)' : 'transparent',
+      ycgSysFlowerBorder: s.ycgSystem === 'flower' ? '#c9a86a'               : 'rgba(201,168,106,0.3)',
+      ycgSysFlowerColor:  s.ycgSystem === 'flower' ? '#f2d99a'               : '#a8a08a',
+      chakraSysThothBg:     s.chakraSystem === 'thoth'  ? 'rgba(216,185,120,0.2)' : 'transparent',
+      chakraSysThothBorder: s.chakraSystem === 'thoth'  ? '#c9a86a'               : 'rgba(201,168,106,0.3)',
+      chakraSysThothColor:  s.chakraSystem === 'thoth'  ? '#f2d99a'               : '#a8a08a',
+      chakraSysFlowerBg:     s.chakraSystem === 'flower' ? 'rgba(216,185,120,0.2)' : 'transparent',
+      chakraSysFlowerBorder: s.chakraSystem === 'flower' ? '#c9a86a'               : 'rgba(201,168,106,0.3)',
+      chakraSysFlowerColor:  s.chakraSystem === 'flower' ? '#f2d99a'               : '#a8a08a',
       hasYcgResults: !!s.ycgResults,
       ycgResults: s.ycgResults || [],
       ycgSummaryText: s.ycgSummaryText,
