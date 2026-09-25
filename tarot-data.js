@@ -107,7 +107,7 @@ const FLOWER_DEFS = [
 ];
 const FLOWER_SYMS = ['🌸','🌼','🌷','🌺','💮','🏵️','🌻','🪷','🌹'];
 export const FLOWERS = FLOWER_DEFS.map(([n, zh, en], i) => ({
-  n, zh, en, sym: FLOWER_SYMS[i % FLOWER_SYMS.length], suitLabel: '巴哈花精',
+  n, zh, en, sym: FLOWER_SYMS[i % FLOWER_SYMS.length], isFlower: true,
 }));
 
 export function drawFlowers(n = 1) {
