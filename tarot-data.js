@@ -56,17 +56,17 @@ export const DECK = [...MAJOR, ...MINOR];
 
 export const ZONES = [
   {zh:'天空',     en:'Sky',          icon:'🌌'},
-  {zh:'僕人',     en:'Servants',     icon:'🤝'},
+  {zh:'夥伴',     en:'Companion',    icon:'🤝'},
   {zh:'土地',     en:'Land',         icon:'🌿'},
   {zh:'生命之樹', en:'Tree of Life', icon:'🌳'},
-  {zh:'水缸',     en:'Water Vessel', icon:'🪣'},
-  {zh:'米缸',     en:'Rice Vessel',  icon:'🌾'},
+  {zh:'小溪',     en:'Brook',        icon:'💧'},
+  {zh:'橡實倉',   en:'Acorn Store',  icon:'🌰'},
   {zh:'廚房',     en:'Kitchen',      icon:'🍳'},
   {zh:'臥室',     en:'Bedroom',      icon:'🌙'},
-  {zh:'客廳',     en:'Living Room',  icon:'🏮'},
+  {zh:'營火',     en:'Campfire',     icon:'🏕️'},
   {zh:'大門',     en:'Main Gate',    icon:'🚪'},
   {zh:'書房',     en:'Study',        icon:'📚'},
-  {zh:'外部',     en:'Exterior',     icon:'🏔️'},
+  {zh:'遠方',     en:'Far Woods',    icon:'⛰️'},
 ];
 
 export const CHAKRAS = [
