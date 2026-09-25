@@ -81,10 +81,23 @@
           我會陪著你，準備好了，我們就慢慢開始吧。🌙
         </p>
 
-        <sc-if value="{{ hasHomeMessage }}" hint-placeholder-val="{{ false }}">
-          <div style="margin:0 auto 32px; max-width:520px; border:1px solid rgba(201,168,106,0.3); border-radius:4px; padding:26px 28px; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08); text-align:center; animation:fadeUp 0.5s ease;">
-            <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.64rem; color:#a8a08a; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:14px;">{{ homeCaption }}</div>
-            <div style="font-family:'Noto Serif TC',serif; font-size:1.1rem; line-height:1.95; color:#f2d99a; letter-spacing:0.06em;">{{ homeMessage }}</div>
+        <sc-if value="{{ hasAnyHome }}" hint-placeholder-val="{{ false }}">
+          <div style="margin:0 auto 18px; max-width:520px; border:1px solid rgba(201,168,106,0.3); border-radius:4px; padding:26px 28px; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08); text-align:center; animation:fadeUp 0.5s ease;">
+            <sc-if value="{{ hasQuote }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.64rem; color:#a8a08a; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:12px;">・ 今日．一句話 ・</div>
+                <div style="font-family:'Noto Serif TC',serif; font-size:1.1rem; line-height:1.95; color:#f2d99a; letter-spacing:0.06em;">{{ homeQuote }}</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasHealing }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:20px;">
+                <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.64rem; color:#a8a08a; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:12px;">・ 今日．療癒指引 ・</div>
+                <div style="font-family:'Noto Serif TC',serif; font-size:1.1rem; line-height:1.95; color:#f2d99a; letter-spacing:0.06em;">{{ homeHealing }}</div>
+              </div>
+            </sc-if>
+          </div>
+          <div style="display:flex; justify-content:center; margin-bottom:26px;">
+            <button onClick="{{ saveImage }}" style="padding:11px 26px; background:transparent; border:1px solid rgba(201,168,106,0.5); color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.16em; cursor:pointer; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">📷 存成圖片</button>
           </div>
         </sc-if>
 
@@ -580,8 +593,8 @@ class Component extends DCLogic {
   state = {
     ready: false,
     stage: 'home',
-    homeMessage: '',
-    homeKind: '',
+    homeQuote: '',
+    homeHealing: '',
     activeTab: 'ycg',
     selectedZones: [],
     selectedChakras: [],
@@ -615,11 +628,62 @@ class Component extends DCLogic {
   backHome() { this.setState({ stage: 'home' }); }
   drawOneLiner() {
     const q = ONELINERS[Math.floor(Math.random() * ONELINERS.length)];
-    this.setState({ homeMessage: q, homeKind: 'quote' });
+    this.setState({ homeQuote: q });
   }
   drawHealing() {
     const q = HEALING[Math.floor(Math.random() * HEALING.length)];
-    this.setState({ homeMessage: q, homeKind: 'healing' });
+    this.setState({ homeHealing: q });
+  }
+  saveImage() {
+    var W = 1080, H = 1350;
+    var c = document.createElement('canvas'); c.width = W; c.height = H;
+    var x = c.getContext('2d');
+    var g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#161a33'); g.addColorStop(0.55, '#0d1020'); g.addColorStop(1, '#0a0d1a');
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+    x.strokeStyle = 'rgba(201,168,106,0.5)'; x.lineWidth = 2; x.strokeRect(40, 40, W - 80, H - 80);
+    x.strokeStyle = 'rgba(201,168,106,0.22)'; x.lineWidth = 1; x.strokeRect(58, 58, W - 116, H - 116);
+    x.textAlign = 'center';
+    x.fillStyle = '#e8c877'; x.font = '600 82px "Noto Serif TC", serif';
+    x.fillText('神聖抽牌', W / 2, 190);
+    x.fillStyle = '#a8a08a'; x.font = '500 24px "Cormorant Garamond", serif';
+    x.fillText('S A C R E D   T H O T H   T A R O T', W / 2, 238);
+    var now = new Date(); var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    var date = now.getFullYear() + '.' + pad(now.getMonth() + 1) + '.' + pad(now.getDate());
+    x.fillStyle = '#d8b978'; x.font = '400 30px "Cormorant Garamond", serif';
+    x.fillText('✦  ' + date + '  ✦', W / 2, 312);
+    var y = 440;
+    var wrap = function (text, font, color, lh, maxW) {
+      x.font = font; x.fillStyle = color;
+      var line = '', lines = [], i, ch;
+      for (i = 0; i < text.length; i++) { ch = text[i]; if (x.measureText(line + ch).width > maxW) { lines.push(line); line = ch; } else line += ch; }
+      if (line) lines.push(line);
+      for (i = 0; i < lines.length; i++) { x.fillText(lines[i], W / 2, y); y += lh; }
+    };
+    var section = function (caption, text) {
+      x.fillStyle = '#c9a86a'; x.font = '500 30px "Noto Serif TC", serif';
+      x.fillText('・ ' + caption + ' ・', W / 2, y); y += 66;
+      wrap(text, '400 46px "Noto Serif TC", serif', '#f2d99a', 70, W - 220);
+      y += 66;
+    };
+    if (this.state.homeQuote) section('今日．一句話', this.state.homeQuote);
+    if (this.state.homeHealing) section('今日．療癒指引', this.state.homeHealing);
+    x.fillStyle = '#8a8470'; x.font = '400 24px "Cormorant Garamond", serif';
+    x.fillText('raindeercoffee.github.io/sacred-tarot', W / 2, H - 72);
+    var self = this;
+    c.toBlob(function (blob) {
+      if (!blob) { self.shareToast('產生圖片失敗，請直接截圖保存 ✦'); return; }
+      var file = new File([blob], '今日療癒.png', { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: '今日療癒' }).catch(function () {});
+      } else {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a'); a.href = url; a.download = '今日療癒.png';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        self.shareToast('圖片已存到你的下載 ✦');
+      }
+    }, 'image/png');
   }
   setTarotMode(n) { this.setState({ tarotMode: n }); }
   setTarotSpread(m) { this.setState({ tarotSpread: m }); }
@@ -828,7 +892,8 @@ class Component extends DCLogic {
         isHome: true, isApp: false,
         enterApp: () => this.enterApp(), backHome: () => this.backHome(),
         drawOneLiner: () => this.drawOneLiner(), drawHealing: () => this.drawHealing(),
-        homeMessage: '', hasHomeMessage: false, homeCaption: '',
+        homeQuote: '', homeHealing: '', hasQuote: false, hasHealing: false, hasAnyHome: false,
+        saveImage: () => this.saveImage(),
         isYCG: true, isIChing: false, isChakra: false, isTarot: false,
         ycgDrawDisabled: true, ycgDrawOpacity: 0.35,
         chakraDrawDisabled: true, chakraDrawOpacity: 0.35,
@@ -897,9 +962,12 @@ class Component extends DCLogic {
       backHome:     () => this.backHome(),
       drawOneLiner: () => this.drawOneLiner(),
       drawHealing:  () => this.drawHealing(),
-      homeMessage: s.homeMessage,
-      hasHomeMessage: !!s.homeMessage,
-      homeCaption: s.homeKind === 'healing' ? '今天的療癒指引' : (s.homeKind === 'quote' ? '給你的一句話' : ''),
+      homeQuote: s.homeQuote,
+      homeHealing: s.homeHealing,
+      hasQuote: !!s.homeQuote,
+      hasHealing: !!s.homeHealing,
+      hasAnyHome: !!(s.homeQuote || s.homeHealing),
+      saveImage: () => this.saveImage(),
       isYCG:    s.activeTab === 'ycg',
       isIChing: s.activeTab === 'iching',
       isChakra: s.activeTab === 'chakra',
