@@ -70,6 +70,35 @@
       </div>
     </header>
 
+    <!-- 首頁 -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div style="animation:fadeUp 0.6s ease;">
+        <p style="text-align:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.05rem; line-height:2.3; color:#e8dcc0; letter-spacing:0.08em; margin:4px auto 34px; max-width:520px;">
+          歡迎來到這裡。<br>
+          先深深吸一口氣，把門外的匆忙留在門外。<br>
+          無論今天帶著什麼樣的心情，<br>
+          這裡都有一個柔軟的空間，接住此刻的你。<br>
+          準備好了，就選一個方式，開始吧。🌙
+        </p>
+
+        <sc-if value="{{ hasHomeMessage }}" hint-placeholder-val="{{ false }}">
+          <div style="margin:0 auto 32px; max-width:520px; border:1px solid rgba(201,168,106,0.3); border-radius:4px; padding:26px 28px; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08); text-align:center; animation:fadeUp 0.5s ease;">
+            <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.64rem; color:#a8a08a; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:14px;">{{ homeCaption }}</div>
+            <div style="font-family:'Noto Serif TC',serif; font-size:1.1rem; line-height:1.95; color:#f2d99a; letter-spacing:0.06em;">{{ homeMessage }}</div>
+          </div>
+        </sc-if>
+
+        <div style="display:flex; flex-direction:column; align-items:center; gap:14px; margin-top:8px; margin-bottom:12px;">
+          <button onClick="{{ drawOneLiner }}" style="width:100%; max-width:340px; box-sizing:border-box; padding:16px; background:transparent; border:1px solid rgba(201,168,106,0.5); color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.05rem; letter-spacing:0.22em; cursor:pointer; border-radius:2px; transition:all 0.3s;" style-hover="background:rgba(216,185,120,0.08); border-color:#f2d99a;">抽一句話 ✦</button>
+          <button onClick="{{ drawHealing }}" style="width:100%; max-width:340px; box-sizing:border-box; padding:16px; background:transparent; border:1px solid rgba(201,168,106,0.5); color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.05rem; letter-spacing:0.22em; cursor:pointer; border-radius:2px; transition:all 0.3s;" style-hover="background:rgba(216,185,120,0.08); border-color:#f2d99a;">療癒指引 🌿</button>
+          <button onClick="{{ enterApp }}" style="width:100%; max-width:340px; box-sizing:border-box; padding:16px; background:linear-gradient(135deg, rgba(216,185,120,0.22), rgba(139,105,20,0.14)); border:1px solid #c9a86a; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.05rem; letter-spacing:0.22em; cursor:pointer; border-radius:2px; transition:all 0.35s; box-shadow:0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,200,0.1);" style-hover="background:linear-gradient(135deg, rgba(216,185,120,0.34), rgba(139,105,20,0.22)); border-color:#f2d99a; box-shadow:0 0 32px rgba(216,185,120,0.3);">開始抽牌 🔮</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ backHome }}" style="background:transparent; border:none; color:#a8a08a; padding:6px 2px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.84rem; letter-spacing:0.18em; margin-bottom:18px; transition:all 0.25s;" style-hover="color:#f2d99a;">← 回首頁</button>
+
     <!-- Tabs -->
     <div style="display:flex; border:1px solid rgba(201,168,106,0.3); border-radius:2px; overflow:hidden; margin-bottom:16px; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08);">
       <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="3">
@@ -385,6 +414,8 @@
       </div>
     </sc-if>
 
+    </sc-if>
+
     <!-- 分享列（內容最下方，自然滑到底出現） -->
     <div role="group" aria-label="分享" style="display:flex; align-items:stretch; gap:9px; margin-top:44px; padding-top:26px; border-top:1px solid rgba(201,168,106,0.16);">
       <button onClick="{{ shareCopy }}" aria-label="複製網址並分享" style="flex:1; display:flex; align-items:center; justify-content:center; gap:9px; min-height:50px; padding:0 14px; background:linear-gradient(135deg, rgba(216,185,120,0.20), rgba(139,105,20,0.13)); border:1px solid #c9a86a; border-radius:3px; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1rem; letter-spacing:0.14em; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,240,200,0.12);" style-hover="background:linear-gradient(135deg, rgba(216,185,120,0.32), rgba(139,105,20,0.2)); border-color:#f2d99a;">
@@ -477,9 +508,80 @@ const PROMPTS = {
 以下是我起到的卦：`,
 };
 
+// 一句話（來源：chakra-flower 花精含義，不對外標示花精）
+const ONELINERS = [
+  '在平靜的笑容背後，隱藏著內心的煎熬與焦慮。',
+  '面對未知的恐懼，找回內心的安全感與勇氣。',
+  '練習寬容與理解，看見他人與自己的美好。',
+  '學會拒絕，找回自主權，不再盲目順從。',
+  '信任直覺，不再為了尋求認可而猶豫不決。',
+  '放鬆緊繃的心，找回在壓力下的情緒平衡。',
+  '從經驗中學習，避免重複同樣的錯誤模式。',
+  '學習無私的愛，放下對他人的掌控與依賴。',
+  '腳踏實地，將夢想轉化為現實的行動力。',
+  '接受自己的一切，擁抱事物的不完美。',
+  '減輕過重的責任感，找回處理任務的自信。',
+  '在挫折中保持信心，重燃克服困難的鬥志。',
+  '找回希望，在絕境中綻放出一道微光。',
+  '學習傾聽他人，從孤獨感中找回內心的充盈。',
+  '用愛化解憤怒與嫉妒，找回內心的柔軟。',
+  '告別過去，擁抱現在，活在當下的每一刻。',
+  '克服心理倦怠，找回面對生活的活力與熱情。',
+  '放慢腳步，培養耐心與對他人的體諒。',
+  '建立自信，相信自己具備成功的潛力。',
+  '面對具體的恐懼，找回平靜而安定的勇氣。',
+  '驅散莫名的憂鬱，找回心靈深處的喜悅。',
+  '學會休息，讓疲憊的身心得到適當的修復。',
+  '深層修復身心耗竭，找回遺失的能量來源。',
+  '放下罪惡或愧疚，學會寬恕自己。',
+  '放下對親友的過度擔心，用信任取代憂慮。',
+  '在極度恐慌中找回鎮定，平復強烈的衝擊。',
+  '放下嚴苛的自我要求，享受生命中的彈性。',
+  '在選擇中不再搖擺，找回決斷的定力。',
+  '安撫過往的驚嚇與創傷，修復內心的裂痕。',
+  '在極度絕望中看見轉機，迎來重生的力量。',
+  '適度調整熱情，學習平和地傳遞理念。',
+  '發揮領導力，同時尊重他人的意志與空間。',
+  '在變動期建立勇氣，有信心邁向新人生。',
+  '試著不再疏離，與他人分享智慧和溫暖。',
+  '停下反覆煩惱的思緒，找回平靜的心路。',
+  '釐清人生方向，找到真正能發揮天賦的道路。',
+  '告別消極被動，重燃對生命的熱情與喜悅。',
+  '放下怨懟與不平，掌握自己命運的舵手。',
+];
+
+// 療癒指引（明確的療癒行為）
+const HEALING = [
+  '🌬️ 打開窗戶，深深吸一口新鮮空氣，讓風輕輕帶走一點疲憊。',
+  '🍵 為自己泡一杯花草茶，雙手捧著溫度，慢慢喝完它。',
+  '🌿 赤腳踩在地板或草地上，感受大地穩穩地接住你。',
+  '🕯️ 點一盞小燈或一支香氛蠟燭，給自己一段柔軟的光。',
+  '🎵 播一首讓你安心的音樂，閉上眼睛，把整首聽完。',
+  '🧘 伸一個大大的懶腰，把緊繃的肩膀輕輕放下來。',
+  '💧 喝一大杯溫水，想像它溫柔地滋潤了每一個細胞。',
+  '☁️ 走到戶外抬頭看看天空，什麼都不做，只是看著。',
+  '📝 寫下三件今天讓你微微一笑的小事。',
+  '💌 給一個你在乎的人，傳一句溫暖的話。',
+  '🤍 把手放在胸口，做三次緩慢而深長的呼吸。',
+  '🧹 整理一個小角落，讓空間，也讓心，鬆一口氣。',
+  '🛁 泡個腳或洗個熱水澡，讓溫度慢慢融化緊繃。',
+  '🪴 找一株植物，替它澆點水，也和它說說話。',
+  '👀 關掉螢幕十分鐘，讓眼睛和心一起好好休息。',
+  '🍰 為自己準備一份喜歡的小點心，專心地品嚐。',
+  '🫂 抱抱自己，或身邊的人、寵物、抱枕，停留久一點。',
+  '🌞 到窗邊曬曬太陽，讓陽光輕輕落在皮膚上。',
+  '✍️ 拿出紙筆，把心裡的話不加修飾地寫出來。',
+  '☕ 慢慢喝一杯咖啡，什麼都不想，只感受香氣。',
+  '🚶 出門散步十分鐘，用平常一半的速度慢慢走。',
+  '🌙 睡前對自己說一句：「今天，我已經做得很好了。」',
+];
+
 class Component extends DCLogic {
   state = {
     ready: false,
+    stage: 'home',
+    homeMessage: '',
+    homeKind: '',
     activeTab: 'ycg',
     selectedZones: [],
     selectedChakras: [],
@@ -509,6 +611,16 @@ class Component extends DCLogic {
   }
 
   setTab(tab) { this.setState({ activeTab: tab }); }
+  enterApp() { this.setState({ stage: 'app' }); }
+  backHome() { this.setState({ stage: 'home' }); }
+  drawOneLiner() {
+    const q = ONELINERS[Math.floor(Math.random() * ONELINERS.length)];
+    this.setState({ homeMessage: q, homeKind: 'quote' });
+  }
+  drawHealing() {
+    const q = HEALING[Math.floor(Math.random() * HEALING.length)];
+    this.setState({ homeMessage: q, homeKind: 'healing' });
+  }
   setTarotMode(n) { this.setState({ tarotMode: n }); }
   setTarotSpread(m) { this.setState({ tarotSpread: m }); }
   setYcgSystem(sys) { this.setState({ ycgSystem: sys, ycgResults: null, ycgSummaryText: '' }); }
@@ -713,6 +825,10 @@ class Component extends DCLogic {
     if (!s.ready || !this.data) {
       return {
         tabs: [], zones: [], chakras: [],
+        isHome: true, isApp: false,
+        enterApp: () => this.enterApp(), backHome: () => this.backHome(),
+        drawOneLiner: () => this.drawOneLiner(), drawHealing: () => this.drawHealing(),
+        homeMessage: '', hasHomeMessage: false, homeCaption: '',
         isYCG: true, isIChing: false, isChakra: false, isTarot: false,
         ycgDrawDisabled: true, ycgDrawOpacity: 0.35,
         chakraDrawDisabled: true, chakraDrawOpacity: 0.35,
@@ -775,6 +891,15 @@ class Component extends DCLogic {
 
     return {
       tabs, zones, chakras,
+      isHome: s.stage === 'home',
+      isApp:  s.stage === 'app',
+      enterApp:     () => this.enterApp(),
+      backHome:     () => this.backHome(),
+      drawOneLiner: () => this.drawOneLiner(),
+      drawHealing:  () => this.drawHealing(),
+      homeMessage: s.homeMessage,
+      hasHomeMessage: !!s.homeMessage,
+      homeCaption: s.homeKind === 'healing' ? '今天的療癒指引' : (s.homeKind === 'quote' ? '給你的一句話' : ''),
       isYCG:    s.activeTab === 'ycg',
       isIChing: s.activeTab === 'iching',
       isChakra: s.activeTab === 'chakra',
