@@ -140,8 +140,7 @@
     <sc-if value="{{ isYCG }}" hint-placeholder-val="{{ true }}">
       <div>
         <div style="display:flex; align-items:center; gap:18px; margin-bottom:22px; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
-          <label style="font-family:'Noto Serif TC',serif; font-size:0.86rem; color:#a8a08a; letter-spacing:0.14em;">系統</label>
-          <div style="display:flex; gap:10px; margin-left:auto;">
+          <div style="display:flex; gap:10px; margin:0 auto;">
             <button onClick="{{ setYcgThoth }}" style="background:{{ ycgSysThothBg }}; border:1px solid {{ ycgSysThothBorder }}; color:{{ ycgSysThothColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">托特</button>
             <button onClick="{{ setYcgFlower }}" style="background:{{ ycgSysFlowerBg }}; border:1px solid {{ ycgSysFlowerBorder }}; color:{{ ycgSysFlowerColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">花精</button>
           </div>
@@ -363,8 +362,7 @@
     <sc-if value="{{ isChakra }}" hint-placeholder-val="{{ false }}">
       <div>
         <div style="display:flex; align-items:center; gap:18px; margin-bottom:22px; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
-          <label style="font-family:'Noto Serif TC',serif; font-size:0.86rem; color:#a8a08a; letter-spacing:0.14em;">系統</label>
-          <div style="display:flex; gap:10px; margin-left:auto;">
+          <div style="display:flex; gap:10px; margin:0 auto;">
             <button onClick="{{ setChakraThoth }}" style="background:{{ chakraSysThothBg }}; border:1px solid {{ chakraSysThothBorder }}; color:{{ chakraSysThothColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">托特</button>
             <button onClick="{{ setChakraFlower }}" style="background:{{ chakraSysFlowerBg }}; border:1px solid {{ chakraSysFlowerBorder }}; color:{{ chakraSysFlowerColor }}; padding:8px 20px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.9rem; border-radius:2px; letter-spacing:0.14em; transition:all 0.25s;">花精</button>
           </div>
@@ -799,7 +797,7 @@ class Component extends DCLogic {
         globalIdx++;
         return {
           ...c,
-          suitLabel: c.suitLabel || (c.suit ? c.suit : '大阿爾克那'),
+          suitLabel: c.isFlower ? '' : (c.suit ? c.suit : '大阿爾克那'),
           showPosition: false,
           position: '',
           delay,
@@ -841,7 +839,7 @@ class Component extends DCLogic {
       ...CHAKRAS[idx],
       cardZh: cards[i].zh,
       sym: cards[i].sym,
-      suitLabel: cards[i].suitLabel || (cards[i].suit ? cards[i].suit : '大阿爾克那'),
+      suitLabel: cards[i].isFlower ? '' : (cards[i].suit ? cards[i].suit : '大阿爾克那'),
       colorLight: lighten(CHAKRAS[idx].color, 0.4),
       glow: CHAKRAS[idx].color + '80',
     }));
