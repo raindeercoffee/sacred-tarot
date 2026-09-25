@@ -633,5 +633,110 @@ class Component extends DCLogic {
   setInterval(tick, 1000);
 })();
 </script>
+
+<!-- 固定分享列（永遠在最下方，不隨占卜模式改變） -->
+<div id="share-toast" aria-live="polite" style="position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(12px); z-index:70; max-width:88vw; padding:11px 20px; border-radius:999px; background:linear-gradient(135deg, rgba(28,32,58,0.96), rgba(20,23,42,0.96)); border:1px solid rgba(216,185,120,0.55); color:#f2d99a; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.08em; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.55), 0 0 24px rgba(216,185,120,0.18); opacity:0; pointer-events:none; transition:opacity 0.35s ease, transform 0.35s ease;"></div>
+
+<div id="share-bar" role="group" aria-label="分享" style="position:fixed; left:0; right:0; bottom:0; z-index:60; display:flex; align-items:stretch; gap:9px; padding:9px 12px calc(9px + env(safe-area-inset-bottom)); background:linear-gradient(180deg, rgba(14,16,32,0.55) 0%, rgba(10,13,26,0.92) 55%, rgba(10,13,26,0.98) 100%); backdrop-filter:blur(11px); -webkit-backdrop-filter:blur(11px); border-top:1px solid rgba(201,168,106,0.38); box-shadow:0 -8px 32px rgba(0,0,0,0.5);">
+  <button id="share-copy" type="button" aria-label="複製網址並分享" style="flex:1; display:flex; align-items:center; justify-content:center; gap:9px; min-height:50px; padding:0 14px; background:linear-gradient(135deg, rgba(216,185,120,0.20), rgba(139,105,20,0.13)); border:1px solid #c9a86a; border-radius:3px; color:#f2d99a; font-family:'Noto Serif TC',serif; font-size:0.94rem; letter-spacing:0.14em; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,240,200,0.12);">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f2d99a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
+    <span>複製網址・分享</span>
+  </button>
+  <button id="share-line" type="button" aria-label="分享到 LINE" title="LINE" style="flex:0 0 auto; width:50px; min-height:50px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); border:1px solid rgba(201,168,106,0.4); border-radius:3px; cursor:pointer;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="#d8b978" aria-hidden="true"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.036 9.608.391.084.922.258 1.057.592.121.303.079.778.039 1.085l-.171 1.027c-.053.303-.242 1.186 1.039.647 1.281-.54 6.911-4.069 9.428-6.967 1.739-1.907 2.573-3.842 2.573-5.99zM7.965 12.955H5.688a.634.634 0 0 1-.634-.633V7.78a.634.634 0 0 1 1.268 0v3.907h1.643a.634.634 0 0 1 0 1.268zm2.478-.633a.634.634 0 0 1-1.268 0V7.78a.634.634 0 0 1 1.268 0v4.542zm5.473 0a.634.634 0 0 1-.634.633.628.628 0 0 1-.508-.253l-2.332-3.174v2.794a.634.634 0 0 1-1.268 0V7.78a.633.633 0 0 1 1.142-.38l2.332 3.174V7.78a.634.634 0 0 1 1.268 0v4.542zm3.06-2.905a.634.634 0 0 1 0 1.268h-1.643v1.005h1.643a.634.634 0 0 1 0 1.268h-2.277a.634.634 0 0 1-.634-.633V7.78a.634.634 0 0 1 .634-.633h2.277a.634.634 0 0 1 0 1.268h-1.643v1.006h1.643z"/></svg>
+  </button>
+  <button id="share-threads" type="button" aria-label="分享到 Threads" title="Threads" style="flex:0 0 auto; width:50px; min-height:50px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); border:1px solid rgba(201,168,106,0.4); border-radius:3px; cursor:pointer;">
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="#d8b978" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.056 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.85 13.85 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.324.145 1.524.716 2.64 1.802 3.231 3.146.804 1.798.851 4.65-1.47 6.922-1.766 1.734-3.808 2.53-6.607 2.55zm1.03-9.51c-.343 0-.7.014-1.072.05-1.858.196-2.766 1.032-2.71 2.05.053.968 1.13 1.518 2.406 1.462 1.174-.064 2.68-.583 2.936-3.485a10.5 10.5 0 0 0-1.56-.13z"/></svg>
+  </button>
+  <button id="share-ig" type="button" aria-label="分享到 Instagram" title="Instagram" style="flex:0 0 auto; width:50px; min-height:50px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); border:1px solid rgba(201,168,106,0.4); border-radius:3px; cursor:pointer;">
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="#d8b978" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+  </button>
+</div>
+<script>
+(function () {
+  var bar = document.getElementById('share-bar');
+  var toastEl = document.getElementById('share-toast');
+  var copyBtn = document.getElementById('share-copy');
+  var lineBtn = document.getElementById('share-line');
+  var threadsBtn = document.getElementById('share-threads');
+  var igBtn = document.getElementById('share-ig');
+  if (!bar) return;
+
+  var TITLE = document.title || '神聖抽牌 · Sacred Thoth Tarot Oracle';
+  var SHARE_TEXT = '神聖抽牌 · Sacred Thoth Tarot Oracle ✦ 靜心，抽一張屬於你的牌';
+
+  function shareUrl() { return location.origin + location.pathname + location.search; }
+
+  var toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.style.opacity = '1';
+    toastEl.style.transform = 'translateX(-50%) translateY(0)';
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toastEl.style.opacity = '0';
+      toastEl.style.transform = 'translateX(-50%) translateY(12px)';
+    }, 2600);
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject();
+      } catch (e) { reject(e); }
+    });
+  }
+
+  function openTab(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
+
+  // 主按鈕：先試裝置內建分享盤（可直接挑 LINE / IG / Threads…），沒有就複製網址
+  copyBtn.addEventListener('click', function () {
+    var url = shareUrl();
+    if (navigator.share) {
+      navigator.share({ title: TITLE, text: SHARE_TEXT, url: url }).catch(function (err) {
+        if (err && err.name === 'AbortError') return; // 使用者自己取消，不用複製
+        copyToClipboard(url).then(function () { toast('已複製網址，快分享出去吧 ✦'); })
+                            .catch(function () { toast('請長按網址列手動複製 ✦'); });
+      });
+    } else {
+      copyToClipboard(url).then(function () { toast('已複製網址，快分享出去吧 ✦'); })
+                          .catch(function () { toast('請長按網址列手動複製 ✦'); });
+    }
+  });
+
+  lineBtn.addEventListener('click', function () {
+    openTab('https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(shareUrl()));
+  });
+
+  threadsBtn.addEventListener('click', function () {
+    openTab('https://www.threads.net/intent/post?text=' + encodeURIComponent(SHARE_TEXT + ' ' + shareUrl()));
+  });
+
+  // Instagram 沒有網頁分享介面，改成：複製網址 → 開啟 IG（貼到限動 / 簡介 / 訊息）
+  igBtn.addEventListener('click', function () {
+    copyToClipboard(shareUrl())
+      .then(function () { toast('已複製網址，貼到 IG 限動或簡介即可 ✦'); })
+      .catch(function () { toast('請複製網址後貼到 IG ✦'); });
+    setTimeout(function () { openTab('https://www.instagram.com/'); }, 950);
+  });
+
+  // 確保頁面內容不會被固定分享列擋住
+  function fitBottom() {
+    var h = bar.offsetHeight || 72;
+    document.body.style.paddingBottom = h + 'px';
+  }
+  fitBottom();
+  window.addEventListener('resize', fitBottom);
+})();
+</script>
 </body>
 </html>
