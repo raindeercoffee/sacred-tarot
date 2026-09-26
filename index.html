@@ -85,13 +85,13 @@
           <div style="margin:0 auto 18px; max-width:520px; border:1px solid rgba(201,168,106,0.3); border-radius:4px; padding:26px 28px; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08); text-align:center; animation:fadeUp 0.5s ease;">
             <sc-if value="{{ hasQuote }}" hint-placeholder-val="{{ false }}">
               <div>
-                <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.64rem; color:#a8a08a; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:12px;">・ 今日．一句話 ・</div>
+                <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.64rem; color:#a8a08a; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:12px;">・ 本日小語 ・</div>
                 <div style="font-family:'Noto Serif TC',serif; font-size:1.1rem; line-height:1.95; color:#f2d99a; letter-spacing:0.06em;">{{ homeQuote }}</div>
               </div>
             </sc-if>
             <sc-if value="{{ hasHealing }}" hint-placeholder-val="{{ false }}">
               <div style="margin-top:20px;">
-                <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.64rem; color:#a8a08a; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:12px;">・ 今日．療癒指引 ・</div>
+                <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.64rem; color:#a8a08a; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:12px;">・ 療癒指引 ・</div>
                 <div style="font-family:'Noto Serif TC',serif; font-size:1.1rem; line-height:1.95; color:#f2d99a; letter-spacing:0.06em;">{{ homeHealing }}</div>
               </div>
             </sc-if>
@@ -103,7 +103,7 @@
         </sc-if>
 
         <div style="display:flex; flex-direction:column; align-items:center; gap:14px; margin-top:8px; margin-bottom:12px;">
-          <button onClick="{{ drawOneLiner }}" style="width:100%; max-width:340px; box-sizing:border-box; padding:16px; background:transparent; border:1px solid rgba(201,168,106,0.5); color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.05rem; letter-spacing:0.22em; cursor:pointer; border-radius:2px; transition:all 0.3s;" style-hover="background:rgba(216,185,120,0.08); border-color:#f2d99a;">抽一句話 ✦</button>
+          <button onClick="{{ drawOneLiner }}" style="width:100%; max-width:340px; box-sizing:border-box; padding:16px; background:transparent; border:1px solid rgba(201,168,106,0.5); color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.05rem; letter-spacing:0.22em; cursor:pointer; border-radius:2px; transition:all 0.3s;" style-hover="background:rgba(216,185,120,0.08); border-color:#f2d99a;">本日小語 ✦</button>
           <button onClick="{{ drawHealing }}" style="width:100%; max-width:340px; box-sizing:border-box; padding:16px; background:transparent; border:1px solid rgba(201,168,106,0.5); color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.05rem; letter-spacing:0.22em; cursor:pointer; border-radius:2px; transition:all 0.3s;" style-hover="background:rgba(216,185,120,0.08); border-color:#f2d99a;">療癒指引 🌿</button>
           <button onClick="{{ enterApp }}" style="width:100%; max-width:340px; box-sizing:border-box; padding:16px; background:linear-gradient(135deg, rgba(216,185,120,0.22), rgba(139,105,20,0.14)); border:1px solid #c9a86a; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.05rem; letter-spacing:0.22em; cursor:pointer; border-radius:2px; transition:all 0.35s; box-shadow:0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,200,0.1);" style-hover="background:linear-gradient(135deg, rgba(216,185,120,0.34), rgba(139,105,20,0.22)); border-color:#f2d99a; box-shadow:0 0 32px rgba(216,185,120,0.3);">開始抽牌 🔮</button>
         </div>
@@ -522,7 +522,7 @@ const PROMPTS = {
 以下是我起到的卦：`,
 };
 
-// 一句話（來源：chakra-flower 花精含義，不對外標示花精）
+// 本日小語（來源：chakra-flower 花精含義，不對外標示花精）
 const ONELINERS = [
   '在平靜的笑容背後，隱藏著內心的煎熬與焦慮。',
   '面對未知的恐懼，找回內心的安全感與勇氣。',
@@ -680,8 +680,8 @@ class Component extends DCLogic {
         return lines;
       }
       var sections = [];
-      if (quote) sections.push({ cap: '今日 · 一句話', lines: wrapLines(quote) });
-      if (healing) sections.push({ cap: '今日 · 療癒指引', lines: wrapLines(healing) });
+      if (quote) sections.push({ cap: '本日小語', lines: wrapLines(quote) });
+      if (healing) sections.push({ cap: '療癒指引', lines: wrapLines(healing) });
 
       // 寬鬆間距：標題與句子之間、每行之間都留白
       var A_CAP = 36, G_CAP = 98, LINE = 94, SECGAP = 84, G_DATE = 84, A_DATE = 40;
