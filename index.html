@@ -180,7 +180,7 @@
         </button>
 
         <sc-if value="{{ hasYcgResults }}" hint-placeholder-val="{{ false }}">
-          <div style="animation:fadeUp 0.5s ease;">
+          <div id="ycg-results" style="animation:fadeUp 0.5s ease; scroll-margin-top:48px;">
             <div class="ycg-results-grid">
             <sc-for list="{{ ycgResults }}" as="zr" hint-placeholder-count="0">
               <div style="min-width:0;">
@@ -414,7 +414,7 @@
         </button>
 
         <sc-if value="{{ hasChakraResults }}" hint-placeholder-val="{{ false }}">
-          <div style="display:flex; flex-direction:column; gap:14px; animation:fadeUp 0.5s ease; margin-bottom:8px;">
+          <div id="chakra-results" style="display:flex; flex-direction:column; gap:14px; animation:fadeUp 0.5s ease; margin-bottom:8px; scroll-margin-top:48px;">
             <sc-for list="{{ chakraResults }}" as="cr" hint-placeholder-count="0">
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:center; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:0 6px 20px rgba(0,0,0,0.3);">
                 <div style="display:flex; align-items:center; gap:12px;">
@@ -872,6 +872,16 @@ class Component extends DCLogic {
     setTimeout(() => this.setState({ tarotCopied: false }), 2000);
   }
 
+  scrollToResults(id) {
+    requestAnimationFrame(() => {
+      const target = document.getElementById(id);
+      if (target) target.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    });
+  }
+
   drawYCG() {
     const { ZONES } = this.data;
     const draw = this.state.ycgSystem === 'flower' ? this.data.drawFlowers : this.data.drawRandom;
@@ -895,7 +905,7 @@ class Component extends DCLogic {
       return { ...z, cards, heading: z.zh === '天空' ? z.zh : `${z.icon} \u00a0 ${z.zh}` };
     });
     const lines = results.map(zr => `${zr.icon} ${zr.zh}：${zr.cards[0].zh}`).join('\n');
-    this.setState({ ycgResults: results, ycgSummaryText: lines, ycgCopied: false });
+    this.setState({ ycgResults: results, ycgSummaryText: lines, ycgCopied: false }, () => this.scrollToResults('ycg-results'));
   }
   resetYCG() { this.setState({ ycgResults: null, ycgSummaryText: '' }); }
   copyYcg() {
@@ -936,7 +946,7 @@ class Component extends DCLogic {
       glow: CHAKRAS[idx].color + '80',
     }));
     const lines = results.map(r => `${r.sym} ${r.zh}：${r.cardZh}`).join('\n');
-    this.setState({ chakraResults: results, chakraSummaryText: lines, chakraCopied: false });
+    this.setState({ chakraResults: results, chakraSummaryText: lines, chakraCopied: false }, () => this.scrollToResults('chakra-results'));
   }
   resetChakra() { this.setState({ chakraResults: null, chakraSummaryText: '' }); }
   copyChakra() {
