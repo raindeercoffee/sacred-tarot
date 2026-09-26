@@ -61,7 +61,7 @@
     <!-- Header -->
     <header style="text-align:center; margin-bottom:52px;">
       <div style="color:#d8b978; font-size:1.1rem; letter-spacing:0.8em; opacity:0.7; margin-bottom:18px; padding-left:0.8em;">✦ ☾ ✦</div>
-      <h1 style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-weight:500; font-size:clamp(2.2rem,5vw,3.4rem); background:linear-gradient(180deg, #f2d99a 0%, #c9a86a 55%, #8b6914 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:0.14em; line-height:1.15; margin:0 0 12px; text-shadow:0 0 40px rgba(216,185,120,0.25);">神聖抽牌</h1>
+      <h1 onClick="{{ reloadHome }}" title="回到最初的畫面" style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-weight:500; font-size:clamp(2.2rem,5vw,3.4rem); background:linear-gradient(180deg, #f2d99a 0%, #c9a86a 55%, #8b6914 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:0.14em; line-height:1.15; margin:0 0 12px; text-shadow:0 0 40px rgba(216,185,120,0.25); cursor:pointer;">神聖抽牌</h1>
       <h2 style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-weight:400; font-size:clamp(0.75rem,2vw,0.88rem); color:#a8a08a; letter-spacing:0.4em; text-transform:uppercase; margin:0;">Sacred Thoth Tarot Oracle</h2>
       <div style="display:flex; align-items:center; gap:16px; margin:26px auto 0; max-width:280px;">
         <div style="flex:1; height:1px; background:linear-gradient(90deg, transparent, #c9a86a);"></div>
@@ -96,7 +96,8 @@
               </div>
             </sc-if>
           </div>
-          <div style="display:flex; justify-content:center; margin-bottom:26px;">
+          <div style="display:flex; justify-content:center; gap:12px; margin-bottom:26px;">
+            <button onClick="{{ reroll }}" style="padding:11px 26px; background:transparent; border:1px solid rgba(201,168,106,0.5); color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.16em; cursor:pointer; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">🔄 重抽</button>
             <button onClick="{{ saveImage }}" style="padding:11px 26px; background:transparent; border:1px solid rgba(201,168,106,0.5); color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.16em; cursor:pointer; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">📷 存成圖片</button>
           </div>
         </sc-if>
@@ -634,6 +635,12 @@ class Component extends DCLogic {
     const q = HEALING[Math.floor(Math.random() * HEALING.length)];
     this.setState({ homeHealing: q });
   }
+  reroll() {
+    const s = {};
+    if (this.state.homeQuote) s.homeQuote = ONELINERS[Math.floor(Math.random() * ONELINERS.length)];
+    if (this.state.homeHealing) s.homeHealing = HEALING[Math.floor(Math.random() * HEALING.length)];
+    this.setState(s);
+  }
   saveImage() {
     var W = 1080, H = 1350, self = this;
     var pad = function (n) { return (n < 10 ? '0' : '') + n; };
@@ -948,6 +955,7 @@ class Component extends DCLogic {
         isHome: true, isApp: false,
         enterApp: () => this.enterApp(), backHome: () => this.backHome(),
         drawOneLiner: () => this.drawOneLiner(), drawHealing: () => this.drawHealing(),
+        reroll: () => this.reroll(), reloadHome: () => location.reload(),
         homeQuote: '', homeHealing: '', hasQuote: false, hasHealing: false, hasAnyHome: false,
         saveImage: () => this.saveImage(),
         isYCG: true, isIChing: false, isChakra: false, isTarot: false,
@@ -1024,6 +1032,8 @@ class Component extends DCLogic {
       hasHealing: !!s.homeHealing,
       hasAnyHome: !!(s.homeQuote || s.homeHealing),
       saveImage: () => this.saveImage(),
+      reroll: () => this.reroll(),
+      reloadHome: () => location.reload(),
       isYCG:    s.activeTab === 'ycg',
       isIChing: s.activeTab === 'iching',
       isChakra: s.activeTab === 'chakra',
