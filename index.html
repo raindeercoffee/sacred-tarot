@@ -657,26 +657,18 @@ class Component extends DCLogic {
     }
 
     function render(qrImg) {
-      var c = document.createElement('canvas'); c.width = W; c.height = H;
+      var c = document.createElement('canvas'); c.width = W; c.height = 200;
       var x = c.getContext('2d');
-      var g = x.createLinearGradient(0, 0, 0, H);
-      g.addColorStop(0, '#161a33'); g.addColorStop(0.55, '#0d1020'); g.addColorStop(1, '#0a0d1a');
-      x.fillStyle = g; x.fillRect(0, 0, W, H);
-      x.strokeStyle = 'rgba(201,168,106,0.5)'; x.lineWidth = 2; x.strokeRect(44, 44, W - 88, H - 88);
-      x.strokeStyle = 'rgba(201,168,106,0.22)'; x.lineWidth = 1; x.strokeRect(62, 62, W - 124, H - 124);
-      x.textAlign = 'center';
-      x.fillStyle = '#e8c877'; x.font = '600 84px "Noto Serif TC", serif';
-      x.fillText('神聖抽牌', W / 2, 330);
-      x.fillStyle = '#a8a08a'; x.font = '500 24px "Cormorant Garamond", serif';
-      x.fillText('S A C R E D   T H O T H   T A R O T', W / 2, 402);
-      x.fillStyle = '#c9a86a'; x.font = '400 30px "Cormorant Garamond", serif';
-      x.fillText('✦', W / 2, 470);
-
       var maxW = W - 240;
+      var noBreak = '。，、！？；：）」』】.,!?;:)]}';
       function wrapLines(text) {
         x.font = '400 46px "Noto Serif TC", serif';
         var line = '', lines = [], i, ch;
-        for (i = 0; i < text.length; i++) { ch = text[i]; if (x.measureText(line + ch).width > maxW) { lines.push(line); line = ch; } else line += ch; }
+        for (i = 0; i < text.length; i++) {
+          ch = text[i];
+          if (x.measureText(line + ch).width > maxW && line && noBreak.indexOf(ch) === -1) { lines.push(line); line = ch; }
+          else line += ch;
+        }
         if (line) lines.push(line);
         return lines;
       }
@@ -686,16 +678,32 @@ class Component extends DCLogic {
 
       // 寬鬆間距：標題與句子之間、每行之間都留白
       var A_CAP = 36, G_CAP = 62, LINE = 94, SECGAP = 84, G_DATE = 84, A_DATE = 40;
-      var total = 0, i;
+      var blockH = 0, i;
       for (i = 0; i < sections.length; i++) {
-        total += A_CAP + G_CAP + sections[i].lines.length * LINE;
-        if (i < sections.length - 1) total += SECGAP;
+        blockH += A_CAP + G_CAP + sections[i].lines.length * LINE;
+        if (i < sections.length - 1) blockH += SECGAP;
       }
-      total += G_DATE + A_DATE;
+      blockH += G_DATE + A_DATE;
 
-      var regTop = 560, regBot = 1130;
-      var y = regTop + Math.max(0, ((regBot - regTop) - total) / 2);
+      // 卡片高度依內容自動調整，並為底部日期/QR 預留專屬空間
+      var TITLE_ZONE = 500, FOOTER = 250;
+      var H = Math.max(1200, TITLE_ZONE + blockH + FOOTER);
+      c.height = H; x = c.getContext('2d'); x.textAlign = 'center';
 
+      var g = x.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#161a33'); g.addColorStop(0.55, '#0d1020'); g.addColorStop(1, '#0a0d1a');
+      x.fillStyle = g; x.fillRect(0, 0, W, H);
+      x.strokeStyle = 'rgba(201,168,106,0.5)'; x.lineWidth = 2; x.strokeRect(44, 44, W - 88, H - 88);
+      x.strokeStyle = 'rgba(201,168,106,0.22)'; x.lineWidth = 1; x.strokeRect(62, 62, W - 124, H - 124);
+      x.fillStyle = '#e8c877'; x.font = '600 84px "Noto Serif TC", serif';
+      x.fillText('神聖抽牌', W / 2, 330);
+      x.fillStyle = '#a8a08a'; x.font = '500 24px "Cormorant Garamond", serif';
+      x.fillText('S A C R E D   T H O T H   T A R O T', W / 2, 402);
+      x.fillStyle = '#c9a86a'; x.font = '400 30px "Cormorant Garamond", serif';
+      x.fillText('✦', W / 2, 470);
+
+      var regTop = TITLE_ZONE, regBot = H - FOOTER;
+      var y = regTop + Math.max(0, ((regBot - regTop) - blockH) / 2);
       for (i = 0; i < sections.length; i++) {
         y += A_CAP;
         x.fillStyle = '#c9a86a'; x.font = '500 30px "Noto Serif TC", serif';
@@ -710,12 +718,12 @@ class Component extends DCLogic {
       x.fillText('— ' + dateStr + ' —', W / 2, y);
 
       if (qrImg) {
-        var qs = 172, qx = W - 84 - qs, qy = H - 108 - qs;
+        var qs = 150, qx = W - 96 - qs, qy = H - 118 - qs;
         x.drawImage(qrImg, qx, qy, qs, qs);
         x.strokeStyle = 'rgba(216,185,120,0.6)'; x.lineWidth = 2;
         roundRect(x, qx - 10, qy - 10, qs + 20, qs + 20, 12); x.stroke();
         x.fillStyle = '#a8a08a'; x.font = '400 22px "Cormorant Garamond", serif';
-        x.fillText('掃描抽牌', qx + qs / 2, qy + qs + 36);
+        x.fillText('掃描抽牌', qx + qs / 2, qy + qs + 34);
       }
 
       c.toBlob(function (blob) {
