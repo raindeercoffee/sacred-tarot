@@ -43,6 +43,7 @@
     a, a:visited { color: #d8b978; }
     a:hover { color: #f2d99a; }
     .reading-tab:focus-visible { outline: 2px solid #f2d99a; outline-offset: 2px; }
+    .ycg-results-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 12px; }
     .share-actions { display: flex; }
     .youtube-link:hover { border-color: #d8b978 !important; }
     .youtube-link:focus-visible { outline: 2px solid #f2d99a; outline-offset: 2px; }
@@ -50,6 +51,12 @@
       .share-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .share-copy { grid-column: 1 / -1; }
       .share-actions > :not(.share-copy) { justify-self: center; }
+    }
+    @media (max-width: 720px) {
+      .ycg-results-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 360px) {
+      .ycg-results-grid { grid-template-columns: 1fr; }
     }
   </style>
 </helmet>
@@ -174,16 +181,17 @@
 
         <sc-if value="{{ hasYcgResults }}" hint-placeholder-val="{{ false }}">
           <div style="animation:fadeUp 0.5s ease;">
+            <div class="ycg-results-grid">
             <sc-for list="{{ ycgResults }}" as="zr" hint-placeholder-count="0">
-              <div style="margin-bottom:40px;">
-                <div style="text-align:center; margin-bottom:24px;">
-                  <h3 style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.35rem; color:#f2d99a; font-weight:500; letter-spacing:0.2em; margin:0;">{{ zr.icon }} &nbsp; {{ zr.zh }}</h3>
+              <div style="min-width:0;">
+                <div style="text-align:center; margin-bottom:16px;">
+                  <h3 style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.35rem; color:#f2d99a; font-weight:500; letter-spacing:0.2em; margin:0;">{{ zr.heading }}</h3>
                   <p style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.68rem; color:#a8a08a; letter-spacing:0.28em; text-transform:uppercase; margin:6px 0 0;">{{ zr.en }}</p>
                 </div>
                 <div style="display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-bottom:8px;">
                   <sc-for list="{{ zr.cards }}" as="c" hint-placeholder-count="1">
-                    <div style="width:172px;">
-                      <div style="perspective:1200px; width:172px; height:264px; margin-bottom:12px;">
+                    <div style="width:100%; max-width:154px; margin:0 auto;">
+                      <div style="perspective:1200px; width:100%; aspect-ratio:43 / 66; margin-bottom:12px;">
                         <div style="position:relative; width:100%; height:100%; transform-style:preserve-3d; animation:flipIn 0.9s cubic-bezier(0.4,0.1,0.3,1.1) {{ c.delay }} both;">
                           <!-- FACE -->
                           <div style="position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:6px; overflow:hidden; background:linear-gradient(160deg, #1c2038 0%, #12142a 100%); border:1px solid rgba(216,185,120,0.35); box-shadow:0 12px 30px rgba(0,0,0,0.6), 0 0 24px rgba(216,185,120,0.12);">
@@ -220,6 +228,7 @@
                 </div>
               </div>
             </sc-for>
+            </div>
 
             <div style="margin:22px 0 10px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; padding:24px 26px; background:linear-gradient(180deg, rgba(28,32,58,0.65), rgba(20,23,42,0.65)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08); animation:fadeUp 0.4s ease;">
               <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.02rem; color:#f2d99a; letter-spacing:0.22em; margin-bottom:16px; text-transform:uppercase;">✦ 小木屋能量總覽</div>
@@ -878,7 +887,7 @@ class Component extends DCLogic {
           delay,
         };
       });
-      return { ...z, cards };
+      return { ...z, cards, heading: z.zh === '天空' ? z.zh : `${z.icon} \u00a0 ${z.zh}` };
     });
     const lines = results.map(zr => `${zr.icon} ${zr.zh}：${zr.cards[0].zh}`).join('\n');
     this.setState({ ycgResults: results, ycgSummaryText: lines, ycgCopied: false });
