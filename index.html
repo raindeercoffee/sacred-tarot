@@ -42,6 +42,15 @@
     body { margin: 0; background: #0a0d1a; color: #efe6d0; }
     a, a:visited { color: #d8b978; }
     a:hover { color: #f2d99a; }
+    .reading-tab:focus-visible { outline: 2px solid #f2d99a; outline-offset: 2px; }
+    .share-actions { display: flex; }
+    .youtube-link:hover { border-color: #d8b978 !important; }
+    .youtube-link:focus-visible { outline: 2px solid #f2d99a; outline-offset: 2px; }
+    @media (max-width: 600px) {
+      .share-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .share-copy { grid-column: 1 / -1; }
+      .share-actions > :not(.share-copy) { justify-self: center; }
+    }
   </style>
 </helmet>
 
@@ -113,32 +122,20 @@
     <sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
       <button onClick="{{ backHome }}" style="background:transparent; border:none; color:#a8a08a; padding:6px 2px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.84rem; letter-spacing:0.18em; margin-bottom:18px; transition:all 0.25s;" style-hover="color:#f2d99a;">← 回首頁</button>
 
-    <!-- Tabs -->
-    <div style="display:flex; border:1px solid rgba(201,168,106,0.3); border-radius:2px; overflow:hidden; margin-bottom:16px; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08);">
-      <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="3">
-        <button
-          onClick="{{ tab.onClick }}"
-          style="flex:1; background:transparent; border:none; border-right:1px solid rgba(201,168,106,0.2); color:#a8a08a; padding:18px 12px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:0.16em; transition:all 0.3s;"
-          style-hover="color:#f2d99a; background:rgba(216,185,120,0.06);"
-        >
+    <div style="font-family:'Noto Serif TC',serif; font-size:0.9rem; color:#c9b98a; letter-spacing:0.1em; text-align:center; line-height:1.7; margin:0 0 18px;">請先選一種占卜方式，開始今天的探索。</div>
+    <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-bottom:40px;">
+      <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="4">
+        <button class="reading-tab" onClick="{{ tab.onClick }}" aria-pressed="{{ tab.selected }}"
+          style="min-width:0; min-height:104px; background:{{ tab.bg }}; border:1px solid {{ tab.border }}; color:{{ tab.color }}; padding:18px 12px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:0.16em; border-radius:2px; transition:all 0.3s; box-shadow:{{ tab.shadow }};"
+          style-hover="color:{{ tab.hoverColor }}; border-color:{{ tab.hoverBorder }};">
           {{ tab.label }}
-          <span style="display:block; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; letter-spacing:0.22em; opacity:0.6; margin-top:5px; text-transform:uppercase;">{{ tab.labelEn }}</span>
+          <span style="display:block; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; letter-spacing:0.22em; opacity:0.75; margin-top:5px; text-transform:uppercase;">{{ tab.labelEn }}</span>
         </button>
       </sc-for>
     </div>
 
-    <!-- Secondary row -->
-    <div style="display:flex; border:1px solid rgba(201,168,106,0.3); border-radius:2px; overflow:hidden; margin-bottom:40px; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(216,185,120,0.08);">
-      <button style="flex:1; background:transparent; border:none; border-right:1px solid rgba(201,168,106,0.2); color:#a8a08a; padding:18px 12px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:0.16em;">&nbsp;</button>
-      <button onClick="{{ setTarotTab }}" style="flex:1; background:transparent; border:none; border-right:1px solid rgba(201,168,106,0.2); color:#a8a08a; padding:18px 12px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:0.16em; transition:all 0.3s;" style-hover="color:#f2d99a; background:rgba(216,185,120,0.06);">
-        塔羅
-        <span style="display:block; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.62rem; letter-spacing:0.22em; opacity:0.6; margin-top:5px; text-transform:uppercase;">Tarot</span>
-      </button>
-      <button style="flex:1; background:transparent; border:none; color:#a8a08a; padding:18px 12px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:0.16em;">&nbsp;</button>
-    </div>
-
     <!-- Panel: 元辰宮 -->
-    <sc-if value="{{ isYCG }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ isYCG }}" hint-placeholder-val="{{ false }}">
       <div>
         <div style="display:flex; flex-direction:column; align-items:center; gap:14px; margin-bottom:22px; padding:18px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:inset 0 1px 0 rgba(216,185,120,0.06);">
           <div style="font-family:'Noto Serif TC',serif; font-size:0.9rem; color:#c9b98a; letter-spacing:0.1em; text-align:center; line-height:1.7;">今天，你想要探索內心，還是分析狀況呢？</div>
@@ -148,6 +145,7 @@
           </div>
         </div>
 
+        <sc-if value="{{ hasYcgSystem }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ toggleAllZones }}" style="background:transparent; border:1px solid rgba(201,168,106,0.28); color:#a8a08a; padding:9px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.15em; border-radius:2px; margin-bottom:18px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">全選 / 全清</button>
 
         <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(132px,1fr)); gap:12px; margin-bottom:36px;">
@@ -234,6 +232,7 @@
             </div>
             <button onClick="{{ resetYcg }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
           </div>
+        </sc-if>
         </sc-if>
       </div>
     </sc-if>
@@ -371,6 +370,7 @@
           </div>
         </div>
 
+        <sc-if value="{{ hasChakraSystem }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ toggleAllChakras }}" style="background:transparent; border:1px solid rgba(201,168,106,0.28); color:#a8a08a; padding:9px 22px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.15em; border-radius:2px; margin-bottom:18px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">全選 / 全清</button>
 
         <div style="display:flex; flex-direction:column; gap:11px; margin-bottom:36px;">
@@ -425,14 +425,16 @@
           </div>
           <button onClick="{{ resetChakra }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
         </sc-if>
+        </sc-if>
       </div>
     </sc-if>
 
     </sc-if>
 
     <!-- 分享列（內容最下方，自然滑到底出現） -->
-    <div role="group" aria-label="分享" style="display:flex; align-items:stretch; gap:9px; margin-top:44px; padding-top:26px; border-top:1px solid rgba(201,168,106,0.16);">
-      <button onClick="{{ shareCopy }}" aria-label="複製網址並分享" style="flex:1; display:flex; align-items:center; justify-content:center; gap:9px; min-height:50px; padding:0 14px; background:linear-gradient(135deg, rgba(216,185,120,0.20), rgba(139,105,20,0.13)); border:1px solid #c9a86a; border-radius:3px; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1rem; letter-spacing:0.14em; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,240,200,0.12);" style-hover="background:linear-gradient(135deg, rgba(216,185,120,0.32), rgba(139,105,20,0.2)); border-color:#f2d99a;">
+    <sc-if value="{{ showShare }}" hint-placeholder-val="{{ true }}">
+    <div class="share-actions" role="group" aria-label="分享" style="align-items:stretch; gap:9px; margin-top:44px; padding-top:26px; border-top:1px solid rgba(201,168,106,0.16);">
+      <button class="share-copy" onClick="{{ shareCopy }}" aria-label="複製網址並分享" style="flex:1; display:flex; align-items:center; justify-content:center; gap:9px; min-height:50px; padding:0 14px; background:linear-gradient(135deg, rgba(216,185,120,0.20), rgba(139,105,20,0.13)); border:1px solid #c9a86a; border-radius:3px; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1rem; letter-spacing:0.14em; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,240,200,0.12);" style-hover="background:linear-gradient(135deg, rgba(216,185,120,0.32), rgba(139,105,20,0.2)); border-color:#f2d99a;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f2d99a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
         <span>Copy link</span>
       </button>
@@ -445,7 +447,11 @@
       <button onClick="{{ shareIg }}" aria-label="分享到 Instagram" title="Instagram" style="flex:0 0 auto; width:50px; min-height:50px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); border:1px solid rgba(201,168,106,0.4); border-radius:3px; cursor:pointer;" style-hover="border-color:#d8b978;">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="#d8b978" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
       </button>
+      <a class="youtube-link" href="https://www.youtube.com/@BreathingSeeds" target="_blank" rel="noopener noreferrer" aria-label="前往 Breathing Seeds YouTube 頻道" title="YouTube" style="flex:0 0 auto; width:50px; min-height:50px; display:flex; align-items:center; justify-content:center; box-sizing:border-box; background:linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6)); border:1px solid rgba(201,168,106,0.4); border-radius:3px; text-decoration:none;">
+        <svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="#d8b978"/><path d="M10 8.5 16 12l-6 3.5Z" fill="#14172a"/></svg>
+      </a>
     </div>
+    </sc-if>
 
   </div>
 </div>
@@ -596,7 +602,7 @@ class Component extends DCLogic {
     stage: 'home',
     homeQuote: '',
     homeHealing: '',
-    activeTab: 'ycg',
+    activeTab: null,
     selectedZones: [],
     selectedChakras: [],
     tarotMode: 1,
@@ -604,8 +610,8 @@ class Component extends DCLogic {
     tarotResults: null,
     tarotSummaryText: '',
     tarotCopied: false,
-    ycgSystem: 'thoth',
-    chakraSystem: 'thoth',
+    ycgSystem: null,
+    chakraSystem: null,
     ycgResults: null,
     ycgSummaryText: '',
     ycgCopied: false,
@@ -625,7 +631,7 @@ class Component extends DCLogic {
   }
 
   setTab(tab) { this.setState({ activeTab: tab }); }
-  enterApp() { this.setState({ stage: 'app' }); }
+  enterApp() { this.setState({ stage: 'app', activeTab: null, ycgSystem: null, chakraSystem: null }); }
   backHome() { this.setState({ stage: 'home' }); }
   drawOneLiner() {
     const q = ONELINERS[Math.floor(Math.random() * ONELINERS.length)];
@@ -959,13 +965,14 @@ class Component extends DCLogic {
     if (!s.ready || !this.data) {
       return {
         tabs: [], zones: [], chakras: [],
-        isHome: true, isApp: false,
+        isHome: true, isApp: false, showShare: true,
         enterApp: () => this.enterApp(), backHome: () => this.backHome(),
         drawOneLiner: () => this.drawOneLiner(), drawHealing: () => this.drawHealing(),
         reroll: () => this.reroll(), reloadHome: () => location.reload(),
         homeQuote: '', homeHealing: '', hasQuote: false, hasHealing: false, hasAnyHome: false,
         saveImage: () => this.saveImage(),
-        isYCG: true, isIChing: false, isChakra: false, isTarot: false,
+        isYCG: false, isIChing: false, isChakra: false, isTarot: false,
+        hasYcgSystem: false, hasChakraSystem: false,
         ycgDrawDisabled: true, ycgDrawOpacity: 0.35,
         chakraDrawDisabled: true, chakraDrawOpacity: 0.35,
         hasYcgResults: false, hasIchingResults: false, hasChakraResults: false, hasTarotResults: false,
@@ -982,9 +989,9 @@ class Component extends DCLogic {
         copyWithPrompt: () => this.copyWithPrompt(), contactMe: () => this.contactMe(),
         setYcgThoth: () => this.setYcgSystem('thoth'), setYcgFlower: () => this.setYcgSystem('flower'),
         setChakraThoth: () => this.setChakraSystem('thoth'), setChakraFlower: () => this.setChakraSystem('flower'),
-        ycgSysThothBg: 'rgba(216,185,120,0.2)', ycgSysThothBorder: '#c9a86a', ycgSysThothColor: '#f2d99a',
+        ycgSysThothBg: 'transparent', ycgSysThothBorder: 'rgba(201,168,106,0.3)', ycgSysThothColor: '#a8a08a',
         ycgSysFlowerBg: 'transparent', ycgSysFlowerBorder: 'rgba(201,168,106,0.3)', ycgSysFlowerColor: '#a8a08a',
-        chakraSysThothBg: 'rgba(216,185,120,0.2)', chakraSysThothBorder: '#c9a86a', chakraSysThothColor: '#f2d99a',
+        chakraSysThothBg: 'transparent', chakraSysThothBorder: 'rgba(201,168,106,0.3)', chakraSysThothColor: '#a8a08a',
         chakraSysFlowerBg: 'transparent', chakraSysFlowerBorder: 'rgba(201,168,106,0.3)', chakraSysFlowerColor: '#a8a08a',
       };
     }
@@ -992,13 +999,23 @@ class Component extends DCLogic {
 
     const tabDefs = [
       { key: 'ycg',    label: '小木屋', labelEn: 'Cabin' },
-      { key: 'iching', label: '易經',   labelEn: 'I Ching' },
       { key: 'chakra', label: '脈輪',   labelEn: 'Chakra' },
+      { key: 'tarot',  label: '塔羅',   labelEn: 'Tarot' },
+      { key: 'iching', label: '易經',   labelEn: 'I Ching' },
     ];
-    const tabs = tabDefs.map(t => ({
-      label: t.label, labelEn: t.labelEn,
-      onClick: () => this.setTab(t.key),
-    }));
+    const tabs = tabDefs.map(t => {
+      const selected = s.activeTab === t.key;
+      return {
+        label: t.label, labelEn: t.labelEn, selected,
+        bg: selected ? 'linear-gradient(135deg, rgba(216,185,120,0.22), rgba(139,105,20,0.14))' : 'linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6))',
+        border: selected ? '#c9a86a' : 'rgba(201,168,106,0.3)',
+        color: selected ? '#f2d99a' : '#a8a08a',
+        shadow: selected ? '0 0 32px rgba(216,185,120,0.3), inset 0 1px 0 rgba(255,240,200,0.1)' : '0 8px 32px rgba(0,0,0,0.4)',
+        hoverColor: selected ? '#f2d99a' : '#d8b978',
+        hoverBorder: selected ? '#f2d99a' : 'rgba(216,185,120,0.55)',
+        onClick: () => this.setTab(t.key),
+      };
+    });
 
     const zones = ZONES.map((z, i) => {
       const sel = s.selectedZones.includes(i);
@@ -1029,6 +1046,7 @@ class Component extends DCLogic {
       tabs, zones, chakras,
       isHome: s.stage === 'home',
       isApp:  s.stage === 'app',
+      showShare: s.stage === 'home' || s.activeTab === 'tarot' || s.activeTab === 'iching' || (s.activeTab === 'ycg' && !!s.ycgSystem) || (s.activeTab === 'chakra' && !!s.chakraSystem),
       enterApp:     () => this.enterApp(),
       backHome:     () => this.backHome(),
       drawOneLiner: () => this.drawOneLiner(),
@@ -1045,7 +1063,8 @@ class Component extends DCLogic {
       isIChing: s.activeTab === 'iching',
       isChakra: s.activeTab === 'chakra',
       isTarot:  s.activeTab === 'tarot',
-      setTarotTab:   () => this.setTab('tarot'),
+      hasYcgSystem: !!s.ycgSystem,
+      hasChakraSystem: !!s.chakraSystem,
       setTarotMode1: () => this.setTarotMode(1),
       setTarotMode3: () => this.setTarotMode(3),
       tarotMode1Bg:     s.tarotMode === 1 ? 'rgba(216,185,120,0.2)'  : 'transparent',
