@@ -635,55 +635,103 @@ class Component extends DCLogic {
     this.setState({ homeHealing: q });
   }
   saveImage() {
-    var W = 1080, H = 1350;
-    var c = document.createElement('canvas'); c.width = W; c.height = H;
-    var x = c.getContext('2d');
-    var g = x.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#161a33'); g.addColorStop(0.55, '#0d1020'); g.addColorStop(1, '#0a0d1a');
-    x.fillStyle = g; x.fillRect(0, 0, W, H);
-    x.strokeStyle = 'rgba(201,168,106,0.5)'; x.lineWidth = 2; x.strokeRect(40, 40, W - 80, H - 80);
-    x.strokeStyle = 'rgba(201,168,106,0.22)'; x.lineWidth = 1; x.strokeRect(58, 58, W - 116, H - 116);
-    x.textAlign = 'center';
-    x.fillStyle = '#e8c877'; x.font = '600 82px "Noto Serif TC", serif';
-    x.fillText('神聖抽牌', W / 2, 190);
-    x.fillStyle = '#a8a08a'; x.font = '500 24px "Cormorant Garamond", serif';
-    x.fillText('S A C R E D   T H O T H   T A R O T', W / 2, 238);
-    var now = new Date(); var pad = function (n) { return (n < 10 ? '0' : '') + n; };
-    var date = now.getFullYear() + '.' + pad(now.getMonth() + 1) + '.' + pad(now.getDate());
-    x.fillStyle = '#d8b978'; x.font = '400 30px "Cormorant Garamond", serif';
-    x.fillText('✦  ' + date + '  ✦', W / 2, 312);
-    var y = 440;
-    var wrap = function (text, font, color, lh, maxW) {
-      x.font = font; x.fillStyle = color;
-      var line = '', lines = [], i, ch;
-      for (i = 0; i < text.length; i++) { ch = text[i]; if (x.measureText(line + ch).width > maxW) { lines.push(line); line = ch; } else line += ch; }
-      if (line) lines.push(line);
-      for (i = 0; i < lines.length; i++) { x.fillText(lines[i], W / 2, y); y += lh; }
-    };
-    var section = function (caption, text) {
-      x.fillStyle = '#c9a86a'; x.font = '500 30px "Noto Serif TC", serif';
-      x.fillText('・ ' + caption + ' ・', W / 2, y); y += 66;
-      wrap(text, '400 46px "Noto Serif TC", serif', '#f2d99a', 70, W - 220);
-      y += 66;
-    };
-    if (this.state.homeQuote) section('今日．一句話', this.state.homeQuote);
-    if (this.state.homeHealing) section('今日．療癒指引', this.state.homeHealing);
-    x.fillStyle = '#8a8470'; x.font = '400 24px "Cormorant Garamond", serif';
-    x.fillText('raindeercoffee.github.io/sacred-tarot', W / 2, H - 72);
-    var self = this;
-    c.toBlob(function (blob) {
-      if (!blob) { self.shareToast('產生圖片失敗，請直接截圖保存 ✦'); return; }
-      var file = new File([blob], '今日療癒.png', { type: 'image/png' });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: '今日療癒' }).catch(function () {});
-      } else {
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a'); a.href = url; a.download = '今日療癒.png';
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-        self.shareToast('圖片已存到你的下載 ✦');
+    var W = 1080, H = 1350, self = this;
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    var now = new Date();
+    var dateStr = now.getFullYear() + '.' + pad(now.getMonth() + 1) + '.' + pad(now.getDate());
+    var stripEmoji = function (t) { return t ? t.replace(/[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu, '').trim() : ''; };
+    var quote = stripEmoji(this.state.homeQuote), healing = stripEmoji(this.state.homeHealing);
+    var qr = new Image();
+    qr.onload = function () { render(qr); };
+    qr.onerror = function () { render(null); };
+    qr.src = 'icons/site-qr.png';
+
+    function roundRect(ctx, rx, ry, rw, rh, r) {
+      ctx.beginPath();
+      ctx.moveTo(rx + r, ry);
+      ctx.arcTo(rx + rw, ry, rx + rw, ry + rh, r);
+      ctx.arcTo(rx + rw, ry + rh, rx, ry + rh, r);
+      ctx.arcTo(rx, ry + rh, rx, ry, r);
+      ctx.arcTo(rx, ry, rx + rw, ry, r);
+      ctx.closePath();
+    }
+
+    function render(qrImg) {
+      var c = document.createElement('canvas'); c.width = W; c.height = H;
+      var x = c.getContext('2d');
+      var g = x.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#161a33'); g.addColorStop(0.55, '#0d1020'); g.addColorStop(1, '#0a0d1a');
+      x.fillStyle = g; x.fillRect(0, 0, W, H);
+      x.strokeStyle = 'rgba(201,168,106,0.5)'; x.lineWidth = 2; x.strokeRect(44, 44, W - 88, H - 88);
+      x.strokeStyle = 'rgba(201,168,106,0.22)'; x.lineWidth = 1; x.strokeRect(62, 62, W - 124, H - 124);
+      x.textAlign = 'center';
+      x.fillStyle = '#e8c877'; x.font = '600 84px "Noto Serif TC", serif';
+      x.fillText('神聖抽牌', W / 2, 330);
+      x.fillStyle = '#a8a08a'; x.font = '500 24px "Cormorant Garamond", serif';
+      x.fillText('S A C R E D   T H O T H   T A R O T', W / 2, 402);
+      x.fillStyle = '#c9a86a'; x.font = '400 30px "Cormorant Garamond", serif';
+      x.fillText('✦', W / 2, 470);
+
+      var maxW = W - 240;
+      function wrapLines(text) {
+        x.font = '400 46px "Noto Serif TC", serif';
+        var line = '', lines = [], i, ch;
+        for (i = 0; i < text.length; i++) { ch = text[i]; if (x.measureText(line + ch).width > maxW) { lines.push(line); line = ch; } else line += ch; }
+        if (line) lines.push(line);
+        return lines;
       }
-    }, 'image/png');
+      var sections = [];
+      if (quote) sections.push({ cap: '今日 · 一句話', lines: wrapLines(quote) });
+      if (healing) sections.push({ cap: '今日 · 療癒指引', lines: wrapLines(healing) });
+
+      // 寬鬆間距：標題與句子之間、每行之間都留白
+      var A_CAP = 36, G_CAP = 62, LINE = 94, SECGAP = 84, G_DATE = 84, A_DATE = 40;
+      var total = 0, i;
+      for (i = 0; i < sections.length; i++) {
+        total += A_CAP + G_CAP + sections[i].lines.length * LINE;
+        if (i < sections.length - 1) total += SECGAP;
+      }
+      total += G_DATE + A_DATE;
+
+      var regTop = 560, regBot = 1130;
+      var y = regTop + Math.max(0, ((regBot - regTop) - total) / 2);
+
+      for (i = 0; i < sections.length; i++) {
+        y += A_CAP;
+        x.fillStyle = '#c9a86a'; x.font = '500 30px "Noto Serif TC", serif';
+        x.fillText(sections[i].cap, W / 2, y);
+        y += G_CAP;
+        x.fillStyle = '#f2d99a'; x.font = '400 46px "Noto Serif TC", serif';
+        for (var k = 0; k < sections[i].lines.length; k++) { x.fillText(sections[i].lines[k], W / 2, y); y += LINE; }
+        if (i < sections.length - 1) y += SECGAP;
+      }
+      y += G_DATE;
+      x.fillStyle = '#d8b978'; x.font = '400 34px "Cormorant Garamond", serif';
+      x.fillText('— ' + dateStr + ' —', W / 2, y);
+
+      if (qrImg) {
+        var qs = 172, qx = W - 84 - qs, qy = H - 108 - qs;
+        x.drawImage(qrImg, qx, qy, qs, qs);
+        x.strokeStyle = 'rgba(216,185,120,0.6)'; x.lineWidth = 2;
+        roundRect(x, qx - 10, qy - 10, qs + 20, qs + 20, 12); x.stroke();
+        x.fillStyle = '#a8a08a'; x.font = '400 22px "Cormorant Garamond", serif';
+        x.fillText('掃描抽牌', qx + qs / 2, qy + qs + 36);
+      }
+
+      c.toBlob(function (blob) {
+        if (!blob) { self.shareToast('產生圖片失敗，請直接截圖保存 ✦'); return; }
+        var file = new File([blob], '今日療癒.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: '今日療癒' }).catch(function () {});
+        } else {
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a'); a.href = url; a.download = '今日療癒.png';
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+          self.shareToast('圖片已存到你的下載 ✦');
+        }
+      }, 'image/png');
+    }
   }
   setTarotMode(n) { this.setState({ tarotMode: n }); }
   setTarotSpread(m) { this.setState({ tarotSpread: m }); }
