@@ -684,7 +684,7 @@ class Component extends DCLogic {
       if (healing) sections.push({ cap: '今日 · 療癒指引', lines: wrapLines(healing) });
 
       // 寬鬆間距：標題與句子之間、每行之間都留白
-      var A_CAP = 36, G_CAP = 62, LINE = 94, SECGAP = 84, G_DATE = 84, A_DATE = 40;
+      var A_CAP = 36, G_CAP = 98, LINE = 94, SECGAP = 84, G_DATE = 84, A_DATE = 40;
       var blockH = 0, i;
       for (i = 0; i < sections.length; i++) {
         blockH += A_CAP + G_CAP + sections[i].lines.length * LINE;
