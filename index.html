@@ -748,18 +748,17 @@ class Component extends DCLogic {
   setTab(tab) { this.setState({ activeTab: tab }); }
   enterApp() { this.setState({ stage: 'app', activeTab: null, ycgSystem: null, chakraSystem: null }); }
   backHome() { this.setState({ stage: 'home' }); }
-  drawOneLiner() {
-    const q = ONELINERS[Math.floor(Math.random() * ONELINERS.length)];
-    this.setState({ homeQuote: q });
+  // 等機率抽一句；重抽時排除畫面上正在顯示的那句，避免「按了卻沒變」
+  pickLine(list, current) {
+    const pool = list.filter(q => q !== current);
+    return pool[Math.floor(Math.random() * pool.length)];
   }
-  drawHealing() {
-    const q = HEALING[Math.floor(Math.random() * HEALING.length)];
-    this.setState({ homeHealing: q });
-  }
+  drawOneLiner() { this.setState({ homeQuote: this.pickLine(ONELINERS, this.state.homeQuote) }); }
+  drawHealing() { this.setState({ homeHealing: this.pickLine(HEALING, this.state.homeHealing) }); }
   reroll() {
     const s = {};
-    if (this.state.homeQuote) s.homeQuote = ONELINERS[Math.floor(Math.random() * ONELINERS.length)];
-    if (this.state.homeHealing) s.homeHealing = HEALING[Math.floor(Math.random() * HEALING.length)];
+    if (this.state.homeQuote) s.homeQuote = this.pickLine(ONELINERS, this.state.homeQuote);
+    if (this.state.homeHealing) s.homeHealing = this.pickLine(HEALING, this.state.homeHealing);
     this.setState(s);
   }
   saveImage() {
@@ -987,12 +986,12 @@ class Component extends DCLogic {
     const { ZONES } = this.data;
     const draw = this.state.ycgSystem === 'flower' ? this.data.drawFlowers : this.data.drawRandom;
     const sorted = [...this.state.selectedZones].sort((a, b) => a - b);
-    let globalIdx = 0;
-    const results = sorted.map(zi => {
+    // 一次洗牌、一次抽齊：每個空間的牌都不重複，和脈輪、塔羅一致
+    const drawn = draw(sorted.length);
+    const results = sorted.map((zi, k) => {
       const z = ZONES[zi];
-      const cards = draw(1).map(c => {
-        const delay = `${0.1 + globalIdx * 0.12}s`;
-        globalIdx++;
+      const cards = [drawn[k]].map(c => {
+        const delay = `${0.1 + k * 0.12}s`;
         return {
           ...c,
           isFlower: !!c.isFlower,
@@ -1016,8 +1015,10 @@ class Component extends DCLogic {
   }
 
   divineIChing() {
-    const rand = () => String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
-    const groups = [rand(), rand(), rand()];
+    // 三組數字 001–999，每個數字機率相等，且三組互不重複
+    const picked = new Set();
+    while (picked.size < 3) picked.add(Math.floor(Math.random() * 999) + 1);
+    const groups = [...picked].map(n => String(n).padStart(3, '0'));
     const labels = ['第一組', '第二組', '第三組'];
     const g = groups.map((n, i) => ({ label: labels[i], number: n }));
     const lines = g.map(x => `${x.label}：${x.number}`).join('\n');
