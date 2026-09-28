@@ -537,6 +537,14 @@
         </sc-for>
       </div>
 
+      <label style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding:12px 14px; border:1px solid rgba(201,168,106,0.3); border-radius:3px; background:rgba(10,13,26,0.5);">
+        <span>
+          <span style="display:block; font-size:0.8rem; color:#e8dcc0; letter-spacing:0.12em;">匯款末五碼</span>
+          <span style="display:block; font-size:0.62rem; color:#a8a08a; letter-spacing:0.06em; margin-top:3px;">填好會一起帶進私訊裡</span>
+        </span>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" placeholder="＿＿＿＿＿" value="{{ coffeeLast5 }}" onChange="{{ setLast5 }}" aria-label="匯款末五碼" style="width:128px; box-sizing:border-box; padding:9px 10px; background:rgba(10,13,26,0.85); border:1px solid rgba(216,185,120,0.55); border-radius:2px; color:#f2d99a; font-family:'Cormorant Garamond',serif; font-size:17px; letter-spacing:0.3em; text-align:center; outline:none;">
+      </label>
+
       <div style="margin:22px 0 16px; padding:16px 16px 14px; border:1px solid rgba(216,185,120,0.5); border-radius:3px; background:linear-gradient(135deg, rgba(216,185,120,0.14), rgba(107,88,180,0.1)); box-shadow:0 0 22px rgba(216,185,120,0.1);">
         <div style="font-size:0.9rem; color:#f2d99a; letter-spacing:0.16em; margin-bottom:8px;">🎁 給你的小回禮</div>
         <div style="font-size:0.8rem; line-height:1.95; color:#e8dcc0; letter-spacing:0.05em;">心意 NT$150 以上的朋友，轉帳後私訊我匯款末五碼，我會為你繪製一幅專屬的「靈魂能量圖」🌌，<span style="color:#f2d99a;">7 天內送到你的私訊</span>。</div>
@@ -544,7 +552,7 @@
       </div>
 
       <a href="https://ig.me/m/sun_priestess_riva" target="{{ dmTarget }}" rel="noopener noreferrer" onClick="{{ dmRiva }}" style="display:block; box-sizing:border-box; width:100%; padding:14px 12px; text-align:center; text-decoration:none; background:linear-gradient(135deg, rgba(216,185,120,0.3), rgba(139,105,20,0.2)); border:1px solid #c9a86a; border-radius:2px; color:#f2d99a; font-size:0.9rem; letter-spacing:0.14em; box-shadow:0 0 20px rgba(216,185,120,0.18);">{{ dmLabel }}</a>
-      <div style="text-align:center; font-size:0.66rem; color:#a8a08a; letter-spacing:0.06em; line-height:1.7; margin-top:8px;">按下會自動複製私訊內容並打開 Riva 的 IG<br>若停在個人頁，按「發送訊息」再貼上、補上末五碼就好</div>
+      <div style="text-align:center; font-size:0.66rem; color:#a8a08a; letter-spacing:0.06em; line-height:1.7; margin-top:8px;">按下會自動複製私訊內容並打開 Riva 的 IG<br>若停在個人頁，按「發送訊息」再貼上就好<br>🔒 需先登入 Instagram，無痕模式會無法開啟私訊</div>
       <button onClick="{{ closeCoffee }}" style="display:block; margin:12px auto 0; padding:8px 18px; background:transparent; border:none; color:#a8a08a; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.2em; cursor:pointer;" style-hover="color:#d8b978;">下次再聊</button>
     </div>
     </div>
@@ -756,6 +764,7 @@ class Component extends DCLogic {
     coffeeOpen: false,
     coffeeTier: 0,
     coffeeBank: null,
+    coffeeLast5: '',
   };
 
   componentDidMount() {
@@ -1081,6 +1090,7 @@ class Component extends DCLogic {
     document.body.style.overflow = '';
   }
   pickCoffee(i) { this.setState({ coffeeTier: i }); }
+  setLast5(e) { this.setState({ coffeeLast5: e.target.value.replace(/\D/g, '').slice(0, 5) }); }
   copyCoffeeAmount() {
     const t = COFFEE_TIERS[this.state.coffeeTier];
     this.shareClipboard(String(t.amount))
@@ -1101,7 +1111,7 @@ class Component extends DCLogic {
     if (!t.amount) lines.push('心意金額：NT$＿＿＿');
     const b = COFFEE_BANKS[this.state.coffeeBank];
     lines.push(b ? `匯入帳戶：${b.bank}（${b.code}）` : '匯入帳戶：＿＿＿＿');
-    lines.push('匯款末五碼：＿＿＿＿＿');
+    lines.push(`匯款末五碼：${this.state.coffeeLast5 || '＿＿＿＿＿'}`);
     if (t.amount >= GIFT_MIN) lines.push('想領取我的靈魂能量圖 🌌');
     else if (!t.amount) lines.push(`（心意滿 NT$${GIFT_MIN} 的話，想領取靈魂能量圖 🌌）`);
     else lines.push('謝謝你的指引 🌙');
@@ -1169,6 +1179,7 @@ class Component extends DCLogic {
         coffeeOpen: false, coffeeTiers: [], coffeeBanks: [], coffeeAmountLabel: '', coffeeHasAmount: false,
         closeCoffee: () => this.closeCoffee(), copyCoffeeAmount: () => this.copyCoffeeAmount(), dmRiva: () => this.dmRiva(),
         dmTarget: IS_MOBILE ? '_self' : '_blank', dmLabel: '💌 私訊 Riva',
+        coffeeLast5: '', setLast5: e => this.setLast5(e),
         setYcgThoth: () => this.setYcgSystem('thoth'), setYcgFlower: () => this.setYcgSystem('flower'),
         setChakraThoth: () => this.setChakraSystem('thoth'), setChakraFlower: () => this.setChakraSystem('flower'),
         ycgSysThothBg: 'transparent', ycgSysThothBorder: 'rgba(201,168,106,0.3)', ycgSysThothColor: '#a8a08a',
@@ -1256,6 +1267,8 @@ class Component extends DCLogic {
       copyCoffeeAmount: () => this.copyCoffeeAmount(),
       dmRiva:           () => this.dmRiva(),
       dmTarget:         IS_MOBILE ? '_self' : '_blank',
+      coffeeLast5:      s.coffeeLast5,
+      setLast5:         e => this.setLast5(e),
       dmLabel: coffeeTier.amount >= GIFT_MIN ? '💌 私訊 Riva，領取靈魂能量圖' : '💌 私訊 Riva，告訴我你的心意',
       isHome: s.stage === 'home',
       isApp:  s.stage === 'app',
