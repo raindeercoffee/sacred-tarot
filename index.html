@@ -543,7 +543,7 @@
         <div style="font-size:0.68rem; color:#a8a08a; letter-spacing:0.08em; margin-top:8px;">✦ 由 Riva 以直覺與 AI 協作繪製</div>
       </div>
 
-      <a href="https://ig.me/m/sowilo_priestess_riva" target="_blank" rel="noopener noreferrer" onClick="{{ dmRiva }}" style="display:block; box-sizing:border-box; width:100%; padding:14px 12px; text-align:center; text-decoration:none; background:linear-gradient(135deg, rgba(216,185,120,0.3), rgba(139,105,20,0.2)); border:1px solid #c9a86a; border-radius:2px; color:#f2d99a; font-size:0.9rem; letter-spacing:0.14em; box-shadow:0 0 20px rgba(216,185,120,0.18);">💌 私訊 Riva，領取靈魂能量圖</a>
+      <a href="https://ig.me/m/sowilo_priestess_riva" target="{{ dmTarget }}" rel="noopener noreferrer" onClick="{{ dmRiva }}" style="display:block; box-sizing:border-box; width:100%; padding:14px 12px; text-align:center; text-decoration:none; background:linear-gradient(135deg, rgba(216,185,120,0.3), rgba(139,105,20,0.2)); border:1px solid #c9a86a; border-radius:2px; color:#f2d99a; font-size:0.9rem; letter-spacing:0.14em; box-shadow:0 0 20px rgba(216,185,120,0.18);">💌 私訊 Riva，領取靈魂能量圖</a>
       <div style="text-align:center; font-size:0.66rem; color:#a8a08a; letter-spacing:0.06em; line-height:1.7; margin-top:8px;">按下會自動複製私訊內容，到 IG 貼上、補上末五碼就好</div>
       <button onClick="{{ closeCoffee }}" style="display:block; margin:12px auto 0; padding:8px 18px; background:transparent; border:none; color:#a8a08a; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.2em; cursor:pointer;" style-hover="color:#d8b978;">下次再聊</button>
     </div>
@@ -570,6 +570,26 @@ function lighten(hex, amt = 0.35) {
 }
 
 const IG_DM_URL = 'https://ig.me/m/sowilo_priestess_riva';
+// 手機與 IG／Threads／LINE 內建瀏覽器：新分頁常被擋，且 ig.me 要同一頁點開才會跳進 IG App
+const IS_MOBILE = /Android|iPhone|iPad|iPod|Mobile|Instagram|Barcelona|FBAN|FBAV|Line\//i.test(navigator.userAgent)
+  || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
+
+// 同步複製（照 clipboard.js 的做法）：iPhone Safari 與 App 內建瀏覽器都認得，
+// 而且在點擊當下就完成，不怕接著跳頁
+function copyTextSync(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed; top:0; left:-9999px; font-size:16px; border:0; padding:0; margin:0;';
+  document.body.appendChild(ta);
+  ta.select();
+  ta.setSelectionRange(0, text.length);
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+  const sel = window.getSelection && window.getSelection();
+  if (sel) sel.removeAllRanges();
+  return ok;
+}
 
 // 為 Riva 斟一杯：杯子選項與匯款帳戶（帳戶同雨鹿焙煎所官網 remit.html）
 const COFFEE_TIERS = [
@@ -932,17 +952,9 @@ class Component extends DCLogic {
     }, 2600);
   }
   shareClipboard(text) {
+    if (copyTextSync(text)) return Promise.resolve();
     if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
-    return new Promise((resolve, reject) => {
-      try {
-        const ta = document.createElement('textarea');
-        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-        document.body.appendChild(ta); ta.focus(); ta.select();
-        const ok = document.execCommand('copy');
-        document.body.removeChild(ta);
-        ok ? resolve() : reject();
-      } catch (e) { reject(e); }
-    });
+    return Promise.reject(new Error('copy unsupported'));
   }
   shareOpen(url) { window.open(url, '_blank', 'noopener,noreferrer'); }
   shareCopy() {
@@ -1148,6 +1160,7 @@ class Component extends DCLogic {
         copyWithPrompt: () => this.copyWithPrompt(), openCoffee: () => this.openCoffee(),
         coffeeOpen: false, coffeeTiers: [], coffeeBanks: [], coffeeAmountLabel: '', coffeeHasAmount: false,
         closeCoffee: () => this.closeCoffee(), copyCoffeeAmount: () => this.copyCoffeeAmount(), dmRiva: () => this.dmRiva(),
+        dmTarget: IS_MOBILE ? '_self' : '_blank',
         setYcgThoth: () => this.setYcgSystem('thoth'), setYcgFlower: () => this.setYcgSystem('flower'),
         setChakraThoth: () => this.setChakraSystem('thoth'), setChakraFlower: () => this.setChakraSystem('flower'),
         ycgSysThothBg: 'transparent', ycgSysThothBorder: 'rgba(201,168,106,0.3)', ycgSysThothColor: '#a8a08a',
@@ -1233,6 +1246,7 @@ class Component extends DCLogic {
       closeCoffee:      () => this.closeCoffee(),
       copyCoffeeAmount: () => this.copyCoffeeAmount(),
       dmRiva:           () => this.dmRiva(),
+      dmTarget:         IS_MOBILE ? '_self' : '_blank',
       isHome: s.stage === 'home',
       isApp:  s.stage === 'app',
       showShare: s.stage === 'home' || s.activeTab === 'tarot' || s.activeTab === 'iching' || (s.activeTab === 'ycg' && !!s.ycgSystem) || (s.activeTab === 'chakra' && !!s.chakraSystem),
