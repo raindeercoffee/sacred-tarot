@@ -532,7 +532,7 @@
               <div style="font-size:0.7rem; color:#a8a08a; letter-spacing:0.08em;">{{ bank.bank }}（{{ bank.code }}）</div>
               <div style="font-family:'Cormorant Garamond',serif; font-size:1.02rem; color:#efe6d0; letter-spacing:0.08em; font-variant-numeric:tabular-nums; margin-top:1px;">{{ bank.acctLabel }}</div>
             </div>
-            <button onClick="{{ bank.onCopy }}" aria-label="複製{{ bank.bank }}帳號" style="flex:0 0 auto; padding:7px 12px; background:transparent; border:1px solid rgba(201,168,106,0.45); border-radius:2px; color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.72rem; letter-spacing:0.1em; cursor:pointer;" style-hover="border-color:#f2d99a; color:#f2d99a;">複製</button>
+            <button onClick="{{ bank.onCopy }}" aria-label="複製{{ bank.bank }}帳號" style="flex:0 0 auto; padding:7px 12px; background:transparent; border:1px solid rgba(201,168,106,0.45); border-radius:2px; color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.72rem; letter-spacing:0.1em; cursor:pointer;" style-hover="border-color:#f2d99a; color:#f2d99a;">{{ bank.copyLabel }}</button>
           </div>
         </sc-for>
       </div>
@@ -754,6 +754,7 @@ class Component extends DCLogic {
     chakraCopied: false,
     coffeeOpen: false,
     coffeeTier: 0,
+    coffeeBank: null,
   };
 
   componentDidMount() {
@@ -1087,6 +1088,7 @@ class Component extends DCLogic {
   }
   copyBank(i) {
     const b = COFFEE_BANKS[i];
+    this.setState({ coffeeBank: i });
     this.shareClipboard(b.acct)
       .then(() => this.shareToast(`已複製${b.bank}帳號 ✦`))
       .catch(() => this.shareToast('複製失敗，請長按手動選取 ✦'));
@@ -1096,6 +1098,8 @@ class Component extends DCLogic {
     const t = COFFEE_TIERS[this.state.coffeeTier];
     const lines = [`嗨 Riva ✨ 我剛剛為你斟了一杯「${t.name}」${t.amount ? `（NT$${t.amount}）` : ''} ☕`];
     if (!t.amount) lines.push('心意金額：NT$＿＿＿');
+    const b = COFFEE_BANKS[this.state.coffeeBank];
+    lines.push(b ? `匯入帳戶：${b.bank}（${b.code}）` : '匯入帳戶：＿＿＿＿');
     lines.push('匯款末五碼：＿＿＿＿＿', '想領取我的靈魂能量圖 🌌');
     const summary = this.summaryFor();
     if (summary) lines.push('', '我剛剛抽到的是：', summary);
@@ -1232,6 +1236,7 @@ class Component extends DCLogic {
       ...b,
       acctLabel: b.acct.replace(/(\d{4})(?=\d)/g, '$1 '),
       divider: i === 0 ? 'none' : '1px solid rgba(201,168,106,0.14)',
+      copyLabel: s.coffeeBank === i ? '✓ 已複製' : '複製',
       onCopy: () => this.copyBank(i),
     }));
     const coffeeTier = COFFEE_TIERS[s.coffeeTier];
