@@ -52,8 +52,12 @@
       .share-copy { grid-column: 1 / -1; }
       .share-actions > :not(.share-copy) { justify-self: center; }
     }
+    .ycg-flower-list { display: none; flex-direction: column; gap: 14px; }
     @media (max-width: 720px) {
       .ycg-results-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      /* 手機＋花精：改成像脈輪 × 花精的橫列 */
+      #ycg-results[data-flower="yes"] .ycg-results-grid { display: none; }
+      #ycg-results[data-flower="yes"] .ycg-flower-list { display: flex; }
     }
     @media (max-width: 360px) {
       .ycg-results-grid { grid-template-columns: 1fr; }
@@ -180,7 +184,20 @@
         </button>
 
         <sc-if value="{{ hasYcgResults }}" hint-placeholder-val="{{ false }}">
-          <div id="ycg-results" style="animation:fadeUp 0.5s ease; scroll-margin-top:48px;">
+          <div id="ycg-results" data-flower="{{ ycgFlowerAttr }}" style="animation:fadeUp 0.5s ease; scroll-margin-top:48px;">
+            <div class="ycg-flower-list">
+            <sc-for list="{{ ycgResults }}" as="fr" hint-placeholder-count="0">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:center; padding:16px 22px; border:1px solid rgba(201,168,106,0.28); border-radius:3px; background:linear-gradient(180deg, rgba(28,32,58,0.55), rgba(20,23,42,0.55)); box-shadow:0 6px 20px rgba(0,0,0,0.3);">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="font-size:1rem; line-height:1;">{{ fr.icon }}</div>
+                  <div style="font-family:'Noto Serif TC',serif; font-size:0.9rem; color:#efe6d0;">{{ fr.zh }}</div>
+                </div>
+                <sc-for list="{{ fr.cards }}" as="c" hint-placeholder-count="1">
+                  <div style="display:flex; align-items:center; gap:8px; font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:#f2d99a; font-style:italic; letter-spacing:0.08em;"><img src="{{ c.img }}" alt="{{ c.zh }}" style="width:34px; height:34px; flex:0 0 auto; filter:drop-shadow(0 0 5px rgba(216,185,120,0.5));"><span>{{ c.zh }}</span></div>
+                </sc-for>
+              </div>
+            </sc-for>
+            </div>
             <div class="ycg-results-grid">
             <sc-for list="{{ ycgResults }}" as="zr" hint-placeholder-count="0">
               <div style="min-width:0;">
@@ -1115,6 +1132,7 @@ class Component extends DCLogic {
         hasYcgSystem: false, hasChakraSystem: false,
         ycgDrawDisabled: true, ycgDrawOpacity: 0.35,
         chakraDrawDisabled: true, chakraDrawOpacity: 0.35,
+        ycgFlowerAttr: 'no',
         hasYcgResults: false, hasIchingResults: false, hasChakraResults: false, hasTarotResults: false,
         ycgResults: [], ichingGroups: [], chakraResults: [], tarotResults: [],
         ycgSummaryText: '', ichingSummaryText: '', chakraSummaryText: '', tarotSummaryText: '',
@@ -1296,6 +1314,7 @@ class Component extends DCLogic {
       chakraSysFlowerBorder: s.chakraSystem === 'flower' ? '#c9a86a'               : 'rgba(201,168,106,0.3)',
       chakraSysFlowerColor:  s.chakraSystem === 'flower' ? '#f2d99a'               : '#a8a08a',
       hasYcgResults: !!s.ycgResults,
+      ycgFlowerAttr: s.ycgSystem === 'flower' ? 'yes' : 'no',
       ycgResults: s.ycgResults || [],
       ycgSummaryText: s.ycgSummaryText,
       ycgCopyLabel: s.ycgCopied ? '✅ 已複製！' : '📋 複製文字',
