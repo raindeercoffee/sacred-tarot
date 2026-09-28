@@ -30,6 +30,7 @@
 ├── index.html          網站主檔案
 ├── manifest.json        PWA 設定（決定加入主畫面時的圖示與名稱）
 └── icons/
+    ├── icon.svg            圖示原稿（新月＋兩顆線條星，可再改色或重新輸出）
     ├── favicon.ico
     ├── icon-16.png
     ├── icon-32.png

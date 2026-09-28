@@ -11,20 +11,20 @@
   <title>神聖抽牌 · Sacred Thoth Tarot Oracle</title>
 
   <!-- Favicon -->
-  <link rel="icon" href="icons/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="icons/icon-48.png">
+  <link rel="icon" href="icons/favicon.ico?v=2" sizes="any">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png?v=2">
+  <link rel="icon" type="image/png" sizes="48x48" href="icons/icon-48.png?v=2">
 
   <!-- Add to Home Screen (iOS) -->
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="神聖抽牌">
 
   <!-- Add to Home Screen (Android / PWA) -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#8b6914">
+  <meta name="theme-color" content="#0a0d1a">
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -236,7 +236,7 @@
               <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:16px;">
                 <button onClick="{{ copyYcg }}" style="width:100%; max-width:300px; box-sizing:border-box; background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ ycgCopyLabel }}</button>
               <button onClick="{{ copyWithPrompt }}" style="width:100%; max-width:300px; box-sizing:border-box; background:transparent; border:1px solid rgba(201,168,106,0.45); color:#d8b978; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">📋 複製文字＋指令</button>
-              <button onClick="{{ contactMe }}" style="width:100%; max-width:300px; box-sizing:border-box; background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">☕️ 請我喝杯咖啡</button>
+              <button onClick="{{ openCoffee }}" style="width:100%; max-width:300px; box-sizing:border-box; background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">☕️ 為 Riva 斟一杯</button>
               </div>
             </div>
             <button onClick="{{ resetYcg }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
@@ -326,7 +326,7 @@
               <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:16px;">
                 <button onClick="{{ copyTarot }}" style="width:100%; max-width:300px; box-sizing:border-box; background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ tarotCopyLabel }}</button>
               <button onClick="{{ copyWithPrompt }}" style="width:100%; max-width:300px; box-sizing:border-box; background:transparent; border:1px solid rgba(201,168,106,0.45); color:#d8b978; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">📋 複製文字＋指令</button>
-              <button onClick="{{ contactMe }}" style="width:100%; max-width:300px; box-sizing:border-box; background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">☕️ 請我喝杯咖啡</button>
+              <button onClick="{{ openCoffee }}" style="width:100%; max-width:300px; box-sizing:border-box; background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">☕️ 為 Riva 斟一杯</button>
               </div>
             </div>
             <button onClick="{{ resetTarot }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
@@ -364,7 +364,7 @@
               <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:16px;">
                 <button onClick="{{ copyIching }}" style="width:100%; max-width:300px; box-sizing:border-box; background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ ichingCopyLabel }}</button>
               <button onClick="{{ copyWithPrompt }}" style="width:100%; max-width:300px; box-sizing:border-box; background:transparent; border:1px solid rgba(201,168,106,0.45); color:#d8b978; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">📋 複製文字＋指令</button>
-              <button onClick="{{ contactMe }}" style="width:100%; max-width:300px; box-sizing:border-box; background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">☕️ 請我喝杯咖啡</button>
+              <button onClick="{{ openCoffee }}" style="width:100%; max-width:300px; box-sizing:border-box; background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">☕️ 為 Riva 斟一杯</button>
               </div>
             </div>
             <button onClick="{{ resetIching }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新占卜</button>
@@ -434,7 +434,7 @@
             <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:16px;">
                 <button onClick="{{ copyChakra }}" style="width:100%; max-width:300px; box-sizing:border-box; background:transparent; border:1px solid rgba(201,168,106,0.3); color:#a8a08a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#d8b978; color:#f2d99a;">{{ chakraCopyLabel }}</button>
               <button onClick="{{ copyWithPrompt }}" style="width:100%; max-width:300px; box-sizing:border-box; background:transparent; border:1px solid rgba(201,168,106,0.45); color:#d8b978; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a;">📋 複製文字＋指令</button>
-              <button onClick="{{ contactMe }}" style="width:100%; max-width:300px; box-sizing:border-box; background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">☕️ 請我喝杯咖啡</button>
+              <button onClick="{{ openCoffee }}" style="width:100%; max-width:300px; box-sizing:border-box; background:linear-gradient(135deg, rgba(216,185,120,0.28), rgba(139,105,20,0.18)); border:1px solid #c9a86a; color:#f2d99a; padding:11px 18px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.14em; border-radius:2px; transition:all 0.25s;" style-hover="border-color:#f2d99a; box-shadow:0 0 16px rgba(216,185,120,0.3);">☕️ 為 Riva 斟一杯</button>
               </div>
           </div>
           <button onClick="{{ resetChakra }}" style="background:transparent; border:1px solid rgba(201,168,106,0.25); color:#a8a08a; padding:10px 28px; cursor:pointer; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.82rem; letter-spacing:0.22em; border-radius:2px; transition:all 0.3s; display:block; margin:24px auto 0; text-transform:uppercase;" style-hover="border-color:#d8b978; color:#f2d99a;">重新抽牌</button>
@@ -468,6 +468,69 @@
     </sc-if>
 
   </div>
+
+  <!-- 為 Riva 斟一杯：隨喜視窗 -->
+  <sc-if value="{{ coffeeOpen }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-modal="true" aria-label="為 Riva 斟一杯" style="position:fixed; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; padding:16px; box-sizing:border-box;">
+    <div onClick="{{ closeCoffee }}" style="position:absolute; inset:0; background:rgba(5,7,16,0.78); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); animation:fadeUp 0.25s ease;"></div>
+    <div style="position:relative; width:100%; max-width:440px; max-height:calc(100vh - 32px); overflow-y:auto; box-sizing:border-box; padding:30px 22px 22px; border:1px solid rgba(201,168,106,0.45); border-radius:4px; background:radial-gradient(ellipse 90% 45% at 50% 0%, rgba(216,185,120,0.12), transparent 70%), linear-gradient(180deg, #1a1e3a 0%, #0f1224 100%); box-shadow:0 18px 60px rgba(0,0,0,0.65), 0 0 40px rgba(216,185,120,0.12), inset 0 1px 0 rgba(255,240,200,0.1); animation:fadeUp 0.35s ease; font-family:'Noto Serif TC',serif; color:#efe6d0;">
+      <button onClick="{{ closeCoffee }}" aria-label="關閉" style="position:absolute; top:8px; right:8px; width:36px; height:36px; background:transparent; border:none; color:#a8a08a; font-size:1.1rem; cursor:pointer;" style-hover="color:#f2d99a;">✕</button>
+
+      <div style="text-align:center;">
+        <div style="color:#d8b978; font-size:0.9rem; letter-spacing:0.6em; padding-left:0.6em; opacity:0.75;">✧ ☾ ✧</div>
+        <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.3rem; color:#f2d99a; letter-spacing:0.2em; margin:10px 0 4px;">為 Riva 斟一杯</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:0.62rem; color:#a8a08a; letter-spacing:0.36em; text-transform:uppercase;">A Cup of Gratitude</div>
+        <p style="font-size:0.84rem; line-height:1.95; color:#e8dcc0; letter-spacing:0.06em; margin:16px 0 22px;">若這次的指引，為你帶來一點點光，<br>歡迎回贈一杯溫暖，<br>陪我繼續守著這片星空。🌙</p>
+      </div>
+
+      <div style="text-align:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.66rem; color:#a8a08a; letter-spacing:0.3em; margin-bottom:12px;">・ 選一杯心意 ・</div>
+      <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;">
+        <sc-for list="{{ coffeeTiers }}" as="tier" hint-placeholder-count="4">
+          <button onClick="{{ tier.onClick }}" aria-pressed="{{ tier.selected }}" style="min-width:0; padding:14px 8px 12px; background:{{ tier.bg }}; border:1px solid {{ tier.border }}; border-radius:3px; box-shadow:{{ tier.shadow }}; cursor:pointer; text-align:center; font-family:'Noto Serif TC',serif; transition:all 0.25s;" style-hover="border-color:#d8b978;">
+            <span style="display:block; font-size:1.5rem; line-height:1;">{{ tier.emoji }}</span>
+            <span style="display:block; margin-top:8px; font-size:0.92rem; color:{{ tier.color }}; letter-spacing:0.14em;">{{ tier.name }}</span>
+            <span style="display:block; margin-top:4px; font-size:0.66rem; color:#a8a08a; letter-spacing:0.08em;">{{ tier.desc }}</span>
+            <span style="display:block; margin-top:7px; font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:{{ tier.color }}; letter-spacing:0.1em;">{{ tier.priceLabel }}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin:14px 0 22px; padding:12px 14px; border:1px solid rgba(201,168,106,0.3); border-radius:3px; background:rgba(10,13,26,0.5);">
+        <div>
+          <div style="font-size:0.66rem; color:#a8a08a; letter-spacing:0.2em;">心意金額</div>
+          <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.25rem; color:#f2d99a; letter-spacing:0.08em; margin-top:2px;">{{ coffeeAmountLabel }}</div>
+        </div>
+        <sc-if value="{{ coffeeHasAmount }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ copyCoffeeAmount }}" style="flex:0 0 auto; padding:8px 14px; background:transparent; border:1px solid rgba(201,168,106,0.5); border-radius:2px; color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.12em; cursor:pointer;" style-hover="border-color:#f2d99a; color:#f2d99a;">複製金額</button>
+        </sc-if>
+      </div>
+
+      <div style="text-align:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.66rem; color:#a8a08a; letter-spacing:0.3em; margin-bottom:6px;">・ 轉帳帳戶 ・</div>
+      <div style="text-align:center; font-size:0.76rem; color:#c9b98a; letter-spacing:0.12em; margin-bottom:10px;">戶名　林＊婷</div>
+      <div style="border:1px solid rgba(201,168,106,0.25); border-radius:3px; background:rgba(10,13,26,0.45);">
+        <sc-for list="{{ coffeeBanks }}" as="bank" hint-placeholder-count="5">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-top:{{ bank.divider }};">
+            <div style="min-width:0;">
+              <div style="font-size:0.7rem; color:#a8a08a; letter-spacing:0.08em;">{{ bank.bank }}（{{ bank.code }}）</div>
+              <div style="font-family:'Cormorant Garamond',serif; font-size:1.02rem; color:#efe6d0; letter-spacing:0.08em; font-variant-numeric:tabular-nums; margin-top:1px;">{{ bank.acctLabel }}</div>
+            </div>
+            <button onClick="{{ bank.onCopy }}" aria-label="複製{{ bank.bank }}帳號" style="flex:0 0 auto; padding:7px 12px; background:transparent; border:1px solid rgba(201,168,106,0.45); border-radius:2px; color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.72rem; letter-spacing:0.1em; cursor:pointer;" style-hover="border-color:#f2d99a; color:#f2d99a;">複製</button>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="margin:22px 0 16px; padding:16px 16px 14px; border:1px solid rgba(216,185,120,0.5); border-radius:3px; background:linear-gradient(135deg, rgba(216,185,120,0.14), rgba(107,88,180,0.1)); box-shadow:0 0 22px rgba(216,185,120,0.1);">
+        <div style="font-size:0.9rem; color:#f2d99a; letter-spacing:0.16em; margin-bottom:8px;">🎁 給你的小回禮</div>
+        <div style="font-size:0.8rem; line-height:1.95; color:#e8dcc0; letter-spacing:0.05em;">心意 NT$60 以上的朋友，轉帳後私訊我匯款末五碼，我會為你繪製一幅專屬的「靈魂能量圖」🌌，<span style="color:#f2d99a;">7 天內送到你的私訊</span>。</div>
+        <div style="font-size:0.68rem; color:#a8a08a; letter-spacing:0.08em; margin-top:8px;">✦ 由 Riva 以直覺與 AI 協作繪製</div>
+      </div>
+
+      <a href="https://ig.me/m/sowilo_priestess_riva" target="_blank" rel="noopener noreferrer" onClick="{{ dmRiva }}" style="display:block; box-sizing:border-box; width:100%; padding:14px 12px; text-align:center; text-decoration:none; background:linear-gradient(135deg, rgba(216,185,120,0.3), rgba(139,105,20,0.2)); border:1px solid #c9a86a; border-radius:2px; color:#f2d99a; font-size:0.9rem; letter-spacing:0.14em; box-shadow:0 0 20px rgba(216,185,120,0.18);">💌 私訊 Riva，領取靈魂能量圖</a>
+      <div style="text-align:center; font-size:0.66rem; color:#a8a08a; letter-spacing:0.06em; line-height:1.7; margin-top:8px;">按下會自動複製私訊內容，到 IG 貼上、補上末五碼就好</div>
+      <button onClick="{{ closeCoffee }}" style="display:block; margin:12px auto 0; padding:8px 18px; background:transparent; border:none; color:#a8a08a; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.2em; cursor:pointer;" style-hover="color:#d8b978;">稍後再說</button>
+    </div>
+  </div>
+  </sc-if>
 </div>
 
 </x-dc>
@@ -487,7 +550,22 @@ function lighten(hex, amt = 0.35) {
   return '#' + [nr, ng, nb].map(x => x.toString(16).padStart(2, '0')).join('');
 }
 
-const IG_URL = 'https://www.instagram.com/sowilo_priestess_riva';
+const IG_DM_URL = 'https://ig.me/m/sowilo_priestess_riva';
+
+// 為 Riva 斟一杯：杯子選項與匯款帳戶（帳戶同雨鹿焙煎所官網 remit.html）
+const COFFEE_TIERS = [
+  { emoji: '🍂', name: '林間美式', desc: '一口清醒的晨光',   amount: 60 },
+  { emoji: '🦌', name: '小鹿拿鐵', desc: '被溫柔接住的時光', amount: 100 },
+  { emoji: '🌲', name: '森林手沖', desc: '慢慢靜下來的午後', amount: 150 },
+  { emoji: '🍄', name: '隨心一杯', desc: '心意不論大小',     amount: 0 },
+];
+const COFFEE_BANKS = [
+  { bank: '國泰世華銀行',       code: '013', acct: '263506062919' },
+  { bank: '玉山銀行',           code: '808', acct: '0129979157410' },
+  { bank: '中國信託銀行',       code: '822', acct: '112540233199' },
+  { bank: 'LINE Bank 連線銀行', code: '824', acct: '111015172691' },
+  { bank: '中華郵政',           code: '700', acct: '00216540088755' },
+];
 
 const PROMPTS = {
   ycg_thoth: `你是一位溫柔且充滿鼓勵的塔羅師，總是帶著開明而健康的視角看待世間。請依據「小木屋」所對應的每個空間，並以托特塔羅為解析依據，針對占卜者近期的現實狀況給予具體分析（如金錢財富、貴人人脈、事業、人際、感情、健康等實際面向）。小木屋沿用元辰宮的傳統意涵：「夥伴」＝貴人與人脈、「小溪」＝情緒與情感、「金幣」＝財富與金錢、「壁爐」＝人際與家庭、「遠方」＝外在環境與際遇，其餘空間照元辰宮原意。請不要帶有刻板印象，針對每一個部分都給予溫柔的解讀，無須解釋牌義，仍以森林、動物與遊戲的可愛比喻讓文字親切，但解讀內容要貼近真實生活。
@@ -635,6 +713,8 @@ class Component extends DCLogic {
     chakraResults: null,
     chakraSummaryText: '',
     chakraCopied: false,
+    coffeeOpen: false,
+    coffeeTier: 0,
   };
 
   componentDidMount() {
@@ -642,6 +722,8 @@ class Component extends DCLogic {
       this.data = mod;
       this.setState({ ready: true, selectedChakras: mod.CHAKRAS.map((_, i) => i) });
     });
+    this._onCoffeeKey = e => { if (e.key === 'Escape' && this.state.coffeeOpen) this.closeCoffee(); };
+    document.addEventListener('keydown', this._onCoffeeKey);
   }
 
   setTab(tab) { this.setState({ activeTab: tab }); }
@@ -955,8 +1037,40 @@ class Component extends DCLogic {
     setTimeout(() => this.setState({ chakraCopied: false }), 2000);
   }
 
-  // ── CTA：複製文字＋指令、請我喝杯咖啡 ──
-  contactMe() { this.shareOpen(IG_URL); }
+  // ── CTA：複製文字＋指令、為 Riva 斟一杯 ──
+  openCoffee() {
+    this.setState({ coffeeOpen: true });
+    document.body.style.overflow = 'hidden';
+  }
+  closeCoffee() {
+    this.setState({ coffeeOpen: false });
+    document.body.style.overflow = '';
+  }
+  pickCoffee(i) { this.setState({ coffeeTier: i }); }
+  copyCoffeeAmount() {
+    const t = COFFEE_TIERS[this.state.coffeeTier];
+    this.shareClipboard(String(t.amount))
+      .then(() => this.shareToast(`已複製金額 ${t.amount} ✦`))
+      .catch(() => this.shareToast('複製失敗，請手動輸入金額 ✦'));
+  }
+  copyBank(i) {
+    const b = COFFEE_BANKS[i];
+    this.shareClipboard(b.acct)
+      .then(() => this.shareToast(`已複製${b.bank}帳號 ✦`))
+      .catch(() => this.shareToast('複製失敗，請長按手動選取 ✦'));
+  }
+  // 連結本身會開 IG 私訊；這裡同步先把私訊內容複製好
+  dmRiva() {
+    const t = COFFEE_TIERS[this.state.coffeeTier];
+    const lines = [`嗨 Riva ✨ 我剛剛為你斟了一杯「${t.name}」${t.amount ? `（NT$${t.amount}）` : ''} ☕`];
+    if (!t.amount) lines.push('心意金額：NT$＿＿＿');
+    lines.push('匯款末五碼：＿＿＿＿＿', '想領取我的靈魂能量圖 🌌');
+    const summary = this.summaryFor();
+    if (summary) lines.push('', '我剛剛抽到的是：', summary);
+    this.shareClipboard(lines.join('\n'))
+      .then(() => this.shareToast('已複製私訊內容，到 IG 貼上就好 ✦'))
+      .catch(() => {});
+  }
   promptFor() {
     const s = this.state;
     if (s.activeTab === 'ycg')    return s.ycgSystem === 'flower' ? PROMPTS.ycg_flower : PROMPTS.ycg_thoth;
@@ -1010,7 +1124,9 @@ class Component extends DCLogic {
         spreadRandomBg: 'transparent', spreadRandomBorder: 'rgba(201,168,106,0.3)', spreadRandomColor: '#a8a08a',
         shareCopy: () => this.shareCopy(), shareLine: () => this.shareLine(),
         shareThreads: () => this.shareThreads(), shareIg: () => this.shareIg(),
-        copyWithPrompt: () => this.copyWithPrompt(), contactMe: () => this.contactMe(),
+        copyWithPrompt: () => this.copyWithPrompt(), openCoffee: () => this.openCoffee(),
+        coffeeOpen: false, coffeeTiers: [], coffeeBanks: [], coffeeAmountLabel: '', coffeeHasAmount: false,
+        closeCoffee: () => this.closeCoffee(), copyCoffeeAmount: () => this.copyCoffeeAmount(), dmRiva: () => this.dmRiva(),
         setYcgThoth: () => this.setYcgSystem('thoth'), setYcgFlower: () => this.setYcgSystem('flower'),
         setChakraThoth: () => this.setChakraSystem('thoth'), setChakraFlower: () => this.setChakraSystem('flower'),
         ycgSysThothBg: 'transparent', ycgSysThothBorder: 'rgba(201,168,106,0.3)', ycgSysThothColor: '#a8a08a',
@@ -1066,8 +1182,36 @@ class Component extends DCLogic {
       };
     });
 
+    const coffeeTiers = COFFEE_TIERS.map((t, i) => {
+      const selected = s.coffeeTier === i;
+      return {
+        ...t, selected,
+        priceLabel: t.amount ? `NT$${t.amount}` : '隨喜',
+        bg: selected ? 'linear-gradient(135deg, rgba(216,185,120,0.24), rgba(139,105,20,0.16))' : 'linear-gradient(180deg, rgba(28,32,58,0.6), rgba(20,23,42,0.6))',
+        border: selected ? '#d8b978' : 'rgba(201,168,106,0.28)',
+        color: selected ? '#f2d99a' : '#c9b98a',
+        shadow: selected ? '0 0 20px rgba(216,185,120,0.28), inset 0 1px 0 rgba(255,240,200,0.12)' : '0 4px 14px rgba(0,0,0,0.3)',
+        onClick: () => this.pickCoffee(i),
+      };
+    });
+    const coffeeBanks = COFFEE_BANKS.map((b, i) => ({
+      ...b,
+      acctLabel: b.acct.replace(/(\d{4})(?=\d)/g, '$1 '),
+      divider: i === 0 ? 'none' : '1px solid rgba(201,168,106,0.14)',
+      onCopy: () => this.copyBank(i),
+    }));
+    const coffeeTier = COFFEE_TIERS[s.coffeeTier];
+
     return {
       tabs, zones, chakras,
+      coffeeOpen: s.coffeeOpen,
+      coffeeTiers, coffeeBanks,
+      coffeeAmountLabel: coffeeTier.amount ? `NT$${coffeeTier.amount}` : '隨你的心意 ✦',
+      coffeeHasAmount: !!coffeeTier.amount,
+      openCoffee:       () => this.openCoffee(),
+      closeCoffee:      () => this.closeCoffee(),
+      copyCoffeeAmount: () => this.copyCoffeeAmount(),
+      dmRiva:           () => this.dmRiva(),
       isHome: s.stage === 'home',
       isApp:  s.stage === 'app',
       showShare: s.stage === 'home' || s.activeTab === 'tarot' || s.activeTab === 'iching' || (s.activeTab === 'ycg' && !!s.ycgSystem) || (s.activeTab === 'chakra' && !!s.chakraSystem),
@@ -1133,7 +1277,6 @@ class Component extends DCLogic {
       resetChakra:  () => this.resetChakra(),
       copyChakra:   () => this.copyChakra(),
       copyWithPrompt: () => this.copyWithPrompt(),
-      contactMe:      () => this.contactMe(),
       setYcgThoth:    () => this.setYcgSystem('thoth'),
       setYcgFlower:   () => this.setYcgSystem('flower'),
       setChakraThoth:  () => this.setChakraSystem('thoth'),

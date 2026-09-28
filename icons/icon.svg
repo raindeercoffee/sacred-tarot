@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e2a8"/><stop offset=".55" stop-color="#d8b978"/><stop offset="1" stop-color="#a88432"/></linearGradient><radialGradient id="bg" cx=".5" cy=".38" r=".75"><stop offset="0" stop-color="#232852"/><stop offset=".55" stop-color="#12152b"/><stop offset="1" stop-color="#0a0d1a"/></radialGradient>
+<radialGradient id="halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#d8b978" stop-opacity=".22"/><stop offset="1" stop-color="#d8b978" stop-opacity="0"/></radialGradient>
+<linearGradient id="lnL" x1="0" x2="1"><stop offset="0" stop-color="#c9a86a" stop-opacity="0"/><stop offset="1" stop-color="#c9a86a" stop-opacity=".85"/></linearGradient>
+<linearGradient id="lnR" x1="0" x2="1"><stop offset="0" stop-color="#c9a86a" stop-opacity=".85"/><stop offset="1" stop-color="#c9a86a" stop-opacity="0"/></linearGradient>
+<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/>
+<circle cx="256" cy="256" r="170" fill="url(#halo)"/>
+<circle cx="92" cy="120" r="2.2" fill="#fff4d6" opacity="0.55"/><circle cx="420" cy="104" r="2" fill="#fff4d6" opacity="0.5"/><circle cx="126" cy="402" r="1.8" fill="#fff4d6" opacity="0.45"/><circle cx="396" cy="396" r="2.4" fill="#fff4d6" opacity="0.55"/><circle cx="206" cy="70" r="1.6" fill="#fff4d6" opacity="0.4"/><circle cx="330" cy="452" r="1.6" fill="#fff4d6" opacity="0.4"/><circle cx="462" cy="262" r="1.4" fill="#fff4d6" opacity="0.35"/><circle cx="50" cy="262" r="1.4" fill="#fff4d6" opacity="0.35"/>
+<rect x="22" y="254.75" width="44" height="2.5" fill="url(#lnL)"/>
+<rect x="446" y="254.75" width="44" height="2.5" fill="url(#lnR)"/>
+<g fill="none" stroke="url(#g)" stroke-linejoin="round" filter="url(#glow)">
+<path d="M371.77 304.99 A104 104 0 1 1 270.37 156.28 A90 90 0 0 0 371.77 304.99Z" stroke-width="7"/>
+<path d="M110.00 226.00 Q114.80 251.20 140.00 256.00 Q114.80 260.80 110.00 286.00 Q105.20 260.80 80.00 256.00 Q105.20 251.20 110.00 226.00Z" stroke-width="4.5"/><path d="M402.00 226.00 Q406.80 251.20 432.00 256.00 Q406.80 260.80 402.00 286.00 Q397.20 260.80 372.00 256.00 Q397.20 251.20 402.00 226.00Z" stroke-width="4.5"/>
+</g>
+<path d="M256.00 93.00 Q258.60 103.40 269.00 106.00 Q258.60 108.60 256.00 119.00 Q253.40 108.60 243.00 106.00 Q253.40 103.40 256.00 93.00Z" fill="url(#g)" filter="url(#glow)"/>
+</svg>
