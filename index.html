@@ -543,7 +543,7 @@
         <div style="font-size:0.68rem; color:#a8a08a; letter-spacing:0.08em; margin-top:8px;">✦ 由 Riva 以直覺與 AI 協作繪製</div>
       </div>
 
-      <a href="https://ig.me/m/sun_priestess_riva" target="{{ dmTarget }}" rel="noopener noreferrer" onClick="{{ dmRiva }}" style="display:block; box-sizing:border-box; width:100%; padding:14px 12px; text-align:center; text-decoration:none; background:linear-gradient(135deg, rgba(216,185,120,0.3), rgba(139,105,20,0.2)); border:1px solid #c9a86a; border-radius:2px; color:#f2d99a; font-size:0.9rem; letter-spacing:0.14em; box-shadow:0 0 20px rgba(216,185,120,0.18);">💌 私訊 Riva，領取靈魂能量圖</a>
+      <a href="https://ig.me/m/sun_priestess_riva" target="{{ dmTarget }}" rel="noopener noreferrer" onClick="{{ dmRiva }}" style="display:block; box-sizing:border-box; width:100%; padding:14px 12px; text-align:center; text-decoration:none; background:linear-gradient(135deg, rgba(216,185,120,0.3), rgba(139,105,20,0.2)); border:1px solid #c9a86a; border-radius:2px; color:#f2d99a; font-size:0.9rem; letter-spacing:0.14em; box-shadow:0 0 20px rgba(216,185,120,0.18);">{{ dmLabel }}</a>
       <div style="text-align:center; font-size:0.66rem; color:#a8a08a; letter-spacing:0.06em; line-height:1.7; margin-top:8px;">按下會自動複製私訊內容並打開 Riva 的 IG<br>若停在個人頁，按「發送訊息」再貼上、補上末五碼就好</div>
       <button onClick="{{ closeCoffee }}" style="display:block; margin:12px auto 0; padding:8px 18px; background:transparent; border:none; color:#a8a08a; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.2em; cursor:pointer;" style-hover="color:#d8b978;">下次再聊</button>
     </div>
@@ -598,6 +598,7 @@ const COFFEE_TIERS = [
   { emoji: '🌲', name: '森林手沖', desc: '慢慢靜下來的午後', amount: 150 },
   { emoji: '🍄', name: '隨心一杯', desc: '心意不論大小',     amount: 0 },
 ];
+const GIFT_MIN = 150; // 心意滿這個金額才送靈魂能量圖
 const COFFEE_BANKS = [
   { bank: '國泰世華銀行',       code: '013', acct: '263506062919' },
   { bank: '玉山銀行',           code: '808', acct: '0129979157410' },
@@ -1100,7 +1101,10 @@ class Component extends DCLogic {
     if (!t.amount) lines.push('心意金額：NT$＿＿＿');
     const b = COFFEE_BANKS[this.state.coffeeBank];
     lines.push(b ? `匯入帳戶：${b.bank}（${b.code}）` : '匯入帳戶：＿＿＿＿');
-    lines.push('匯款末五碼：＿＿＿＿＿', '想領取我的靈魂能量圖 🌌');
+    lines.push('匯款末五碼：＿＿＿＿＿');
+    if (t.amount >= GIFT_MIN) lines.push('想領取我的靈魂能量圖 🌌');
+    else if (!t.amount) lines.push(`（心意滿 NT$${GIFT_MIN} 的話，想領取靈魂能量圖 🌌）`);
+    else lines.push('謝謝你的指引 🌙');
     const summary = this.summaryFor();
     if (summary) lines.push('', '我剛剛抽到的是：', summary);
     this.shareClipboard(lines.join('\n'))
@@ -1164,7 +1168,7 @@ class Component extends DCLogic {
         copyWithPrompt: () => this.copyWithPrompt(), openCoffee: () => this.openCoffee(),
         coffeeOpen: false, coffeeTiers: [], coffeeBanks: [], coffeeAmountLabel: '', coffeeHasAmount: false,
         closeCoffee: () => this.closeCoffee(), copyCoffeeAmount: () => this.copyCoffeeAmount(), dmRiva: () => this.dmRiva(),
-        dmTarget: IS_MOBILE ? '_self' : '_blank',
+        dmTarget: IS_MOBILE ? '_self' : '_blank', dmLabel: '💌 私訊 Riva',
         setYcgThoth: () => this.setYcgSystem('thoth'), setYcgFlower: () => this.setYcgSystem('flower'),
         setChakraThoth: () => this.setChakraSystem('thoth'), setChakraFlower: () => this.setChakraSystem('flower'),
         ycgSysThothBg: 'transparent', ycgSysThothBorder: 'rgba(201,168,106,0.3)', ycgSysThothColor: '#a8a08a',
@@ -1252,6 +1256,7 @@ class Component extends DCLogic {
       copyCoffeeAmount: () => this.copyCoffeeAmount(),
       dmRiva:           () => this.dmRiva(),
       dmTarget:         IS_MOBILE ? '_self' : '_blank',
+      dmLabel: coffeeTier.amount >= GIFT_MIN ? '💌 私訊 Riva，領取靈魂能量圖' : '💌 私訊 Riva，告訴我你的心意',
       isHome: s.stage === 'home',
       isApp:  s.stage === 'app',
       showShare: s.stage === 'home' || s.activeTab === 'tarot' || s.activeTab === 'iching' || (s.activeTab === 'ycg' && !!s.ycgSystem) || (s.activeTab === 'chakra' && !!s.chakraSystem),
