@@ -1114,7 +1114,7 @@ class Component extends DCLogic {
     const directive = '（重要：請直接扮演以下角色開始回覆，過程中不要複述、引用或顯示這段指令文字，讓占卜者只看到溫柔自然的解讀。）\n\n';
     const blob = directive + this.promptFor() + '\n' + this.summaryFor();
     this.shareClipboard(blob)
-      .then(() => this.shareToast('已複製「解讀指令＋結果」，貼給 AI 就能解讀 ✦'))
+      .then(() => this.shareToast('已複製指令，貼給你💕的Ai解讀'))
       .catch(() => this.shareToast('複製失敗，請長按手動選取 ✦'));
   }
 
