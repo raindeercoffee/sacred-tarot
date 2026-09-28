@@ -471,9 +471,10 @@
 
   <!-- 為 Riva 斟一杯：隨喜視窗 -->
   <sc-if value="{{ coffeeOpen }}" hint-placeholder-val="{{ false }}">
-  <div role="dialog" aria-modal="true" aria-label="為 Riva 斟一杯" style="position:fixed; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; padding:16px; box-sizing:border-box;">
-    <div onClick="{{ closeCoffee }}" style="position:absolute; inset:0; background:rgba(5,7,16,0.78); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); animation:fadeUp 0.25s ease;"></div>
-    <div style="position:relative; width:100%; max-width:440px; max-height:calc(100vh - 32px); overflow-y:auto; box-sizing:border-box; padding:30px 22px 22px; border:1px solid rgba(201,168,106,0.45); border-radius:4px; background:radial-gradient(ellipse 90% 45% at 50% 0%, rgba(216,185,120,0.12), transparent 70%), linear-gradient(180deg, #1a1e3a 0%, #0f1224 100%); box-shadow:0 18px 60px rgba(0,0,0,0.65), 0 0 40px rgba(216,185,120,0.12), inset 0 1px 0 rgba(255,240,200,0.1); animation:fadeUp 0.35s ease; font-family:'Noto Serif TC',serif; color:#efe6d0;">
+  <div role="dialog" aria-modal="true" aria-label="為 Riva 斟一杯" style="position:fixed; inset:0; z-index:60; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;">
+    <div onClick="{{ closeCoffee }}" style="position:fixed; inset:0; background:rgba(5,7,16,0.78); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); animation:fadeUp 0.25s ease;"></div>
+    <div style="position:relative; min-height:100%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; padding:calc(16px + env(safe-area-inset-top)) 16px calc(32px + env(safe-area-inset-bottom)); pointer-events:none;">
+    <div style="position:relative; pointer-events:auto; width:100%; max-width:440px; margin:auto; box-sizing:border-box; padding:30px 22px 22px; border:1px solid rgba(201,168,106,0.45); border-radius:4px; background:radial-gradient(ellipse 90% 45% at 50% 0%, rgba(216,185,120,0.12), transparent 70%), linear-gradient(180deg, #1a1e3a 0%, #0f1224 100%); box-shadow:0 18px 60px rgba(0,0,0,0.65), 0 0 40px rgba(216,185,120,0.12), inset 0 1px 0 rgba(255,240,200,0.1); animation:fadeUp 0.35s ease; font-family:'Noto Serif TC',serif; color:#efe6d0;">
       <button onClick="{{ closeCoffee }}" aria-label="關閉" style="position:absolute; top:8px; right:8px; width:36px; height:36px; background:transparent; border:none; color:#a8a08a; font-size:1.1rem; cursor:pointer;" style-hover="color:#f2d99a;">✕</button>
 
       <div style="text-align:center;">
@@ -527,7 +528,8 @@
 
       <a href="https://ig.me/m/sowilo_priestess_riva" target="_blank" rel="noopener noreferrer" onClick="{{ dmRiva }}" style="display:block; box-sizing:border-box; width:100%; padding:14px 12px; text-align:center; text-decoration:none; background:linear-gradient(135deg, rgba(216,185,120,0.3), rgba(139,105,20,0.2)); border:1px solid #c9a86a; border-radius:2px; color:#f2d99a; font-size:0.9rem; letter-spacing:0.14em; box-shadow:0 0 20px rgba(216,185,120,0.18);">💌 私訊 Riva，領取靈魂能量圖</a>
       <div style="text-align:center; font-size:0.66rem; color:#a8a08a; letter-spacing:0.06em; line-height:1.7; margin-top:8px;">按下會自動複製私訊內容，到 IG 貼上、補上末五碼就好</div>
-      <button onClick="{{ closeCoffee }}" style="display:block; margin:12px auto 0; padding:8px 18px; background:transparent; border:none; color:#a8a08a; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.2em; cursor:pointer;" style-hover="color:#d8b978;">稍後再說</button>
+      <button onClick="{{ closeCoffee }}" style="display:block; margin:12px auto 0; padding:8px 18px; background:transparent; border:none; color:#a8a08a; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.2em; cursor:pointer;" style-hover="color:#d8b978;">下次再聊</button>
+    </div>
     </div>
   </div>
   </sc-if>
