@@ -512,7 +512,7 @@
         <div style="color:#d8b978; font-size:0.9rem; letter-spacing:0.6em; padding-left:0.6em; opacity:0.75;">✧ ☾ ✧</div>
         <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.3rem; color:#f2d99a; letter-spacing:0.2em; margin:10px 0 4px;">為 Riva 斟一杯</div>
         <div style="font-family:'Cormorant Garamond',serif; font-size:0.62rem; color:#a8a08a; letter-spacing:0.36em; text-transform:uppercase;">A Cup of Gratitude</div>
-        <p style="font-size:0.84rem; line-height:1.95; color:#e8dcc0; letter-spacing:0.06em; margin:16px 0 22px;">若這次的指引，為你帶來一點點光，<br>歡迎回贈一杯溫暖，<br>陪我繼續守著這片星空。🌙</p>
+        <p style="font-size:clamp(0.64rem, 3.1vw, 0.74rem); line-height:1.8; color:#e8dcc0; letter-spacing:0.03em; white-space:nowrap; margin:14px 0 20px;">若這次的指引為你帶來一點光，歡迎回贈一杯溫暖 🌙</p>
       </div>
 
       <div style="text-align:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.66rem; color:#a8a08a; letter-spacing:0.3em; margin-bottom:12px;">・ 選一杯心意 ・</div>
@@ -526,6 +526,7 @@
           </button>
         </sc-for>
       </div>
+      <button onClick="{{ coffeeToReading }}" style="display:block; width:100%; box-sizing:border-box; margin-top:10px; padding:11px; background:transparent; border:1px solid rgba(201,168,106,0.5); border-radius:2px; color:#e8d4a0; font-family:'Noto Serif TC',serif; font-size:0.84rem; letter-spacing:0.12em; cursor:pointer; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a; background:rgba(216,185,120,0.08);"><span class="forest-icon sm forest-tree" aria-hidden="true"></span>真人解讀・與 Riva 相約林間</button>
 
       <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin:14px 0 22px; padding:10px 14px; border:1px solid rgba(201,168,106,0.3); border-radius:3px; background:rgba(10,13,26,0.5);">
         <div style="display:flex; align-items:baseline; gap:12px; min-width:0;">
@@ -557,15 +558,14 @@
           </div>
           <button onClick="{{ copyBankAcct }}" aria-label="複製帳號" style="flex:0 0 auto; padding:8px 14px; background:transparent; border:1px solid rgba(201,168,106,0.5); border-radius:2px; color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.12em; cursor:pointer;" style-hover="border-color:#f2d99a; color:#f2d99a;">{{ coffeeBankCopyLabel }}</button>
         </div>
+        <label style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; padding-top:12px; border-top:1px solid rgba(201,168,106,0.16);">
+          <span>
+            <span style="display:block; font-size:0.8rem; color:#e8dcc0; letter-spacing:0.12em;">匯款末五碼</span>
+            <span style="display:block; font-size:0.62rem; color:#a8a08a; letter-spacing:0.06em; margin-top:3px;">填好會一起帶進私訊裡</span>
+          </span>
+          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" placeholder="＿＿＿＿＿" value="{{ coffeeLast5 }}" onChange="{{ setLast5 }}" aria-label="匯款末五碼" style="width:128px; box-sizing:border-box; padding:9px 10px; background:rgba(10,13,26,0.85); border:1px solid rgba(216,185,120,0.55); border-radius:2px; color:#f2d99a; font-family:'Cormorant Garamond',serif; font-size:17px; letter-spacing:0.3em; text-align:center; outline:none;">
+        </label>
       </div>
-
-      <label style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding:12px 14px; border:1px solid rgba(201,168,106,0.3); border-radius:3px; background:rgba(10,13,26,0.5);">
-        <span>
-          <span style="display:block; font-size:0.8rem; color:#e8dcc0; letter-spacing:0.12em;">匯款末五碼</span>
-          <span style="display:block; font-size:0.62rem; color:#a8a08a; letter-spacing:0.06em; margin-top:3px;">填好會一起帶進私訊裡</span>
-        </span>
-        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" placeholder="＿＿＿＿＿" value="{{ coffeeLast5 }}" onChange="{{ setLast5 }}" aria-label="匯款末五碼" style="width:128px; box-sizing:border-box; padding:9px 10px; background:rgba(10,13,26,0.85); border:1px solid rgba(216,185,120,0.55); border-radius:2px; color:#f2d99a; font-family:'Cormorant Garamond',serif; font-size:17px; letter-spacing:0.3em; text-align:center; outline:none;">
-      </label>
 
       <div style="margin:22px 0 16px; padding:16px 16px 14px; border:1px solid rgba(216,185,120,0.5); border-radius:3px; background:linear-gradient(135deg, rgba(216,185,120,0.14), rgba(107,88,180,0.1)); box-shadow:0 0 22px rgba(216,185,120,0.1);">
         <div style="font-size:0.9rem; color:#f2d99a; letter-spacing:0.16em; margin-bottom:8px;">🎁 給你的小回禮</div>
@@ -575,14 +575,6 @@
 
       <a href="https://ig.me/m/sun_priestess_riva" target="{{ dmTarget }}" rel="noopener noreferrer" onClick="{{ dmRiva }}" style="display:block; box-sizing:border-box; width:100%; padding:14px 12px; text-align:center; text-decoration:none; background:linear-gradient(135deg, rgba(216,185,120,0.3), rgba(139,105,20,0.2)); border:1px solid #c9a86a; border-radius:2px; color:#f2d99a; font-size:0.9rem; letter-spacing:0.14em; box-shadow:0 0 20px rgba(216,185,120,0.18);">{{ dmLabel }}</a>
       <div style="text-align:center; font-size:0.66rem; color:#a8a08a; letter-spacing:0.06em; line-height:1.7; margin-top:8px;">會自動複製私訊，停在個人頁就按「發送訊息」貼上<br>🔒 需先登入 Instagram，無痕模式無法私訊</div>
-      <div style="display:flex; align-items:center; gap:12px; margin:26px 0 12px;">
-        <div style="flex:1; height:1px; background:linear-gradient(90deg, transparent, rgba(201,168,106,0.5));"></div>
-        <span class="forest-icon sm forest-tree" aria-hidden="true" style="margin:0;"></span>
-        <div style="flex:1; height:1px; background:linear-gradient(90deg, rgba(201,168,106,0.5), transparent);"></div>
-      </div>
-      <div style="text-align:center; font-size:0.78rem; color:#c9b98a; letter-spacing:0.08em; line-height:1.8; margin-bottom:10px;">想找 Riva 親自聊聊？</div>
-      <button onClick="{{ coffeeToReading }}" style="display:block; width:100%; box-sizing:border-box; padding:12px; background:transparent; border:1px solid rgba(201,168,106,0.5); border-radius:2px; color:#e8d4a0; font-family:'Noto Serif TC',serif; font-size:0.84rem; letter-spacing:0.12em; cursor:pointer; transition:all 0.25s;" style-hover="border-color:#f2d99a; color:#f2d99a; background:rgba(216,185,120,0.08);"><span class="forest-icon sm forest-tree" aria-hidden="true"></span>真人解讀・與 Riva 相約林間</button>
-      <button onClick="{{ closeCoffee }}" style="display:block; margin:12px auto 0; padding:8px 18px; background:transparent; border:none; color:#a8a08a; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.2em; cursor:pointer;" style-hover="color:#d8b978;">下次再聊</button>
     </div>
     </div>
   </div>
