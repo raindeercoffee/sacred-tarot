@@ -527,10 +527,10 @@
         </sc-for>
       </div>
 
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin:14px 0 22px; padding:12px 14px; border:1px solid rgba(201,168,106,0.3); border-radius:3px; background:rgba(10,13,26,0.5);">
-        <div>
-          <div style="font-size:0.66rem; color:#a8a08a; letter-spacing:0.2em;">心意金額</div>
-          <div style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.25rem; color:#f2d99a; letter-spacing:0.08em; margin-top:2px;">{{ coffeeAmountLabel }}</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin:14px 0 22px; padding:10px 14px; border:1px solid rgba(201,168,106,0.3); border-radius:3px; background:rgba(10,13,26,0.5);">
+        <div style="display:flex; align-items:baseline; gap:12px; min-width:0;">
+          <span style="flex:0 0 auto; font-size:0.72rem; color:#a8a08a; letter-spacing:0.2em;">心意金額</span>
+          <span style="font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.25rem; color:#f2d99a; letter-spacing:0.08em;">{{ coffeeAmountLabel }}</span>
         </div>
         <sc-if value="{{ coffeeHasAmount }}" hint-placeholder-val="{{ true }}">
           <button onClick="{{ copyCoffeeAmount }}" style="flex:0 0 auto; padding:8px 14px; background:transparent; border:1px solid rgba(201,168,106,0.5); border-radius:2px; color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.12em; cursor:pointer;" style-hover="border-color:#f2d99a; color:#f2d99a;">複製金額</button>
