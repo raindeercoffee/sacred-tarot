@@ -52,6 +52,9 @@
       .share-copy { grid-column: 1 / -1; }
       .share-actions > :not(.share-copy) { justify-self: center; }
     }
+    .coffee-select { display: block; width: 100%; box-sizing: border-box; padding: 10px 36px 10px 12px; -webkit-appearance: none; appearance: none; background: rgba(10,13,26,0.85) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23d8b978' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center; border: 1px solid rgba(216,185,120,0.55); border-radius: 2px; color: #f2d99a; font-family: 'Noto Serif TC', serif; font-size: 16px; letter-spacing: 0.06em; outline: none; cursor: pointer; }
+    .coffee-select:focus-visible { border-color: #f2d99a; box-shadow: 0 0 0 2px rgba(242,217,154,0.25); }
+    .coffee-select option { background: #14172a; color: #efe6d0; }
     .ycg-flower-list { display: none; flex-direction: column; gap: 14px; }
     @media (max-width: 720px) {
       .ycg-results-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -529,16 +532,24 @@
 
       <div style="text-align:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.66rem; color:#a8a08a; letter-spacing:0.3em; margin-bottom:6px;">・ 轉帳帳戶 ・</div>
       <div style="text-align:center; font-size:0.76rem; color:#c9b98a; letter-spacing:0.12em; margin-bottom:10px;">戶名　林＊婷</div>
-      <div style="border:1px solid rgba(201,168,106,0.25); border-radius:3px; background:rgba(10,13,26,0.45);">
-        <sc-for list="{{ coffeeBanks }}" as="bank" hint-placeholder-count="5">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-top:{{ bank.divider }};">
-            <div style="min-width:0;">
-              <div style="font-size:0.7rem; color:#a8a08a; letter-spacing:0.08em;">{{ bank.bank }}（{{ bank.code }}）</div>
-              <div style="font-family:'Cormorant Garamond',serif; font-size:1.02rem; color:#efe6d0; letter-spacing:0.08em; font-variant-numeric:tabular-nums; margin-top:1px;">{{ bank.acctLabel }}</div>
-            </div>
-            <button onClick="{{ bank.onCopy }}" aria-label="複製{{ bank.bank }}帳號" style="flex:0 0 auto; padding:7px 12px; background:transparent; border:1px solid rgba(201,168,106,0.45); border-radius:2px; color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.72rem; letter-spacing:0.1em; cursor:pointer;" style-hover="border-color:#f2d99a; color:#f2d99a;">{{ bank.copyLabel }}</button>
+      <div style="border:1px solid rgba(201,168,106,0.25); border-radius:3px; background:rgba(10,13,26,0.45); padding:12px;">
+        <label style="display:block;">
+          <span style="display:block; font-size:0.7rem; color:#a8a08a; letter-spacing:0.12em; margin-bottom:6px;">轉帳銀行</span>
+          <select class="coffee-select" value="{{ coffeeBankValue }}" onChange="{{ pickBank }}" aria-label="選擇轉帳銀行">
+            <option value="0">國泰世華銀行（013）</option>
+            <option value="1">玉山銀行（808）</option>
+            <option value="2">中國信託銀行（822）</option>
+            <option value="3">LINE Bank 連線銀行（824）</option>
+            <option value="4">中華郵政（700）</option>
+          </select>
+        </label>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px;">
+          <div style="min-width:0;">
+            <div style="font-size:0.7rem; color:#a8a08a; letter-spacing:0.12em;">帳號</div>
+            <div style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:#efe6d0; letter-spacing:0.08em; font-variant-numeric:tabular-nums; margin-top:1px;">{{ coffeeAcctLabel }}</div>
           </div>
-        </sc-for>
+          <button onClick="{{ copyBankAcct }}" aria-label="複製帳號" style="flex:0 0 auto; padding:8px 14px; background:transparent; border:1px solid rgba(201,168,106,0.5); border-radius:2px; color:#d8b978; font-family:'Noto Serif TC',serif; font-size:0.76rem; letter-spacing:0.12em; cursor:pointer;" style-hover="border-color:#f2d99a; color:#f2d99a;">{{ coffeeBankCopyLabel }}</button>
+        </div>
       </div>
 
       <label style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding:12px 14px; border:1px solid rgba(201,168,106,0.3); border-radius:3px; background:rgba(10,13,26,0.5);">
@@ -821,7 +832,8 @@ class Component extends DCLogic {
     chakraCopied: false,
     coffeeOpen: false,
     coffeeTier: 0,
-    coffeeBank: null,
+    coffeeBank: 0,
+    coffeeBankCopied: false,
     coffeeLast5: '',
     guideOpen: false,
     guidePage: 0,
@@ -1177,9 +1189,10 @@ class Component extends DCLogic {
       .then(() => this.shareToast(`已複製金額 ${t.amount} ✦`))
       .catch(() => this.shareToast('複製失敗，請手動輸入金額 ✦'));
   }
+  pickBank(e) { this.setState({ coffeeBank: Number(e.target.value), coffeeBankCopied: false }); }
   copyBank(i) {
     const b = COFFEE_BANKS[i];
-    this.setState({ coffeeBank: i });
+    this.setState({ coffeeBank: i, coffeeBankCopied: true });
     this.shareClipboard(b.acct)
       .then(() => this.shareToast(`已複製${b.bank}帳號 ✦`))
       .catch(() => this.shareToast('複製失敗，請長按手動選取 ✦'));
@@ -1256,7 +1269,8 @@ class Component extends DCLogic {
         shareCopy: () => this.shareCopy(), shareLine: () => this.shareLine(),
         shareThreads: () => this.shareThreads(), shareIg: () => this.shareIg(),
         copyWithPrompt: () => this.copyWithPrompt(), openCoffee: () => this.openCoffee(),
-        coffeeOpen: false, coffeeTiers: [], coffeeBanks: [], coffeeAmountLabel: '', coffeeHasAmount: false,
+        coffeeOpen: false, coffeeTiers: [], coffeeAmountLabel: '', coffeeHasAmount: false,
+        coffeeBankValue: '0', coffeeAcctLabel: '', coffeeBankCopyLabel: '複製', pickBank: () => {}, copyBankAcct: () => {},
         closeCoffee: () => this.closeCoffee(), copyCoffeeAmount: () => this.copyCoffeeAmount(), dmRiva: () => this.dmRiva(),
         dmTarget: IS_MOBILE ? '_self' : '_blank', dmLabel: '💌 私訊 Riva',
         coffeeLast5: '', setLast5: e => this.setLast5(e),
@@ -1328,19 +1342,18 @@ class Component extends DCLogic {
         onClick: () => this.pickCoffee(i),
       };
     });
-    const coffeeBanks = COFFEE_BANKS.map((b, i) => ({
-      ...b,
-      acctLabel: b.acct.replace(/(\d{4})(?=\d)/g, '$1 '),
-      divider: i === 0 ? 'none' : '1px solid rgba(201,168,106,0.14)',
-      copyLabel: s.coffeeBank === i ? '✓ 已複製' : '複製',
-      onCopy: () => this.copyBank(i),
-    }));
+    const coffeeBank = COFFEE_BANKS[s.coffeeBank];
     const coffeeTier = COFFEE_TIERS[s.coffeeTier];
 
     return {
       tabs, zones, chakras,
       coffeeOpen: s.coffeeOpen,
-      coffeeTiers, coffeeBanks,
+      coffeeTiers,
+      coffeeBankValue: String(s.coffeeBank),
+      coffeeAcctLabel: coffeeBank.acct.replace(/(\d{4})(?=\d)/g, '$1 '),
+      coffeeBankCopyLabel: s.coffeeBankCopied ? '✓ 已複製' : '複製',
+      pickBank: e => this.pickBank(e),
+      copyBankAcct: () => this.copyBank(s.coffeeBank),
       coffeeAmountLabel: coffeeTier.amount ? `NT$${coffeeTier.amount}` : '隨你的心意 ✦',
       coffeeHasAmount: !!coffeeTier.amount,
       openCoffee:       () => this.openCoffee(),
