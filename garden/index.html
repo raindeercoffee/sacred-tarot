@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>呼吸花園</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #f4efe6; overflow: hidden;
+      font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif; }
+    #game { width: 100vw; height: 100vh; }
+    #login { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      background: #f4efe6; padding: 16px; box-sizing: border-box; }
+    #login .card { width: 100%; max-width: 340px; background: #fff; border: 2px solid #e2d6c4;
+      border-radius: 18px; padding: 28px 22px; box-sizing: border-box; text-align: center; }
+    #login h1 { margin: 0 0 6px; color: #5b4a3a; font-size: 30px; }
+    #login p { margin: 0 0 20px; color: #7a6a5a; font-size: 15px; }
+    #login input { width: 100%; box-sizing: border-box; margin-bottom: 12px; padding: 12px 14px;
+      font-size: 16px; border: 2px solid #e2d6c4; border-radius: 12px; outline: none; }
+    #login input:focus { border-color: #9bd3ae; }
+    #login button { width: 100%; padding: 13px; font-size: 17px; border: none; border-radius: 12px;
+      cursor: pointer; margin-top: 4px; }
+    #btnLogin { background: #6cc070; color: #fff; font-weight: bold; }
+    #btnSignup { background: none; color: #7a6a5a; text-decoration: underline; font-size: 15px !important; }
+    #msg { min-height: 22px; margin-top: 10px; color: #c0504d; font-size: 14px; }
+
+    /* 任務視窗 */
+    #task { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      background: rgba(91, 74, 58, 0.45); padding: 16px; box-sizing: border-box; }
+    #task .card { width: 100%; max-width: 360px; max-height: 100%; overflow-y: auto; background: #fff;
+      border-radius: 18px; padding: 22px 18px; box-sizing: border-box; text-align: center; }
+    #task h2 { margin: 0 0 6px; color: #5b4a3a; font-size: 22px; }
+    #task .sub { margin: 0 0 16px; color: #7a6a5a; font-size: 14px; }
+    #task .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #task .pick { padding: 14px 6px; font-size: 15px; border: 2px solid #e2d6c4; border-radius: 14px;
+      background: #fffaf2; color: #5b4a3a; cursor: pointer; }
+    #task .pick .em { display: block; font-size: 28px; margin-bottom: 4px; }
+    #task .flowers { display: flex; justify-content: center; gap: 6px; margin: 14px 0; flex-wrap: wrap; }
+    #task .dot { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.12); }
+    #task textarea { width: 100%; box-sizing: border-box; height: 110px; padding: 10px; font-size: 16px;
+      border: 2px solid #e2d6c4; border-radius: 12px; resize: none; font-family: inherit; }
+    #task .main { width: 100%; padding: 13px; margin-top: 14px; font-size: 17px; font-weight: bold;
+      border: none; border-radius: 12px; background: #6cc070; color: #fff; cursor: pointer; }
+    #task .back { width: 100%; padding: 10px; margin-top: 6px; font-size: 15px; border: none;
+      background: none; color: #7a6a5a; text-decoration: underline; cursor: pointer; }
+    #task .big { font-size: 56px; margin: 6px 0; }
+    #task .err { min-height: 20px; color: #c0504d; font-size: 14px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div id="game"></div>
+  <div id="login">
+    <div class="card">
+      <h1>呼吸花園</h1>
+      <p>登入來照顧妳的花園 🌱</p>
+      <input id="email" type="email" placeholder="信箱" autocomplete="email">
+      <input id="password" type="password" placeholder="密碼(至少 6 個字)" autocomplete="current-password">
+      <button id="btnLogin">登入</button>
+      <button id="btnSignup">第一次來?點這裡註冊</button>
+      <div id="msg"></div>
+    </div>
+  </div>
+  <div id="task"><div class="card" id="taskCard"></div></div>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

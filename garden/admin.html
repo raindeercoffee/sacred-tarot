@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>呼吸花園後台</title>
+  <style>
+    body { margin: 0; background: #f4efe6; color: #5b4a3a;
+      font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 16px; box-sizing: border-box; }
+    h1 { font-size: 26px; margin: 8px 0 16px; display: flex; justify-content: space-between; align-items: center; }
+    h1 button { font-size: 14px; background: none; border: none; color: #a09080; text-decoration: underline; cursor: pointer; }
+    .card { background: #fff; border: 2px solid #e2d6c4; border-radius: 16px; padding: 18px; margin-bottom: 16px; }
+    .card h2 { margin: 0 0 12px; font-size: 19px; }
+    input { width: 100%; box-sizing: border-box; padding: 12px 14px; font-size: 17px; border: 2px solid #e2d6c4;
+      border-radius: 12px; outline: none; margin-bottom: 10px; }
+    input:focus { border-color: #9bd3ae; }
+    button.main { width: 100%; padding: 13px; font-size: 17px; font-weight: bold; border: none; border-radius: 12px;
+      background: #6cc070; color: #fff; cursor: pointer; }
+    button.main:disabled { background: #c9c2b8; cursor: default; }
+    button.sub { padding: 8px 14px; font-size: 14px; border: 2px solid #e2d6c4; border-radius: 10px;
+      background: #fffaf2; color: #5b4a3a; cursor: pointer; }
+    .msg { min-height: 20px; margin-top: 8px; font-size: 15px; }
+    .bad { color: #c0504d; } .good { color: #4f9a55; }
+    .result { margin-top: 12px; padding: 14px; border-radius: 12px; background: #fffaf2; border: 2px dashed #e2d6c4; line-height: 1.8; }
+    .result .big { font-size: 22px; font-weight: bold; letter-spacing: 1px; }
+    .tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 14px; font-weight: bold; }
+    .tag.unused { background: #dff3e1; color: #3f8a46; } .tag.used { background: #eee; color: #888; }
+    .table { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; white-space: nowrap; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #f0e8dc; }
+    th { color: #a09080; font-weight: normal; }
+    .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .row h2 { margin: 0; }
+    .hint { color: #a09080; font-size: 14px; margin: 0 0 10px; }
+    #loginBox { max-width: 340px; margin: 60px auto 0; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="loginBox" class="card" style="display:none">
+      <h1 style="justify-content:center">呼吸花園後台</h1>
+      <input id="email" type="email" placeholder="信箱" autocomplete="email">
+      <input id="password" type="password" placeholder="密碼" autocomplete="current-password">
+      <button class="main" id="btnLogin">登入</button>
+      <div class="msg bad" id="loginMsg"></div>
+    </div>
+
+    <div id="app" style="display:none">
+      <h1>呼吸花園後台 <button id="btnLogout">登出</button></h1>
+
+      <div class="card">
+        <h2>🎟️ 核銷折扣碼</h2>
+        <p class="hint">客人給妳折扣碼時,先查真假,確認後按「核銷」。一次占卜只收一張。</p>
+        <input id="code" placeholder="輸入折扣碼,例如 NOMI-7KQ2X9" autocapitalize="characters" autocomplete="off">
+        <button class="main" id="btnLookup">查詢</button>
+        <div class="msg" id="codeMsg"></div>
+        <div id="codeResult"></div>
+      </div>
+
+      <div class="card">
+        <div class="row"><h2>🌱 玩家</h2><button class="sub" id="btnPlayers">重新整理</button></div>
+        <div class="table" id="players"></div>
+      </div>
+
+      <div class="card">
+        <div class="row"><h2>📜 兌換紀錄</h2><button class="sub" id="btnCoupons">重新整理</button></div>
+        <div class="table" id="coupons"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
