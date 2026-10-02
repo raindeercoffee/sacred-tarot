@@ -18,9 +18,9 @@ const PLANTS = [
 
 // 3 隻小怪獸(之後換成麻糬的美術圖):白色 Nomi、黑色 Nomu、頭頂上小小隻 Nomeow
 const MONSTERS = [
-  { name: 'Nomi', color: 0xfafafa },
-  { name: 'Nomu', color: 0x3a3a3a },
-  { name: 'Nomeow', color: 0xffd6e0 },
+  { key: 'nomi', name: 'Nomi', color: 0xfafafa },
+  { key: 'nomu', name: 'Nomu', color: 0x3a3a3a },
+  { key: 'nomeow', name: 'Nomeow', color: 0xffd6e0 },
 ];
 
 // 7 格排成 2-3-2,像一朵花
@@ -50,9 +50,14 @@ class GardenScene extends Phaser.Scene {
       .setOrigin(1, 0).setInteractive({ useHandCursor: true })
       .on('pointerdown', async () => { await sb.auth.signOut(); location.reload(); });
 
-    this.add.text(16, 20, '🎟️ 折扣碼', { fontSize: '14px', color: '#7a6a5a' })
+    // padding 讓手指好點一點(字本身的位置不變)
+    this.add.text(16, 15, '🎟️ 折扣碼', { fontSize: '14px', color: '#7a6a5a', padding: { x: 0, y: 5 } })
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => openCoupons(this));
+
+    this.add.text(16, 39, '📖 我的作品', { fontSize: '14px', color: '#7a6a5a', padding: { x: 0, y: 5 } })
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => openCrafts());
 
     this.status = this.add.text(W / 2, 200, '', { fontSize: '15px', color: '#7a6a5a' }).setOrigin(0.5);
 
@@ -188,18 +193,22 @@ class GardenScene extends Phaser.Scene {
   makeCollection() {
     this.add.rectangle(W / 2, 720, W - 30, 150, 0xffffff).setStrokeStyle(2, 0xe2d6c4);
     this.add.text(W / 2, 665, '小怪獸圖鑑', { fontSize: '18px', color: '#5b4a3a', fontStyle: 'bold' }).setOrigin(0.5);
+    this.collectionHint = this.add.text(W / 2, 685, '', { fontSize: '12px', color: '#a09080' }).setOrigin(0.5);
     this.collection = MONSTERS.map((_, i) => this.add.container(95 + i * 100, 0));
     this.drawCollection(0);
   }
 
-  // 做完幾次任務,就收集到前幾隻小怪獸(最多 3 隻)
+  // 做完幾次任務,就收集到前幾隻小怪獸(最多 3 隻);收集到的可以點開,拿桌面寵物和手機桌布
   drawCollection(tasksDone) {
+    this.collectionHint.setText(tasksDone > 0 ? '點小怪獸,領桌面寵物和手機桌布' : '');
     MONSTERS.forEach((mon, i) => {
       const c = this.collection[i];
       const got = i < tasksDone;
       const eyes = mon.color === 0x3a3a3a ? 0xffffff : 0x333333;
       c.removeAll(true);
-      c.add(this.add.circle(0, 718, 24, got ? mon.color : 0xdddddd).setStrokeStyle(2, got ? 0x777777 : 0xbbbbbb));
+      const body = this.add.circle(0, 718, 24, got ? mon.color : 0xdddddd).setStrokeStyle(2, got ? 0x777777 : 0xbbbbbb);
+      if (got) body.setInteractive({ useHandCursor: true }).on('pointerdown', () => openMonster(i));
+      c.add(body);
       if (got) {
         c.add(this.add.circle(-7, 714, 3, eyes));
         c.add(this.add.circle(7, 714, 3, eyes));
@@ -366,9 +375,63 @@ function showReward(scene, t, poem, data) {
     <h2>${t.done}</h2>
     ${poem ? `<p class="sub" style="white-space:pre-wrap">${esc(poem)}</p>` : ''}
     <p class="sub">🪙 拿到 10 枚金幣(現在共 ${data.coins} 枚)</p>
-    ${mon ? `<p class="sub">🎁 獲得 <b>${mon.name}</b> 的電腦桌面寵物和手機桌布!</p>` : ''}
-    <button class="main" id="rewardOk">回花園,明天再種新的花 🌱</button>`);
+    ${mon ? `<p class="sub">🎁 獲得 <b>${mon.name}</b> 的電腦桌面寵物和手機桌布!</p>
+      <button class="main" id="rewardMon">去見 ${mon.name} 🎁</button>` : ''}
+    <button class="${mon ? 'back' : 'main'}" id="rewardOk">回花園,明天再種新的花 🌱</button>`);
+  if (mon) document.getElementById('rewardMon').onclick = () => { scene.refresh(); openMonster(data.new_monster); };
   document.getElementById('rewardOk').onclick = () => { closeTask(); scene.refresh(); };
+}
+
+// ---------- 小怪獸卡片:桌面寵物 + 手機桌布 ----------
+function openMonster(i) {
+  const mon = MONSTERS[i];
+  const isComputer = matchMedia('(pointer: fine)').matches;
+  showTask(`
+    <img src="img/${mon.key}.png" alt="${mon.name}" style="width:180px;max-width:70%;display:block;margin:4px auto 8px">
+    <h2>${mon.name}</h2>
+    <p class="sub">會呼吸、會撒嬌的小怪獸</p>
+    <button class="main" id="monPet">🖥️ 打開桌面寵物</button>
+    <p class="sub" style="margin:6px 0 0">${isComputer ? '會跳出一個小視窗,可以放在螢幕角落陪妳' : '點牠,牠會撒嬌'}</p>
+    <a class="main" id="monWall" href="img/wallpaper_${mon.key}.png" target="_blank" rel="noopener"
+      style="display:block;box-sizing:border-box;text-decoration:none">📱 手機桌布</a>
+    <p class="sub" style="margin:6px 0 0">打開後,手機長按圖片 →「加入照片」;電腦按右鍵 →「另存圖片」</p>
+    <button class="back" id="monClose">回花園</button>`);
+  document.getElementById('monPet').onclick = () => {
+    if (isComputer) window.open(`pet.html?m=${mon.key}&mini=1`, 'pet_' + mon.key, 'width=260,height=320,menubar=no,toolbar=no,location=no,status=no');
+    else window.open(`pet.html?m=${mon.key}`, '_blank');
+  };
+  document.getElementById('monClose').onclick = closeTask;
+}
+
+// ---------- 我的作品:以前用 7 朵花做過的東西 ----------
+async function openCrafts() {
+  showTask('<h2>📖 我的作品</h2><p class="sub">讀取中…</p>');
+  const { data, error } = await sb.from('crafts').select('kind, flowers, poem, created_at').order('created_at', { ascending: false });
+  if (error) {
+    showTask('<h2>📖 我的作品</h2><p class="sub">連不上雲端,請再試一次</p><button class="back" id="crClose">回花園</button>');
+    document.getElementById('crClose').onclick = closeTask;
+    return;
+  }
+  const list = data.map(c => {
+    const t = TASKS.find(x => x.kind === c.kind) || { em: '🌸', name: '作品' };
+    const day = new Date(c.created_at).toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei' });
+    const dots = (c.flowers || []).map(k => PLANTS[k]
+      ? `<div class="dot" title="${PLANTS[k].name}" style="width:18px;height:18px;background:${hex(PLANTS[k].color)}"></div>` : '').join('');
+    return `
+      <div style="text-align:left;padding:12px 4px;border-bottom:1px solid #f0e8dc">
+        <div style="display:flex;justify-content:space-between;align-items:center;color:#5b4a3a">
+          <b>${t.em} ${t.name}</b><span style="font-size:13px;color:#a09080">${day}</span>
+        </div>
+        <div class="flowers" style="justify-content:flex-start;margin:8px 0 0">${dots}</div>
+        ${c.poem ? `<p class="sub" style="white-space:pre-wrap;margin:8px 0 0;color:#5b4a3a">${esc(c.poem)}</p>` : ''}
+      </div>`;
+  }).join('');
+  showTask(`
+    <h2>📖 我的作品</h2>
+    <p class="sub">${data.length ? `妳一共做了 ${data.length} 個作品` : '還沒有作品喔<br>7 朵花都開了之後,就能做第一個'}</p>
+    ${list}
+    <button class="back" id="crClose">回花園</button>`);
+  document.getElementById('crClose').onclick = closeTask;
 }
 
 let game = null;

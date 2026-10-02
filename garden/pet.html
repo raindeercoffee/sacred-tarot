@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>呼吸花園小怪獸</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; user-select: none; -webkit-user-select: none;
+      font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif; }
+    body { display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: linear-gradient(#fff4e6, #ffd6c4); color: #5b4a3a; }
+    body.nomu { background: linear-gradient(#182040, #3c4e80); color: #f2d99a; }
+    body.nomeow { background: linear-gradient(#ffecf2, #dcd0f5); color: #6e546e; }
+    #stage { position: relative; width: min(70vw, 70vh, 360px); }
+    #pet { width: 100%; display: block; transform-origin: 50% 100%; cursor: pointer;
+      animation: breathe 4s ease-in-out infinite; -webkit-tap-highlight-color: transparent; }
+    /* 呼吸:慢慢吸氣變高,吐氣變回來 */
+    @keyframes breathe {
+      0%, 100% { transform: scale(1, 1); }
+      50% { transform: scale(0.97, 1.05); }
+    }
+    /* 撒嬌:跳一下、左右蹭蹭 */
+    #pet.cute { animation: cute 0.9s ease-in-out; }
+    @keyframes cute {
+      0% { transform: scale(1, 1); }
+      15% { transform: scale(1.08, 0.9); }
+      35% { transform: translateY(-14%) scale(0.95, 1.06) rotate(-6deg); }
+      55% { transform: translateY(0) scale(1.05, 0.95) rotate(6deg); }
+      75% { transform: rotate(-4deg); }
+      100% { transform: scale(1, 1) rotate(0); }
+    }
+    #bubble { position: absolute; left: 50%; top: -6%; transform: translate(-50%, -100%);
+      background: #fff; color: #5b4a3a; padding: 8px 14px; border-radius: 16px; font-size: 16px;
+      white-space: nowrap; box-shadow: 0 3px 10px rgba(0,0,0,.12); opacity: 0; transition: opacity .3s; pointer-events: none; }
+    #bubble.show { opacity: 1; }
+    .heart { position: absolute; font-size: 24px; pointer-events: none; animation: float 1.6s ease-out forwards; }
+    @keyframes float {
+      0% { transform: translateY(0) scale(.6); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-120px) scale(1.2); opacity: 0; }
+    }
+    #name { margin-top: 10px; font-size: 22px; font-weight: bold; }
+    #hint { margin-top: 4px; font-size: 14px; opacity: .7; }
+    #tools { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+    #tools a, #tools button { font-size: 15px; padding: 10px 18px; border-radius: 12px; border: 2px solid currentColor;
+      background: rgba(255,255,255,.35); color: inherit; text-decoration: none; cursor: pointer; font-family: inherit; }
+    #locked { display: none; text-align: center; padding: 20px; font-size: 17px; line-height: 1.8; }
+    #locked a { color: inherit; }
+    body.mini #tools, body.mini #hint { display: none; }
+    body.mini #stage { margin-top: 40px; width: min(70vw, 55vh); }
+  </style>
+</head>
+<body>
+  <div id="stage" style="display:none">
+    <div id="bubble"></div>
+    <img id="pet" alt="" draggable="false">
+  </div>
+  <div id="name"></div>
+  <div id="hint">點點我,我會撒嬌</div>
+  <div id="tools">
+    <button id="btnMini" style="display:none">🖥️ 變成小視窗,放在桌面角落</button>
+    <a href="./">回花園</a>
+  </div>
+  <div id="locked"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+    // 小怪獸桌面寵物:會呼吸(一直慢慢起伏)、會撒嬌(點牠,或牠自己偶爾來討摸)
+    const MONS = [
+      { key: 'nomi', name: 'Nomi' },
+      { key: 'nomu', name: 'Nomu' },
+      { key: 'nomeow', name: 'Nomeow' },
+    ];
+    const LINES = ['摸摸我～', '最喜歡妳了 ♡', '陪我一下嘛', '今天也辛苦了', '嘿嘿 ♡', '再摸一下好不好', '我一直在這裡喔'];
+    const params = new URLSearchParams(location.search);
+    const idx = Math.max(0, MONS.findIndex(m => m.key === params.get('m')));
+    const mon = MONS[idx];
+    const $ = id => document.getElementById(id);
+    document.body.classList.add(mon.key);
+    if (params.get('mini')) document.body.classList.add('mini');
+    document.title = mon.name + ' · 呼吸花園';
+
+    function locked(html) {
+      $('stage').style.display = 'none';
+      $('name').style.display = 'none';
+      $('hint').style.display = 'none';
+      $('tools').style.display = 'none';
+      $('locked').style.display = 'block';
+      $('locked').innerHTML = html;
+    }
+
+    let busy = false;
+    function cute() {
+      if (busy) return;
+      busy = true;
+      const pet = $('pet');
+      pet.classList.add('cute');
+      $('bubble').textContent = LINES[Math.floor(Math.random() * LINES.length)];
+      $('bubble').classList.add('show');
+      for (let i = 0; i < 3; i++) {
+        const h = document.createElement('div');
+        h.className = 'heart';
+        h.textContent = '♡';
+        h.style.left = (30 + Math.random() * 40) + '%';
+        h.style.top = (30 + Math.random() * 20) + '%';
+        h.style.animationDelay = (i * 0.2) + 's';
+        h.style.color = mon.key === 'nomu' ? '#f2d99a' : '#ff8fa3';
+        $('stage').appendChild(h);
+        setTimeout(() => h.remove(), 2200);
+      }
+      setTimeout(() => pet.classList.remove('cute'), 900);
+      setTimeout(() => { $('bubble').classList.remove('show'); busy = false; }, 2200);
+    }
+
+    (async () => {
+      const sb = supabase.createClient(GARDEN_CONFIG.supabaseUrl, GARDEN_CONFIG.supabaseKey);
+      const { data } = await sb.auth.getSession();
+      if (!data.session) return locked('要先登入呼吸花園,才能見到小怪獸喔<br><a href="./">去花園登入</a>');
+      const { count, error } = await sb.from('crafts').select('id', { count: 'exact', head: true });
+      if (error) return locked('連不上雲端,請重新整理');
+      if ((count || 0) <= idx) return locked(`${mon.name} 還沒來喔<br>再完成 ${idx + 1 - (count || 0)} 次花朵任務就會遇見牠<br><a href="./">回花園</a>`);
+
+      $('pet').src = 'img/' + mon.key + '.png';
+      $('pet').alt = mon.name;
+      $('name').textContent = mon.name;
+      $('stage').style.display = 'block';
+      $('pet').addEventListener('click', cute);
+      // 牠自己偶爾也會來撒嬌
+      setInterval(() => { if (Math.random() < 0.5) cute(); }, 45000);
+
+      // 電腦(有滑鼠)才顯示「變成小視窗」
+      if (!params.get('mini') && matchMedia('(pointer: fine)').matches) {
+        $('btnMini').style.display = 'inline-block';
+        $('btnMini').onclick = () => window.open('pet.html?m=' + mon.key + '&mini=1', 'pet_' + mon.key,
+          'width=260,height=320,menubar=no,toolbar=no,location=no,status=no');
+      }
+    })();
+  </script>
+</body>
+</html>
