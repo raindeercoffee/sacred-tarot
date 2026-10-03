@@ -59,7 +59,7 @@
   <div id="hint">點點我,我會撒嬌</div>
   <div id="tools">
     <button id="btnMini" style="display:none">🖥️ 變成小視窗,放在桌面角落</button>
-    <a href="./">回花園</a>
+    <a href="play.html">回花園</a>
   </div>
   <div id="locked"></div>
 
@@ -116,10 +116,10 @@
     (async () => {
       const sb = supabase.createClient(GARDEN_CONFIG.supabaseUrl, GARDEN_CONFIG.supabaseKey);
       const { data } = await sb.auth.getSession();
-      if (!data.session) return locked('要先登入呼吸花園,才能見到小怪獸喔<br><a href="./">去花園登入</a>');
+      if (!data.session) return locked('要先登入呼吸花園,才能見到小怪獸喔<br><a href="play.html">去花園登入</a>');
       const { count, error } = await sb.from('crafts').select('id', { count: 'exact', head: true });
       if (error) return locked('連不上雲端,請重新整理');
-      if ((count || 0) <= idx) return locked(`${mon.name} 還沒來喔<br>再完成 ${idx + 1 - (count || 0)} 次花朵任務就會遇見牠<br><a href="./">回花園</a>`);
+      if ((count || 0) <= idx) return locked(`${mon.name} 還沒來喔<br>再完成 ${idx + 1 - (count || 0)} 次花朵任務就會遇見牠<br><a href="play.html">回花園</a>`);
 
       $('pet').src = 'img/' + mon.key + '.png';
       $('pet').alt = mon.name;

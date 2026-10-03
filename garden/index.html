@@ -2,67 +2,83 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>呼吸花園</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0d1a">
+  <title>呼吸花園 · 施工中</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Noto+Serif+TC:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    html, body { margin: 0; height: 100%; background: #f4efe6; overflow: hidden;
-      font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif; }
-    #game { width: 100vw; height: 100vh; }
-    #login { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
-      background: #f4efe6; padding: 16px; box-sizing: border-box; }
-    #login .card { width: 100%; max-width: 340px; background: #fff; border: 2px solid #e2d6c4;
-      border-radius: 18px; padding: 28px 22px; box-sizing: border-box; text-align: center; }
-    #login h1 { margin: 0 0 6px; color: #5b4a3a; font-size: 30px; }
-    #login p { margin: 0 0 20px; color: #7a6a5a; font-size: 15px; }
-    #login input { width: 100%; box-sizing: border-box; margin-bottom: 12px; padding: 12px 14px;
-      font-size: 16px; border: 2px solid #e2d6c4; border-radius: 12px; outline: none; }
-    #login input:focus { border-color: #9bd3ae; }
-    #login button { width: 100%; padding: 13px; font-size: 17px; border: none; border-radius: 12px;
-      cursor: pointer; margin-top: 4px; }
-    #btnLogin { background: #6cc070; color: #fff; font-weight: bold; }
-    #btnSignup { background: none; color: #7a6a5a; text-decoration: underline; font-size: 15px !important; }
-    #msg { min-height: 22px; margin-top: 10px; color: #c0504d; font-size: 14px; }
+    @keyframes twinkle { 0%,100% { opacity: 0.15; } 50% { opacity: 1; } }
+    @keyframes twinkleSlow { 0%,100% { opacity: 0.12; } 50% { opacity: 0.95; } }
+    @keyframes breathe { 0%,100% { transform: scale(1); opacity: 0.75; } 50% { transform: scale(1.12); opacity: 1; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* 任務視窗 */
-    #task { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
-      background: rgba(91, 74, 58, 0.45); padding: 16px; box-sizing: border-box; }
-    #task .card { width: 100%; max-width: 360px; max-height: 100%; overflow-y: auto; background: #fff;
-      border-radius: 18px; padding: 22px 18px; box-sizing: border-box; text-align: center; }
-    #task h2 { margin: 0 0 6px; color: #5b4a3a; font-size: 22px; }
-    #task .sub { margin: 0 0 16px; color: #7a6a5a; font-size: 14px; }
-    #task .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    #task .pick { padding: 14px 6px; font-size: 15px; border: 2px solid #e2d6c4; border-radius: 14px;
-      background: #fffaf2; color: #5b4a3a; cursor: pointer; }
-    #task .pick .em { display: block; font-size: 28px; margin-bottom: 4px; }
-    #task .flowers { display: flex; justify-content: center; gap: 6px; margin: 14px 0; flex-wrap: wrap; }
-    #task .dot { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.12); }
-    #task textarea { width: 100%; box-sizing: border-box; height: 110px; padding: 10px; font-size: 16px;
-      border: 2px solid #e2d6c4; border-radius: 12px; resize: none; font-family: inherit; }
-    #task .main { width: 100%; padding: 13px; margin-top: 14px; font-size: 17px; font-weight: bold;
-      border: none; border-radius: 12px; background: #6cc070; color: #fff; cursor: pointer; }
-    #task .back { width: 100%; padding: 10px; margin-top: 6px; font-size: 15px; border: none;
-      background: none; color: #7a6a5a; text-decoration: underline; cursor: pointer; }
-    #task .big { font-size: 56px; margin: 6px 0; }
-    #task .err { min-height: 20px; color: #c0504d; font-size: 14px; margin-top: 8px; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      font-family: 'Noto Serif TC', 'Cormorant Garamond', serif; color: #efe6d0;
+      background: radial-gradient(ellipse 100% 60% at 50% -10%, #1a1e3a 0%, #0a0d1a 55%), #0a0d1a;
+      overflow-x: hidden;
+    }
+    .sky { position: fixed; inset: 0; pointer-events: none; }
+    .glow { background: radial-gradient(circle at 50% 8%, rgba(216,185,120,0.16) 0%, transparent 42%),
+      radial-gradient(ellipse 70% 40% at 15% 90%, rgba(107,88,180,0.18) 0%, transparent 55%); }
+    .stars1 { background-image:
+      radial-gradient(2.2px 2.2px at 12% 22%, rgba(255,248,220,0.95), transparent),
+      radial-gradient(2.2px 2.2px at 78% 14%, rgba(255,248,220,0.85), transparent),
+      radial-gradient(2.8px 2.8px at 34% 68%, rgba(255,248,220,0.9), transparent),
+      radial-gradient(2.2px 2.2px at 62% 82%, rgba(255,248,220,0.8), transparent),
+      radial-gradient(2.2px 2.2px at 88% 55%, rgba(255,248,220,0.85), transparent),
+      radial-gradient(2.2px 2.2px at 6% 72%, rgba(255,248,220,0.8), transparent);
+      animation: twinkle 4s ease-in-out infinite; }
+    .stars2 { background-image:
+      radial-gradient(2.2px 2.2px at 22% 8%, rgba(255,248,220,0.82), transparent),
+      radial-gradient(2.8px 2.8px at 44% 28%, rgba(255,248,220,0.8), transparent),
+      radial-gradient(2.2px 2.2px at 70% 32%, rgba(255,248,220,0.88), transparent),
+      radial-gradient(2.2px 2.2px at 92% 78%, rgba(255,248,220,0.8), transparent),
+      radial-gradient(2.8px 2.8px at 28% 52%, rgba(255,248,220,0.82), transparent);
+      animation: twinkleSlow 7s ease-in-out infinite; }
+    .stars3 { background-image:
+      radial-gradient(3.8px 3.8px at 38% 18%, rgba(232,215,180,0.98), transparent),
+      radial-gradient(3.8px 3.8px at 66% 58%, rgba(232,215,180,0.92), transparent),
+      radial-gradient(3.8px 3.8px at 20% 80%, rgba(232,215,180,0.88), transparent);
+      animation: twinkleSlow 12s ease-in-out infinite; }
+
+    main { position: relative; z-index: 1; text-align: center; padding: 48px 24px; max-width: 520px;
+      animation: fadeUp 1.2s ease-out both; }
+    .deco { color: #d8b978; font-size: 1.1rem; letter-spacing: 0.8em; padding-left: 0.8em; opacity: 0.7; margin-bottom: 22px; }
+    .sprout { font-size: 2.6rem; display: inline-block; animation: breathe 4s ease-in-out infinite; margin-bottom: 14px; }
+    h1 { font-family: 'Cormorant Garamond', 'Noto Serif TC', serif; font-weight: 500;
+      font-size: clamp(2.2rem, 8vw, 3.2rem); letter-spacing: 0.18em; padding-left: 0.18em; line-height: 1.2; margin: 0 0 14px;
+      background: linear-gradient(180deg, #f2d99a 0%, #c9a86a 55%, #8b6914 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .line { display: flex; align-items: center; gap: 16px; margin: 0 auto 26px; max-width: 260px; }
+    .line i { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #c9a86a); }
+    .line i:last-child { background: linear-gradient(90deg, #c9a86a, transparent); }
+    .line span { color: #d8b978; font-size: 0.95rem; letter-spacing: 0.3em; }
+    .badge { display: inline-block; padding: 10px 26px; margin-bottom: 22px; border: 1px solid rgba(201,168,106,0.6);
+      color: #f2d99a; font-size: 1.15rem; letter-spacing: 0.5em; padding-left: calc(26px + 0.5em); border-radius: 2px; }
+    p { color: #cfc4a8; font-size: 1rem; line-height: 2; letter-spacing: 0.08em; margin: 0 0 34px; font-weight: 300; }
+    a.back { display: inline-block; padding: 13px 30px; text-decoration: none; color: #d8b978;
+      border: 1px solid rgba(201,168,106,0.4); border-radius: 2px; letter-spacing: 0.22em; font-size: 0.95rem; transition: all 0.3s; }
+    a.back:hover { border-color: #d8b978; background: rgba(216,185,120,0.08); }
   </style>
 </head>
 <body>
-  <div id="game"></div>
-  <div id="login">
-    <div class="card">
-      <h1>呼吸花園</h1>
-      <p>登入來照顧妳的花園 🌱</p>
-      <input id="email" type="email" placeholder="信箱" autocomplete="email">
-      <input id="password" type="password" placeholder="密碼(至少 6 個字)" autocomplete="current-password">
-      <button id="btnLogin">登入</button>
-      <button id="btnSignup">第一次來?點這裡註冊</button>
-      <div id="msg"></div>
-    </div>
-  </div>
-  <div id="task"><div class="card" id="taskCard"></div></div>
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="game.js"></script>
+  <div class="sky glow"></div>
+  <div class="sky stars1"></div>
+  <div class="sky stars2"></div>
+  <div class="sky stars3"></div>
+
+  <main>
+    <div class="deco">✦ ☾ ✦</div>
+    <div class="sprout">🌱</div>
+    <h1>呼吸花園</h1>
+    <div class="line"><i></i><span>☽ ✧ ☾</span><i></i></div>
+    <div class="badge">施工中</div>
+    <p>花園正在悄悄長大<br>再等等我們，很快就會開門</p>
+    <a class="back" href="../">回到神聖抽牌</a>
+  </main>
 </body>
 </html>
