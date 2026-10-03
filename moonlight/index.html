@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0d1a">
+  <title>太陽女祭司的月光寶盒 · The Sun Priestess's Moonlight Box</title>
+  <meta name="description" content="兩個寶盒:免費的 Podcast,聊電影、人性與玄學;付費的月光寶盒,藏著更深的玄學與分析。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Pinyon+Script&family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0a0d1a; --gold:#d8b978; --gold-light:#f2d99a; --gold-deep:#c9a86a; --text:#efe6d0; --muted:#a8a08a; --line:rgba(201,168,106,0.32); }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { min-height: 100vh; color: var(--text); font-family: 'Noto Serif TC', 'Cormorant Garamond', serif; line-height: 1.9;
+      background: radial-gradient(ellipse 100% 60% at 50% -10%, #1a1e3a 0%, #0a0d1a 55%), var(--bg); overflow-x: hidden; }
+
+    @keyframes twinkle { 0%,100% { opacity: 0.15; } 50% { opacity: 1; } }
+    @keyframes twinkleSlow { 0%,100% { opacity: 0.12; } 50% { opacity: 0.95; } }
+    @keyframes glow { 0%,100% { opacity: 0.75; } 50% { opacity: 1; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    .sky { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .sky.glow { background: radial-gradient(circle at 50% 8%, rgba(216,185,120,0.16) 0%, transparent 42%),
+      radial-gradient(ellipse 70% 40% at 15% 90%, rgba(107,88,180,0.18) 0%, transparent 55%); }
+    .sky.s1 { background-image: radial-gradient(2.2px 2.2px at 12% 22%, rgba(255,248,220,0.95), transparent),
+      radial-gradient(2.2px 2.2px at 78% 14%, rgba(255,248,220,0.85), transparent), radial-gradient(2.8px 2.8px at 34% 68%, rgba(255,248,220,0.9), transparent),
+      radial-gradient(2.2px 2.2px at 62% 82%, rgba(255,248,220,0.8), transparent), radial-gradient(2.2px 2.2px at 88% 55%, rgba(255,248,220,0.85), transparent),
+      radial-gradient(2.2px 2.2px at 6% 72%, rgba(255,248,220,0.8), transparent); animation: twinkle 4s ease-in-out infinite; }
+    .sky.s2 { background-image: radial-gradient(2.2px 2.2px at 22% 8%, rgba(255,248,220,0.82), transparent),
+      radial-gradient(2.8px 2.8px at 44% 28%, rgba(255,248,220,0.8), transparent), radial-gradient(2.2px 2.2px at 70% 32%, rgba(255,248,220,0.88), transparent),
+      radial-gradient(2.2px 2.2px at 92% 78%, rgba(255,248,220,0.8), transparent), radial-gradient(2.8px 2.8px at 28% 52%, rgba(255,248,220,0.82), transparent);
+      animation: twinkleSlow 7s ease-in-out infinite; }
+    .sky.s3 { background-image: radial-gradient(3.8px 3.8px at 38% 18%, rgba(232,215,180,0.98), transparent),
+      radial-gradient(3.8px 3.8px at 66% 58%, rgba(232,215,180,0.92), transparent), radial-gradient(3.8px 3.8px at 20% 80%, rgba(232,215,180,0.88), transparent);
+      animation: twinkleSlow 12s ease-in-out infinite; }
+
+    .wrap { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; padding: 48px 16px 72px; animation: fadeUp 1.2s ease-out both; }
+    header { text-align: center; margin-bottom: 30px; }
+    .emblem { width: 112px; height: 112px; display: block; margin: 0 auto 12px; animation: glow 6s ease-in-out infinite; filter: drop-shadow(0 0 14px rgba(216,185,120,0.35)); }
+    h1 { margin: 0 0 20px; font-weight: 400; }
+    .en-sub { display: block; font-family: 'Pinyon Script', cursive; font-size: clamp(1.6rem, 7vw, 2.1rem); color: var(--gold); line-height: 1.1; margin-bottom: -2px; }
+    .en-main { display: block; font-family: 'Pinyon Script', cursive; font-size: clamp(3rem, 15vw, 4.4rem); line-height: 1.15; padding: 0 0.12em 0.08em;
+      background: linear-gradient(180deg, #f2d99a 0%, #c9a86a 55%, #8b6914 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 18px rgba(216,185,120,0.28)); }
+    .zh { display: block; margin-top: 12px; font-size: clamp(0.9rem, 3.8vw, 1.05rem); color: var(--gold-light); letter-spacing: 0.42em; padding-left: 0.42em; }
+    .divider { display: block; width: 240px; max-width: 80%; height: 16px; margin: 0 auto; }
+    .intro { text-align: center; color: #cfc4a8; font-weight: 300; letter-spacing: 0.06em; margin: 22px 0 0; }
+
+    .card { position: relative; background: rgba(18,21,43,0.72); border: 1px solid var(--line); border-radius: 18px; padding: 26px 20px 22px; margin-top: 30px; }
+    .card h2 { margin: 0 0 14px; text-align: center; font-size: 0.95rem; font-weight: 400; color: var(--gold); letter-spacing: 0.3em; padding-left: 0.3em; }
+    .price { text-align: center; margin: 0 0 16px; }
+    .price .num { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; color: var(--gold-light); letter-spacing: 0.04em; }
+    .price .unit { color: var(--muted); font-size: 0.95rem; letter-spacing: 0.1em; margin-left: 6px; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; color: var(--text); font-weight: 300; }
+    li svg { flex: none; width: 14px; height: 14px; margin-top: 0.55em; }
+    ol { margin: 0; padding: 0; list-style: none; counter-reset: step; }
+    ol li::before { counter-increment: step; content: counter(step); flex: none; width: 24px; height: 24px; margin-top: 0.3em; border: 1px solid var(--gold-deep);
+      border-radius: 50%; color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; line-height: 22px; text-align: center; }
+
+    .tag { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #0a0d1a; border: 1px solid var(--gold-deep);
+      color: var(--gold); font-size: 0.78rem; letter-spacing: 0.16em; padding: 1px 14px 1px calc(14px + 0.16em); border-radius: 999px; white-space: nowrap; }
+    .card h2 { font-size: 1.15rem; color: var(--gold-light); letter-spacing: 0.2em; padding-left: 0.2em; margin: 6px 0 8px; }
+    .card.paid { border-color: rgba(201,168,106,0.55); background: linear-gradient(160deg, rgba(40,44,96,0.55), rgba(18,21,43,0.78)); }
+    .lead { text-align: center; color: #cfc4a8; font-weight: 300; letter-spacing: 0.05em; margin: 0 0 16px; }
+    .sub { text-align: center; color: var(--gold); font-size: 0.9rem; letter-spacing: 0.3em; padding-left: 0.3em; margin: 22px 0 8px; }
+    .btn { display: block; text-align: center; text-decoration: none; padding: 15px; border-radius: 16px; border: 1px solid rgba(201,168,106,0.5);
+      color: var(--gold-light); letter-spacing: 0.16em; transition: all 0.3s; background: rgba(10,13,26,0.35); }
+    .btn:hover { border-color: var(--gold-light); background: rgba(216,185,120,0.08); }
+    .card .cta { margin-top: 24px; }
+    .cta { display: block; width: 100%; margin-top: 30px; padding: 18px; text-align: center; text-decoration: none; border-radius: 18px;
+      font-size: 1.1rem; letter-spacing: 0.2em; color: #f2d99a; border: 1px solid #c9a86a;
+      background: linear-gradient(135deg, rgba(120,128,210,0.24), rgba(40,44,96,0.32));
+      box-shadow: 0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,200,0.1); transition: all 0.35s; }
+    .cta:hover { border-color: #f2d99a; box-shadow: 0 0 32px rgba(160,170,240,0.28); }
+    .note { text-align: center; font-size: 0.8rem; color: var(--muted); margin-top: 10px; line-height: 1.8; }
+    .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); background: rgba(18,21,43,0.95); border: 1px solid var(--gold-deep);
+      color: var(--gold-light); padding: 10px 18px; border-radius: 999px; font-size: 0.9rem; letter-spacing: 0.06em; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 5; white-space: nowrap; }
+    .toast.show { opacity: 1; }
+    .back { display: block; width: max-content; margin: 34px auto 0; color: var(--muted); text-decoration: none; letter-spacing: 0.18em; font-size: 0.9rem; }
+    .back:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+  <div class="sky glow"></div><div class="sky s1"></div><div class="sky s2"></div><div class="sky s3"></div>
+
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2d99a"/><stop offset="0.6" stop-color="#d8b978"/><stop offset="1" stop-color="#a8843e"/></linearGradient>
+    </defs>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 1.5 C12.8 8.4 15.6 11.2 22.5 12 C15.6 12.8 12.8 15.6 12 22.5 C11.2 15.6 8.4 12.8 1.5 12 C8.4 11.2 11.2 8.4 12 1.5 Z" fill="url(#g)"/></symbol>
+    <symbol id="i-wax" viewBox="0 0 24 24"><path d="M12 3 A9 9 0 0 1 12 21 A4.5 9 0 0 0 12 3 Z" fill="url(#g)"/></symbol>
+    <symbol id="i-wane" viewBox="0 0 24 24"><path d="M12 3 A9 9 0 0 0 12 21 A4.5 9 0 0 1 12 3 Z" fill="url(#g)"/></symbol>
+  </svg>
+
+  <div class="wrap">
+    <header>
+      <svg class="emblem" viewBox="0 0 120 120" aria-hidden="true">
+        <g fill="none" stroke="url(#g)" stroke-linecap="round" stroke-linejoin="round">
+          <g stroke-width="1.2" opacity="0.85">
+            <line x1="60" y1="6" x2="60" y2="16"/>
+            <line x1="38" y1="12" x2="42.5" y2="20.5"/><line x1="82" y1="12" x2="77.5" y2="20.5"/>
+            <line x1="21" y1="27" x2="29" y2="32"/><line x1="99" y1="27" x2="91" y2="32"/>
+            <line x1="12" y1="47" x2="22" y2="48.5"/><line x1="108" y1="47" x2="98" y2="48.5"/>
+            <line x1="49" y1="8" x2="50.6" y2="15" stroke-width="0.8"/><line x1="71" y1="8" x2="69.4" y2="15" stroke-width="0.8"/>
+            <line x1="29" y1="18.5" x2="34" y2="24" stroke-width="0.8"/><line x1="91" y1="18.5" x2="86" y2="24" stroke-width="0.8"/>
+            <line x1="15.5" y1="36.5" x2="23.5" y2="40" stroke-width="0.8"/><line x1="104.5" y1="36.5" x2="96.5" y2="40" stroke-width="0.8"/>
+          </g>
+          <path d="M28 62 A32 32 0 0 1 92 62" stroke-width="1.4"/>
+          <path d="M35 62 A25 25 0 0 1 85 62" stroke-width="0.8" opacity="0.6"/>
+        </g>
+        <path d="M66 26 A17 17 0 1 0 66 58 A13 16 0 0 1 66 26 Z" fill="url(#g)"/>
+        <use href="#i-star" x="71" y="28" width="9" height="9"/>
+        <use href="#i-star" x="40" y="22" width="6" height="6"/>
+        <g fill="none" stroke="url(#g)" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 66 L98 66 L92 76 L28 76 Z" stroke-width="1.6" fill="#0a0d1a"/>
+          <path d="M22 66 Q60 58 98 66" stroke-width="1.2"/>
+          <path d="M28 76 L28 106 Q28 110 32 110 L88 110 Q92 110 92 106 L92 76" stroke-width="1.6" fill="#0a0d1a"/>
+          <line x1="34" y1="82" x2="86" y2="82" stroke-width="0.8" opacity="0.7"/>
+          <line x1="34" y1="104" x2="86" y2="104" stroke-width="0.8" opacity="0.7"/>
+          <path d="M54 76 L54 90 Q60 96 66 90 L66 76" stroke-width="1.3"/>
+          <circle cx="60" cy="86" r="2" fill="url(#g)" stroke="none"/>
+          <circle cx="40" cy="93" r="1.1" fill="url(#g)" stroke="none"/>
+          <circle cx="80" cy="93" r="1.1" fill="url(#g)" stroke="none"/>
+        </g>
+      </svg>
+      <h1>
+        <span class="en-sub">The Sun Priestess's</span>
+        <span class="en-main">Moonlight Box</span>
+        <span class="zh">太陽女祭司的月光寶盒</span>
+      </h1>
+      <svg class="divider" viewBox="0 0 260 16" aria-hidden="true">
+        <defs>
+          <linearGradient id="fadeL" x1="0" x2="1"><stop offset="0" stop-color="#c9a86a" stop-opacity="0"/><stop offset="1" stop-color="#c9a86a"/></linearGradient>
+          <linearGradient id="fadeR" x1="0" x2="1"><stop offset="0" stop-color="#c9a86a"/><stop offset="1" stop-color="#c9a86a" stop-opacity="0"/></linearGradient>
+        </defs>
+        <line x1="0" y1="8" x2="100" y2="8" stroke="url(#fadeL)"/><line x1="160" y1="8" x2="260" y2="8" stroke="url(#fadeR)"/>
+        <use href="#i-wax" x="104" y="2" width="12" height="12"/><use href="#i-star" x="122" y="0" width="16" height="16"/><use href="#i-wane" x="144" y="2" width="12" height="12"/>
+      </svg>
+      <p class="intro">這裡有兩個寶盒。<br>一個免費，隨時都能打開；<br>一個藏著更深的玄學與分析。</p>
+    </header>
+
+    <section class="card">
+      <div class="tag">免費</div>
+      <h2>🎧 免費寶盒</h2>
+      <p class="lead">免費的 Podcast，<br>我們聊電影、人性與玄學。</p>
+      <a class="btn" id="free" href="https://podcasts.apple.com/us/podcast/%E7%AC%AC%E5%9B%9B%E9%9B%86-%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F%E9%9D%88%E9%AD%82%E7%99%82%E7%99%92-ft-%E6%9C%AC%E6%9B%B8%E8%AD%AF%E8%80%85%E4%B8%96%E8%8A%AC/id1863020753?i=1000747547450" rel="noopener noreferrer">到 Apple Podcasts 收聽</a>
+    </section>
+
+    <section class="card paid">
+      <div class="tag">付費</div>
+      <h2>🗝️ 月光寶盒</h2>
+      <p class="lead">想聽更深的玄學與分析，<br>我在這裡，慢慢說給你聽。</p>
+      <div class="price"><span class="num">NT$500</span><span class="unit">／一年</span></div>
+      <ul>
+        <li><svg viewBox="0 0 24 24"><use href="#i-star"/></svg>一年保證更新 20 集</li>
+        <li><svg viewBox="0 0 24 24"><use href="#i-star"/></svg>每集分上、下兩段，附文字重點</li>
+        <li><svg viewBox="0 0 24 24"><use href="#i-star"/></svg>想聽什麼主題，隨時私訊 IG 告訴我，我很樂意為你講解</li>
+        <li><svg viewBox="0 0 24 24"><use href="#i-star"/></svg>手機點開就能聽，不用註冊、不用登入</li>
+      </ul>
+      <div class="sub">・ 打開寶盒的小路 ・</div>
+      <ol>
+        <li>按下方按鈕，私訊我想加入月光寶盒</li>
+        <li>我確認後，再告訴你匯款方式</li>
+        <li>匯款完成後，我在 IG 把寶盒的網址傳給你</li>
+      </ol>
+      <a class="cta" id="join" href="https://ig.me/m/sun_priestess_riva" rel="noopener noreferrer">私訊 Riva，打開寶盒 🗝️</a>
+      <div class="note">會自動複製私訊，停在個人頁就按「發送訊息」貼上<br>需先登入 Instagram，無痕模式無法私訊</div>
+    </section>
+
+    <a class="back" href="../">← 回到神聖抽牌</a>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // 跟「真人解讀」一樣:點按鈕時先複製好私訊,再跳去 IG
+    const IS_MOBILE = /Android|iPhone|iPad|iPod|Mobile|Instagram|Barcelona|FBAN|FBAV|Line\//i.test(navigator.userAgent)
+      || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
+    const join = document.getElementById('join');
+    if (!IS_MOBILE) { join.target = '_blank'; document.getElementById('free').target = '_blank'; }
+
+    function copyTextSync(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed; top:0; left:-9999px; font-size:16px; border:0; padding:0; margin:0;';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      const sel = window.getSelection && window.getSelection();
+      if (sel) sel.removeAllRanges();
+      return ok;
+    }
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2600);
+    }
+    join.addEventListener('click', () => {
+      const msg = '嗨 Riva 🌙 我想加入「太陽女祭司的月光寶盒」（年費 NT$500・一年 20 集）';
+      if (copyTextSync(msg)) toast('已複製私訊內容，到 IG 貼上就好 ✦');
+    });
+  </script>
+</body>
+</html>
