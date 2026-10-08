@@ -5,7 +5,7 @@ const H = 844;
 
 const sb = supabase.createClient(GARDEN_CONFIG.supabaseUrl, GARDEN_CONFIG.supabaseKey);
 
-// 7 種花(暫名,之後換麻糬的名字和圖),每種 4 個階段:種子 → 發芽 → 長葉 → 開花
+// 🎨 待麻糬畫:7 種花(暫名,之後換麻糬的名字和圖),每種 4 個階段:種子 → 發芽 → 長葉 → 開花
 const PLANTS = [
   { name: '月光鈴蘭', color: 0xf7f3ff, center: 0xffe27a, petals: 5 },
   { name: '晨曦玫瑰', color: 0xff8fa3, center: 0xffd166, petals: 6 },
@@ -16,11 +16,11 @@ const PLANTS = [
   { name: '薄荷雛菊', color: 0xb8f2d0, center: 0xffe066, petals: 7 },
 ];
 
-// 3 隻小怪獸(之後換成麻糬的美術圖):白色 Nomi、黑色 Nomu、頭頂上小小隻 Nomeow
+// 3 隻小怪獸(麻糬畫的,圖在 img/):白色 Nomi、黑色 Nomu、頭頂上小小隻 Nomeow
 const MONSTERS = [
-  { key: 'nomi', name: 'Nomi', color: 0xfafafa },
-  { key: 'nomu', name: 'Nomu', color: 0x3a3a3a },
-  { key: 'nomeow', name: 'Nomeow', color: 0xffd6e0 },
+  { key: 'nomi', name: 'Nomi' },
+  { key: 'nomu', name: 'Nomu' },
+  { key: 'nomeow', name: 'Nomeow' },
 ];
 
 // 7 格排成 2-3-2,像一朵花
@@ -38,9 +38,14 @@ function taipeiToday() {
 class GardenScene extends Phaser.Scene {
   constructor() { super('garden'); }
 
+  preload() {
+    MONSTERS.forEach(mon => this.load.image(mon.key, `img/${mon.key}.png`));
+  }
+
   create() {
     this.plots = [];
 
+    // 🎨 待麻糬畫:花園背景圖(現在先用米色底 + 綠色方框代替),畫好放 img/ 再換掉這兩行
     this.add.rectangle(W / 2, H / 2, W, H, 0xf4efe6);
     this.add.rectangle(W / 2, 420, W - 20, 400, 0xdfe9d3).setStrokeStyle(3, 0xb9cfa8);
     this.add.text(W / 2, 55, '呼吸花園', { fontSize: '34px', color: '#5b4a3a', fontStyle: 'bold' }).setOrigin(0.5);
@@ -180,14 +185,15 @@ class GardenScene extends Phaser.Scene {
   }
 
   makeMonster() {
-    // 在花園裡晃來晃去的小怪獸(先畫成圓滾滾的小團子)
-    const m = this.add.container(60, 600);
-    const body = this.add.circle(0, 0, 22, MONSTERS[0].color).setStrokeStyle(2, 0x5b8a6a);
-    const eyeL = this.add.circle(-7, -4, 3, 0x333333);
-    const eyeR = this.add.circle(7, -4, 3, 0x333333);
-    m.add([body, eyeL, eyeR]);
-    this.tweens.add({ targets: m, x: 330, duration: 6000, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-    this.tweens.add({ targets: m, y: 592, duration: 400, yoyo: true, repeat: -1 });
+    // 在花園裡晃來晃去的 Nomi,走到邊邊會轉身
+    const mon = this.add.image(60, 600, MONSTERS[0].key);
+    mon.setScale(56 / mon.height);
+    this.tweens.add({
+      targets: mon, x: 330, duration: 6000, yoyo: true, repeat: -1, ease: 'Sine.inOut',
+      onYoyo: () => mon.setFlipX(true),
+      onRepeat: () => mon.setFlipX(false),
+    });
+    this.tweens.add({ targets: mon, y: 592, duration: 400, yoyo: true, repeat: -1 });
   }
 
   makeCollection() {
@@ -204,16 +210,16 @@ class GardenScene extends Phaser.Scene {
     MONSTERS.forEach((mon, i) => {
       const c = this.collection[i];
       const got = i < tasksDone;
-      const eyes = mon.color === 0x3a3a3a ? 0xffffff : 0x333333;
       c.removeAll(true);
-      const body = this.add.circle(0, 718, 24, got ? mon.color : 0xdddddd).setStrokeStyle(2, got ? 0x777777 : 0xbbbbbb);
-      if (got) body.setInteractive({ useHandCursor: true }).on('pointerdown', () => openMonster(i));
-      c.add(body);
+      const pic = this.add.image(0, 721, mon.key);
+      pic.setScale(52 / Math.max(pic.width, pic.height));
+      c.add(pic);
       if (got) {
-        c.add(this.add.circle(-7, 714, 3, eyes));
-        c.add(this.add.circle(7, 714, 3, eyes));
+        pic.setInteractive({ useHandCursor: true }).on('pointerdown', () => openMonster(i));
       } else {
-        c.add(this.add.text(0, 718, '?', { fontSize: '22px', color: '#999999' }).setOrigin(0.5));
+        // 還沒收集到:灰灰的剪影 + 問號
+        pic.setTintFill(0xdddddd);
+        c.add(this.add.text(0, 721, '?', { fontSize: '22px', color: '#999999' }).setOrigin(0.5));
       }
       c.add(this.add.text(0, 758, got ? mon.name : '???', { fontSize: '14px', color: '#7a6a5a' }).setOrigin(0.5));
     });
