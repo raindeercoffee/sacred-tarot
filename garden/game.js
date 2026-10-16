@@ -231,6 +231,19 @@ const TASKS = [
   { kind: 'bookmark', em: '🔖', name: '做成書籤', done: '7 朵花壓成了書籤' },
 ];
 
+// 任務成品圖:檔名 = craft_ + kind
+function craftSrc(kind) { return `img/craft_${kind}.png`; }
+function craftImg(t, cls) {
+  return TASKS.some(x => x.kind === t.kind)
+    ? `<img class="${cls}" src="${craftSrc(t.kind)}" alt="${t.name}">`
+    : `<span class="${cls} craft-em">${t.em}</span>`;
+}
+// 把客人的詩疊在詩卡圖的空白區中間(太長可以捲動)
+function poemCard(poem) {
+  return `<div class="poemcard"><img src="${craftSrc('poem')}" alt="詩卡">
+    <div class="poemtext"><div>${esc(poem)}</div></div></div>`;
+}
+
 function hex(n) { return '#' + n.toString(16).padStart(6, '0'); }
 function esc(s) { return s.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
 
@@ -252,7 +265,7 @@ function openTask(scene) {
     <p class="sub">要把它們做成什麼?</p>
     ${flowerDots(scene)}
     <div class="grid">
-      ${TASKS.map((t, i) => `<button class="pick" data-i="${i}"><span class="em">${t.em}</span>${t.name}</button>`).join('')}
+      ${TASKS.map((t, i) => `<button class="pick" data-i="${i}">${craftImg(t, 'pick-img')}${t.name}</button>`).join('')}
     </div>
     <button class="back" id="taskClose">等一下再做</button>`);
   document.querySelectorAll('#taskCard .pick').forEach(b => b.onclick = () => makeCraft(scene, TASKS[+b.dataset.i]));
@@ -263,7 +276,7 @@ function openTask(scene) {
 function makeCraft(scene, t) {
   const poemBox = t.kind === 'poem' ? '<textarea id="poem" maxlength="500" placeholder="寫下妳想對花說的話…"></textarea>' : '';
   showTask(`
-    <div class="big">${t.em}</div>
+    ${craftImg(t, 'craft-big')}
     <h2>${t.name}</h2>
     ${flowerDots(scene)}
     ${poemBox}
@@ -371,9 +384,8 @@ function showCoupon(scene, data) {
 function showReward(scene, t, poem, data) {
   const mon = data.new_monster !== null ? MONSTERS[data.new_monster] : null;
   showTask(`
-    <div class="big">${t.em}</div>
+    ${poem ? poemCard(poem) : craftImg(t, 'craft-reward')}
     <h2>${t.done}</h2>
-    ${poem ? `<p class="sub" style="white-space:pre-wrap">${esc(poem)}</p>` : ''}
     <p class="sub">🪙 拿到 10 枚金幣(現在共 ${data.coins} 枚)</p>
     ${mon ? `<p class="sub">🎁 獲得 <b>${mon.name}</b> 的電腦桌面寵物和手機桌布!</p>
       <button class="main" id="rewardMon">去見 ${mon.name} 🎁</button>` : ''}
@@ -412,18 +424,22 @@ async function openCrafts() {
     document.getElementById('crClose').onclick = closeTask;
     return;
   }
-  const list = data.map(c => {
+  const list = data.map((c, idx) => {
     const t = TASKS.find(x => x.kind === c.kind) || { em: '🌸', name: '作品' };
     const day = new Date(c.created_at).toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei' });
     const dots = (c.flowers || []).map(k => PLANTS[k]
       ? `<div class="dot" title="${PLANTS[k].name}" style="width:18px;height:18px;background:${hex(PLANTS[k].color)}"></div>` : '').join('');
     return `
-      <div style="text-align:left;padding:12px 4px;border-bottom:1px solid #f0e8dc">
-        <div style="display:flex;justify-content:space-between;align-items:center;color:#5b4a3a">
-          <b>${t.em} ${t.name}</b><span style="font-size:13px;color:#a09080">${day}</span>
+      <div class="craft-row${c.poem ? ' has-poem' : ''}" data-i="${idx}">
+        ${craftImg(t, 'craft-thumb')}
+        <div class="craft-info">
+          <div style="display:flex;justify-content:space-between;align-items:center;color:#5b4a3a">
+            <b>${t.name}</b><span style="font-size:13px;color:#a09080">${day}</span>
+          </div>
+          <div class="flowers" style="justify-content:flex-start;margin:8px 0 0">${dots}</div>
+          ${c.poem ? `<p class="sub" style="white-space:pre-wrap;margin:8px 0 0;color:#5b4a3a">${esc(c.poem)}</p>
+            <p class="sub" style="margin:4px 0 0;font-size:12px;color:#a09080">點一下看詩卡 ✨</p>` : ''}
         </div>
-        <div class="flowers" style="justify-content:flex-start;margin:8px 0 0">${dots}</div>
-        ${c.poem ? `<p class="sub" style="white-space:pre-wrap;margin:8px 0 0;color:#5b4a3a">${esc(c.poem)}</p>` : ''}
       </div>`;
   }).join('');
   showTask(`
@@ -432,6 +448,12 @@ async function openCrafts() {
     ${list}
     <button class="back" id="crClose">回花園</button>`);
   document.getElementById('crClose').onclick = closeTask;
+  // 寫詩的作品點開看大詩卡
+  document.querySelectorAll('#taskCard .craft-row.has-poem').forEach(row => row.onclick = () => {
+    showTask(`${poemCard(data[+row.dataset.i].poem)}
+      <button class="back" id="poemBack">回我的作品</button>`);
+    document.getElementById('poemBack').onclick = openCrafts;
+  });
 }
 
 let game = null;
