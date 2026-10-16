@@ -30,6 +30,11 @@ const PLOT_POS = [
   [135, 540], [255, 540],
 ];
 
+// 花園用的圖(都在 garden/img/,key = 檔名去掉副檔名)
+const STAGE_KEYS = ['stage_seed', 'stage_sprout', 'stage_young']; // 第 0/1/2 階段,7 種花共用;第 3 階段用 bloom_{kind+1}
+const PLANT_SIZE = 96;   // 花/階段圖顯示大小(原圖 300×300)
+const PLOT_WIDTH = 100;  // 一格泥土顯示寬(原圖 300×150)
+
 // 台灣今天的日期,例如 2026-10-01
 function taipeiToday() {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Taipei' });
@@ -38,11 +43,21 @@ function taipeiToday() {
 class GardenScene extends Phaser.Scene {
   constructor() { super('garden'); }
 
+  preload() {
+    this.load.image('garden_bg', 'img/garden_bg.jpg');
+    this.load.image('plot', 'img/plot.png');
+    STAGE_KEYS.forEach(k => this.load.image(k, `img/${k}.png`));
+    PLANTS.forEach((_, i) => this.load.image(`bloom_${i + 1}`, `img/bloom_${i + 1}.png`));
+    MONSTERS.forEach(m => this.load.image(m.key, `img/${m.key}.png`));
+  }
+
   create() {
     this.plots = [];
 
-    this.add.rectangle(W / 2, H / 2, W, H, 0xf4efe6);
-    this.add.rectangle(W / 2, 420, W - 20, 400, 0xdfe9d3).setStrokeStyle(3, 0xb9cfa8);
+    // 手繪背景鋪滿(原圖剛好是畫面的 3 倍)
+    this.add.image(W / 2, H / 2, 'garden_bg').setDisplaySize(W, H);
+    // 標題/按鈕/狀態列後面墊一塊半透明淺色底,字才看得清楚
+    this.add.rectangle(W / 2, 112, W, 224, 0xfffaf2, 0.72);
     this.add.text(W / 2, 55, '呼吸花園', { fontSize: '34px', color: '#5b4a3a', fontStyle: 'bold' }).setOrigin(0.5);
     this.tip = this.add.text(W / 2, 100, '', { fontSize: '16px', color: '#7a6a5a' }).setOrigin(0.5);
 
@@ -147,45 +162,31 @@ class GardenScene extends Phaser.Scene {
   }
 
   makePlot(x, y, i) {
-    this.add.ellipse(x, y + 25, 96, 42, 0x9c7b5b).setStrokeStyle(3, 0x7a5c40);
-    const plant = this.add.container(x, y);
+    // 泥土中心在 (x, y+25)(跟原本的橢圓同位置);plot.png 的土塊比圖中心低約 7px,所以圖放在 y+18
+    const soil = this.add.image(x, y + 18, 'plot');
+    soil.setScale(PLOT_WIDTH / soil.width);
+    // 花的容器放在泥土中心,澆水壓扁時以根部為準
+    const plant = this.add.container(x, y + 25);
     this.plots.push({ i, x, y, plant, kind: null, stage: -1 });
   }
 
   drawPlant(plot) {
     const c = plot.plant;
     c.removeAll(true);
-    if (plot.kind === null) return;
-    const p = PLANTS[plot.kind];
-    const g = this.add.graphics();
-    c.add(g);
-    if (plot.stage === 0) {
-      g.fillStyle(0x6b4a2b).fillEllipse(0, 22, 14, 10);
-      return;
-    }
-    const stemH = [0, 18, 34, 46][plot.stage];
-    g.lineStyle(4, 0x4f9a55).lineBetween(0, 24, 0, 24 - stemH);
-    g.fillStyle(0x6cc070);
-    g.fillEllipse(-9, 24 - stemH * 0.5, 16, 8);
-    if (plot.stage >= 2) g.fillEllipse(9, 24 - stemH * 0.7, 16, 8);
-    if (plot.stage === 3) {
-      const top = 24 - stemH;
-      g.fillStyle(p.color);
-      for (let k = 0; k < p.petals; k++) {
-        const a = (k / p.petals) * Math.PI * 2;
-        g.fillCircle(Math.cos(a) * 10, top + Math.sin(a) * 10, 8);
-      }
-      g.fillStyle(p.center).fillCircle(0, top, 6);
-    }
+    if (plot.kind === null || plot.stage < 0) return;
+    const key = plot.stage >= 3 ? `bloom_${plot.kind + 1}` : STAGE_KEYS[plot.stage];
+    // 所有花圖根部都在底部中間(y≈294/300),同一個縮放,7 格才整齊
+    const img = this.add.image(0, 0, key).setOrigin(0.5, 0.98);
+    img.setScale(PLANT_SIZE / img.width);
+    c.add(img);
   }
 
   makeMonster() {
-    // 在花園裡晃來晃去的小怪獸(先畫成圓滾滾的小團子)
+    // 在花園裡晃來晃去的小怪獸 Nomi(圖的腳在最底下,上面約 1/4 是空的)
     const m = this.add.container(60, 600);
-    const body = this.add.circle(0, 0, 22, MONSTERS[0].color).setStrokeStyle(2, 0x5b8a6a);
-    const eyeL = this.add.circle(-7, -4, 3, 0x333333);
-    const eyeR = this.add.circle(7, -4, 3, 0x333333);
-    m.add([body, eyeL, eyeR]);
+    const body = this.add.image(0, 22, MONSTERS[0].key).setOrigin(0.5, 0.99);
+    body.setScale(60 / body.width);
+    m.add(body);
     this.tweens.add({ targets: m, x: 330, duration: 6000, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     this.tweens.add({ targets: m, y: 592, duration: 400, yoyo: true, repeat: -1 });
   }
@@ -204,17 +205,13 @@ class GardenScene extends Phaser.Scene {
     MONSTERS.forEach((mon, i) => {
       const c = this.collection[i];
       const got = i < tasksDone;
-      const eyes = mon.color === 0x3a3a3a ? 0xffffff : 0x333333;
       c.removeAll(true);
-      const body = this.add.circle(0, 718, 24, got ? mon.color : 0xdddddd).setStrokeStyle(2, got ? 0x777777 : 0xbbbbbb);
+      // 腳底對齊 y=746,圖寬 64;沒收集到的變灰色剪影、不能點
+      const body = this.add.image(0, 746, mon.key).setOrigin(0.5, 0.99);
+      body.setScale(64 / body.width);
       if (got) body.setInteractive({ useHandCursor: true }).on('pointerdown', () => openMonster(i));
+      else body.setTintFill(0xcccccc);
       c.add(body);
-      if (got) {
-        c.add(this.add.circle(-7, 714, 3, eyes));
-        c.add(this.add.circle(7, 714, 3, eyes));
-      } else {
-        c.add(this.add.text(0, 718, '?', { fontSize: '22px', color: '#999999' }).setOrigin(0.5));
-      }
       c.add(this.add.text(0, 758, got ? mon.name : '???', { fontSize: '14px', color: '#7a6a5a' }).setOrigin(0.5));
     });
   }
