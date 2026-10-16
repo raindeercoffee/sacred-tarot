@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 網站的家：各網址頁（/draw/tarot/ 等）都從這裡找圖片和程式 -->
+<base href="/sacred-tarot/">
 <!-- 圖示放在真正的 <head>：瀏覽器一讀到網頁就認得，不會借用 raindeercoffee.com 首頁的圖示 -->
 <title>神聖抽牌 · Sacred Thoth Tarot Oracle</title>
 
@@ -42,6 +44,21 @@
     "sameAs": ["https://www.instagram.com/sun_priestess_riva/"]
   },
   "hasPart": { "@id": "https://raindeercoffee.com/sacred-tarot/moonlight/#page" }
+}
+</script>
+
+<!-- 每個畫面的網址與名稱（網址管理員和 tools/build_routes.py 共用這一份；畫面上看不到）
+     改完首頁後 GitHub 上的自動小幫手會跑 tools/build_routes.py，產生各網址頁和網站地圖 -->
+<script type="application/json" id="route-meta">
+{
+  "/":             {"title":"神聖抽牌 · Sacred Thoth Tarot Oracle", "desc":"神聖抽牌：托特塔羅與能量牌線上抽牌。選擇探索內心或分析狀況，抽出本日小語與療癒指引，也能複製結果請 AI 解讀。"},
+  "/healing/":     {"title":"療癒指引｜免費抽療癒指引・線上抽牌｜神聖抽牌", "desc":"免費抽療癒指引：深呼吸，按一下就能抽出今天給你的療癒指引。不用登入，手機打開就能抽。"},
+  "/quote/":       {"title":"本日小語｜免費抽一句今日療癒小語｜神聖抽牌", "desc":"免費抽本日小語：每天一句溫柔的話陪你。不用登入，手機打開就能抽。"},
+  "/draw/":        {"title":"線上抽牌｜免費塔羅、易經、脈輪、能量牌｜神聖抽牌", "desc":"免費線上抽牌：托特塔羅、易經、脈輪、小木屋能量牌，選一種方式開始今天的探索。"},
+  "/draw/cabin/":  {"title":"小木屋能量牌｜免費線上抽能量牌｜神聖抽牌", "desc":"免費抽小木屋能量牌，選擇探索內心或分析狀況，抽完可以複製結果請 AI 解讀。"},
+  "/draw/chakra/": {"title":"脈輪抽牌｜免費線上抽脈輪牌｜神聖抽牌", "desc":"免費線上抽脈輪牌，看看你的七個脈輪今天的能量狀態。"},
+  "/draw/tarot/":  {"title":"托特塔羅線上抽牌｜免費抽 1 張或 3 張塔羅｜神聖抽牌", "desc":"免費線上抽托特塔羅，可選 1 張或 3 張牌陣，抽完可以複製結果請 AI 解讀。"},
+  "/draw/iching/": {"title":"易經占卜｜免費線上易經卜卦｜神聖抽牌", "desc":"免費線上易經占卜，心中默想問題，按下就能卜一卦。"}
 }
 </script>
 
@@ -919,6 +936,10 @@ const HEALING = [
   '🌙 睡前對自己說一句：「今天，我已經做得很好了。」',
 ];
 
+// 分頁在程式裡的名字 ↔ 網址上的名字
+const TAB_SLUG = { ycg: 'cabin', chakra: 'chakra', tarot: 'tarot', iching: 'iching' };
+const SLUG_TAB = { cabin: 'ycg', chakra: 'chakra', tarot: 'tarot', iching: 'iching' };
+
 class Component extends DCLogic {
   state = {
     ready: false,
@@ -969,18 +990,124 @@ class Component extends DCLogic {
       if (e.key === 'ArrowLeft') this.guidePrev();
     };
     document.addEventListener('keydown', this._onCoffeeKey);
+    this._routeInit();
   }
 
   setTab(tab) { this.setState({ activeTab: tab }); }
   enterApp() { this.setState({ stage: 'app', activeTab: null, ycgSystem: null, chakraSystem: null }); }
   backHome() { this.setState({ stage: 'home' }); }
+
+  /* ═════════ 網址管理員 ═════════
+     畫面一換（開始抽牌、選分頁、本日小語、療癒指引），網址就跟著換；小視窗加 #guide/#coffee/#reading。
+     手機按「返回」會照網址把畫面擺回去（先關小視窗，不會直接離開網站）。網址清單在 <head> 的 #route-meta。 */
+  setState(update, cb) {
+    super.setState(update, () => { if (cb) cb(); this._syncUrl(); });
+  }
+  _routeInit() {
+    const meta = document.getElementById('route-meta');
+    this._meta = meta ? JSON.parse(meta.textContent) : {};
+    // 足跡本存在每一筆瀏覽紀錄裡，重新整理或程式重新掛載後還記得前面走過哪裡
+    const saved = history.state;
+    if (saved && typeof saved.stIdx === 'number' && Array.isArray(saved.hist)) {
+      this._pos = saved.stIdx;
+      this._hist = saved.hist.slice(0, this._pos + 1);
+    } else {
+      this._pos = 0;
+      this._hist = [];
+    }
+    this._hist[this._pos] = this._here();
+    this._goingBack = false;
+    history.replaceState({ stIdx: this._pos, hist: this._hist.slice() }, '', location.href);
+    // 框架有時會把程式重新掛一次；返回鍵只聽一次，永遠交給最新那一份
+    window.__tarotRouter = this;
+    if (!window.__tarotRouterBound) {
+      window.__tarotRouterBound = true;
+      window.addEventListener('popstate', e => {
+        const r = window.__tarotRouter;
+        r._goingBack = false;
+        r._pos = e.state && typeof e.state.stIdx === 'number' ? e.state.stIdx : 0;
+        if (e.state && Array.isArray(e.state.hist)) r._hist = e.state.hist.slice();
+        r._applyUrl();
+      });
+    }
+    this._applyUrl();
+  }
+  _here() { return location.pathname.replace(/^\/sacred-tarot/, '') + location.hash; }
+  _derive() {
+    const s = this.state;
+    let path = '/';
+    if (s.stage === 'app') path = s.activeTab ? `/draw/${TAB_SLUG[s.activeTab]}/` : '/draw/';
+    else if (this._homePick === 'healing' && s.homeHealing) path = '/healing/';
+    else if (this._homePick === 'quote' && s.homeQuote) path = '/quote/';
+    const hash = s.guideOpen ? '#guide' : s.readingOpen ? '#reading' : s.coffeeOpen ? '#coffee' : '';
+    return path + hash;
+  }
+  _setTitle(url) {
+    const m = this._meta && this._meta[url.split('#')[0]];
+    if (m) document.title = m.title;
+  }
+  _syncUrl() {
+    if (this._applying || !this._hist || this._goingBack) return;
+    const want = this._derive(), here = this._here();
+    this._setTitle(want);
+    if (want === here) return;
+    // 關掉小視窗、或回到上一個畫面 → 等於按返回，不多記一筆足跡
+    if (this._pos > 0 && this._hist[this._pos - 1] === want) { this._goingBack = true; history.back(); return; }
+    // 小視窗換成另一個小視窗（盛一杯 → 預約）→ 換掉這一筆就好
+    if (here.includes('#') && want.includes('#') && here.split('#')[0] === want.split('#')[0]) {
+      this._hist[this._pos] = want;
+      this._writeEntry('replace', want);
+      return;
+    }
+    this._hist.length = this._pos + 1;
+    this._hist.push(want);
+    this._pos += 1;
+    this._writeEntry('push', want);
+  }
+  _writeEntry(mode, url) {
+    const st = { stIdx: this._pos, hist: this._hist.slice(0, this._pos + 1) };
+    if (mode === 'push') history.pushState(st, '', '/sacred-tarot' + url);
+    else history.replaceState(st, '', '/sacred-tarot' + url);
+  }
+  _applyUrl() {
+    let [path, hash = ''] = this._here().split('#');
+    path = path.replace(/index\.html$/, '');
+    if (!path.endsWith('/')) path += '/';
+    const next = { guideOpen: hash === 'guide', coffeeOpen: hash === 'coffee', readingOpen: hash === 'reading' };
+    if (next.guideOpen && !this.state.guideOpen) next.guidePage = 0;
+    const m = path.match(/^\/draw\/(cabin|chakra|tarot|iching)\/$/);
+    if (m) Object.assign(next, { stage: 'app', activeTab: SLUG_TAB[m[1]] });
+    else if (path === '/draw/') Object.assign(next, { stage: 'app', activeTab: null });
+    else if (path === '/quote/') {
+      this._homePick = 'quote';
+      Object.assign(next, { stage: 'home', homeQuote: this.state.homeQuote || this.pickLine(ONELINERS, '') });
+    } else if (path === '/healing/') {
+      this._homePick = 'healing';
+      Object.assign(next, { stage: 'home', homeHealing: this.state.homeHealing || this.pickLine(HEALING, '') });
+    } else {
+      this._homePick = null;
+      Object.assign(next, { stage: 'home', homeQuote: '', homeHealing: '' });
+    }
+    this._applying = true;
+    super.setState(next, () => {
+      this._applying = false;
+      // 小視窗打開時鎖住背景、關掉時解鎖（按 X 關會自己處理；這裡補上「按返回關」和「直接打開 #guide」）
+      const s = this.state;
+      document.body.style.overflow = (s.guideOpen || s.coffeeOpen || s.readingOpen) ? 'hidden' : '';
+      const want = this._derive();
+      this._hist[this._pos] = want;
+      if (want !== this._here()) this._writeEntry('replace', want);
+      this._setTitle(want);
+    });
+  }
+
   // 等機率抽一句；重抽時排除畫面上正在顯示的那句，避免「按了卻沒變」
   pickLine(list, current) {
     const pool = list.filter(q => q !== current);
     return pool[Math.floor(Math.random() * pool.length)];
   }
-  drawOneLiner() { this.setState({ homeQuote: this.pickLine(ONELINERS, this.state.homeQuote) }); }
-  drawHealing() { this.setState({ homeHealing: this.pickLine(HEALING, this.state.homeHealing) }); }
+  drawOneLiner() { this._homePick = 'quote'; this.setState({ homeQuote: this.pickLine(ONELINERS, this.state.homeQuote) }); }
+  drawHealing() { this._homePick = 'healing'; this.setState({ homeHealing: this.pickLine(HEALING, this.state.homeHealing) }); }
   reroll() {
     const s = {};
     if (this.state.homeQuote) s.homeQuote = this.pickLine(ONELINERS, this.state.homeQuote);
@@ -1389,7 +1516,7 @@ class Component extends DCLogic {
         isHome: true, isApp: false, showShare: true,
         enterApp: () => this.enterApp(), backHome: () => this.backHome(),
         drawOneLiner: () => this.drawOneLiner(), drawHealing: () => this.drawHealing(),
-        reroll: () => this.reroll(), reloadHome: () => location.reload(),
+        reroll: () => this.reroll(), reloadHome: () => { location.href = '/sacred-tarot/'; },
         homeQuote: '', homeHealing: '', hasQuote: false, hasHealing: false, hasAnyHome: false,
         saveImage: () => this.saveImage(),
         isYCG: false, isIChing: false, isChakra: false, isTarot: false,
@@ -1551,7 +1678,7 @@ class Component extends DCLogic {
       hasAnyHome: !!(s.homeQuote || s.homeHealing),
       saveImage: () => this.saveImage(),
       reroll: () => this.reroll(),
-      reloadHome: () => location.reload(),
+      reloadHome: () => { location.href = '/sacred-tarot/'; },
       isYCG:    s.activeTab === 'ycg',
       isIChing: s.activeTab === 'iching',
       isChakra: s.activeTab === 'chakra',

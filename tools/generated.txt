@@ -1,0 +1,7 @@
+draw/cabin/index.html
+draw/chakra/index.html
+draw/iching/index.html
+draw/index.html
+draw/tarot/index.html
+healing/index.html
+quote/index.html
