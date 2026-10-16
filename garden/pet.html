@@ -12,7 +12,9 @@
     body.nomu { background: linear-gradient(#182040, #3c4e80); color: #f2d99a; }
     body.nomeow { background: linear-gradient(#ffecf2, #dcd0f5); color: #6e546e; }
     #stage { position: relative; width: min(70vw, 70vh, 360px); }
-    #pet { width: 100%; display: block; transform-origin: 50% 100%; cursor: pointer;
+    /* 固定正方形顯示框:平常圖(1024)和撒嬌圖(600)都塞進同一個框、底部對齊,換圖時不會忽大忽小 */
+    #pet { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; object-position: 50% 100%;
+      display: block; transform-origin: 50% 100%; cursor: pointer;
       animation: breathe 4s ease-in-out infinite; -webkit-tap-highlight-color: transparent; }
     /* 呼吸:慢慢吸氣變高,吐氣變回來 */
     @keyframes breathe {
@@ -90,11 +92,16 @@
       $('locked').innerHTML = html;
     }
 
+    const petSrc = 'img/' + mon.key + '.png';
+    const cuteSrc = 'img/' + mon.key + '_cute.png';
+    const cuteImg = new Image(); // 撒嬌圖先偷偷載好;沒載到就只做動作、不換圖
     let busy = false;
     function cute() {
       if (busy) return;
       busy = true;
       const pet = $('pet');
+      const swap = cuteImg.complete && cuteImg.naturalWidth > 0;
+      if (swap) pet.src = cuteSrc;
       pet.classList.add('cute');
       $('bubble').textContent = LINES[Math.floor(Math.random() * LINES.length)];
       $('bubble').classList.add('show');
@@ -110,7 +117,7 @@
         setTimeout(() => h.remove(), 2200);
       }
       setTimeout(() => pet.classList.remove('cute'), 900);
-      setTimeout(() => { $('bubble').classList.remove('show'); busy = false; }, 2200);
+      setTimeout(() => { $('bubble').classList.remove('show'); if (swap) pet.src = petSrc; busy = false; }, 2200);
     }
 
     (async () => {
@@ -121,7 +128,8 @@
       if (error) return locked('連不上雲端,請重新整理');
       if ((count || 0) <= idx) return locked(`${mon.name} 還沒來喔<br>再完成 ${idx + 1 - (count || 0)} 次花朵任務就會遇見牠<br><a href="play.html">回花園</a>`);
 
-      $('pet').src = 'img/' + mon.key + '.png';
+      $('pet').src = petSrc;
+      cuteImg.src = cuteSrc; // 先把撒嬌圖載好,第一次撒嬌才不會閃白
       $('pet').alt = mon.name;
       $('name').textContent = mon.name;
       $('stage').style.display = 'block';

@@ -30,6 +30,11 @@ const PLOT_POS = [
   [135, 540], [255, 540],
 ];
 
+// 花園用的圖(都在 garden/img/,key = 檔名去掉副檔名)
+const STAGE_KEYS = ['stage_seed', 'stage_sprout', 'stage_young']; // 第 0/1/2 階段,7 種花共用;第 3 階段用 bloom_{kind+1}
+const PLANT_SIZE = 96;   // 花/階段圖顯示大小(原圖 300×300)
+const PLOT_WIDTH = 100;  // 一格泥土顯示寬(原圖 300×150)
+
 // 台灣今天的日期,例如 2026-10-01
 function taipeiToday() {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Taipei' });
@@ -38,11 +43,28 @@ function taipeiToday() {
 class GardenScene extends Phaser.Scene {
   constructor() { super('garden'); }
 
+  preload() {
+    this.load.image('garden_bg', 'img/garden_bg.jpg');
+    this.load.image('plot', 'img/plot.png');
+    STAGE_KEYS.forEach(k => this.load.image(k, `img/${k}.png`));
+    PLANTS.forEach((_, i) => this.load.image(`bloom_${i + 1}`, `img/bloom_${i + 1}.png`));
+    // 花園裡只畫 60~64px 大,用 192px 的小縮圖就好(大圖留給小怪獸卡片和桌面寵物)
+    MONSTERS.forEach(m => this.load.image(`thumb_${m.key}`, `img/thumb_${m.key}.png`));
+  }
+
+  // 圖有載到才用圖;沒載到就回傳 null,呼叫的地方改畫簡單的圓,不會出現綠色破圖框
+  img(x, y, key) {
+    return this.textures.exists(key) ? this.add.image(x, y, key) : null;
+  }
+
   create() {
     this.plots = [];
 
-    this.add.rectangle(W / 2, H / 2, W, H, 0xf4efe6);
-    this.add.rectangle(W / 2, 420, W - 20, 400, 0xdfe9d3).setStrokeStyle(3, 0xb9cfa8);
+    // 手繪背景鋪滿(原圖剛好是畫面的 3 倍)
+    const bg = this.img(W / 2, H / 2, 'garden_bg');
+    if (bg) bg.setDisplaySize(W, H);
+    // 標題/按鈕/狀態列後面墊一塊半透明淺色底,字才看得清楚
+    this.add.rectangle(W / 2, 112, W, 224, 0xfffaf2, 0.72);
     this.add.text(W / 2, 55, '呼吸花園', { fontSize: '34px', color: '#5b4a3a', fontStyle: 'bold' }).setOrigin(0.5);
     this.tip = this.add.text(W / 2, 100, '', { fontSize: '16px', color: '#7a6a5a' }).setOrigin(0.5);
 
@@ -147,45 +169,38 @@ class GardenScene extends Phaser.Scene {
   }
 
   makePlot(x, y, i) {
-    this.add.ellipse(x, y + 25, 96, 42, 0x9c7b5b).setStrokeStyle(3, 0x7a5c40);
-    const plant = this.add.container(x, y);
+    // 泥土中心在 (x, y+25)(跟原本的橢圓同位置);plot.png 的土塊比圖中心低約 7px,所以圖放在 y+18
+    const soil = this.img(x, y + 18, 'plot');
+    if (soil) soil.setScale(PLOT_WIDTH / soil.width);
+    else this.add.ellipse(x, y + 25, 90, 34, 0x8a6a4a);
+    // 花的容器放在泥土中心,澆水壓扁時以根部為準
+    const plant = this.add.container(x, y + 25);
     this.plots.push({ i, x, y, plant, kind: null, stage: -1 });
   }
 
   drawPlant(plot) {
     const c = plot.plant;
     c.removeAll(true);
-    if (plot.kind === null) return;
-    const p = PLANTS[plot.kind];
-    const g = this.add.graphics();
-    c.add(g);
-    if (plot.stage === 0) {
-      g.fillStyle(0x6b4a2b).fillEllipse(0, 22, 14, 10);
-      return;
-    }
-    const stemH = [0, 18, 34, 46][plot.stage];
-    g.lineStyle(4, 0x4f9a55).lineBetween(0, 24, 0, 24 - stemH);
-    g.fillStyle(0x6cc070);
-    g.fillEllipse(-9, 24 - stemH * 0.5, 16, 8);
-    if (plot.stage >= 2) g.fillEllipse(9, 24 - stemH * 0.7, 16, 8);
-    if (plot.stage === 3) {
-      const top = 24 - stemH;
-      g.fillStyle(p.color);
-      for (let k = 0; k < p.petals; k++) {
-        const a = (k / p.petals) * Math.PI * 2;
-        g.fillCircle(Math.cos(a) * 10, top + Math.sin(a) * 10, 8);
-      }
-      g.fillStyle(p.center).fillCircle(0, top, 6);
+    if (plot.kind === null || plot.stage < 0) return;
+    const key = plot.stage >= 3 ? `bloom_${plot.kind + 1}` : STAGE_KEYS[plot.stage];
+    // 所有花圖根部都在底部中間(y≈294/300),同一個縮放,7 格才整齊
+    const img = this.img(0, 0, key);
+    if (img) {
+      img.setOrigin(0.5, 0.98).setScale(PLANT_SIZE / img.width);
+      c.add(img);
+    } else {
+      // 圖沒載到:畫一個簡單的圓代替(開花用花的顏色,還沒開用綠色,越長越大)
+      const r = 8 + plot.stage * 6;
+      c.add(this.add.circle(0, -r, r, plot.stage >= 3 ? PLANTS[plot.kind].color : 0x6cc070));
     }
   }
 
   makeMonster() {
-    // 在花園裡晃來晃去的小怪獸(先畫成圓滾滾的小團子)
+    // 在花園裡晃來晃去的小怪獸 Nomi(圖的腳在最底下,上面約 1/4 是空的)
     const m = this.add.container(60, 600);
-    const body = this.add.circle(0, 0, 22, MONSTERS[0].color).setStrokeStyle(2, 0x5b8a6a);
-    const eyeL = this.add.circle(-7, -4, 3, 0x333333);
-    const eyeR = this.add.circle(7, -4, 3, 0x333333);
-    m.add([body, eyeL, eyeR]);
+    const body = this.img(0, 22, `thumb_${MONSTERS[0].key}`);
+    if (body) body.setOrigin(0.5, 0.99).setScale(60 / body.width);
+    m.add(body || this.add.circle(0, 0, 22, MONSTERS[0].color).setStrokeStyle(2, 0xcccccc));
     this.tweens.add({ targets: m, x: 330, duration: 6000, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     this.tweens.add({ targets: m, y: 592, duration: 400, yoyo: true, repeat: -1 });
   }
@@ -204,17 +219,15 @@ class GardenScene extends Phaser.Scene {
     MONSTERS.forEach((mon, i) => {
       const c = this.collection[i];
       const got = i < tasksDone;
-      const eyes = mon.color === 0x3a3a3a ? 0xffffff : 0x333333;
       c.removeAll(true);
-      const body = this.add.circle(0, 718, 24, got ? mon.color : 0xdddddd).setStrokeStyle(2, got ? 0x777777 : 0xbbbbbb);
+      // 腳底對齊 y=746,圖寬 64;沒收集到的變灰色剪影、不能點
+      let body = this.img(0, 746, `thumb_${mon.key}`);
+      if (body) body.setOrigin(0.5, 0.99).setScale(64 / body.width);
+      else body = this.add.circle(0, 722, 24, mon.color).setStrokeStyle(2, 0xcccccc); // 圖沒載到就畫圓
       if (got) body.setInteractive({ useHandCursor: true }).on('pointerdown', () => openMonster(i));
+      else if (body.setTintFill) body.setTintFill(0xcccccc);
+      else body.setFillStyle(0xcccccc);
       c.add(body);
-      if (got) {
-        c.add(this.add.circle(-7, 714, 3, eyes));
-        c.add(this.add.circle(7, 714, 3, eyes));
-      } else {
-        c.add(this.add.text(0, 718, '?', { fontSize: '22px', color: '#999999' }).setOrigin(0.5));
-      }
       c.add(this.add.text(0, 758, got ? mon.name : '???', { fontSize: '14px', color: '#7a6a5a' }).setOrigin(0.5));
     });
   }
@@ -230,6 +243,19 @@ const TASKS = [
   { kind: 'poem', em: '✍️', name: '寫一首詩', done: '為花寫了一首詩' },
   { kind: 'bookmark', em: '🔖', name: '做成書籤', done: '7 朵花壓成了書籤' },
 ];
+
+// 任務成品圖:檔名 = craft_ + kind
+function craftSrc(kind) { return `img/craft_${kind}.png`; }
+function craftImg(t, cls) {
+  return TASKS.some(x => x.kind === t.kind)
+    ? `<img class="${cls}" src="${craftSrc(t.kind)}" alt="${t.name}">`
+    : `<span class="${cls} craft-em">${t.em}</span>`;
+}
+// 把客人的詩疊在詩卡圖的空白區中間(太長可以捲動)
+function poemCard(poem) {
+  return `<div class="poemcard"><img src="${craftSrc('poem')}" alt="詩卡">
+    <div class="poemtext"><div>${esc(poem)}</div></div></div>`;
+}
 
 function hex(n) { return '#' + n.toString(16).padStart(6, '0'); }
 function esc(s) { return s.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
@@ -252,7 +278,7 @@ function openTask(scene) {
     <p class="sub">要把它們做成什麼?</p>
     ${flowerDots(scene)}
     <div class="grid">
-      ${TASKS.map((t, i) => `<button class="pick" data-i="${i}"><span class="em">${t.em}</span>${t.name}</button>`).join('')}
+      ${TASKS.map((t, i) => `<button class="pick" data-i="${i}">${craftImg(t, 'pick-img')}${t.name}</button>`).join('')}
     </div>
     <button class="back" id="taskClose">等一下再做</button>`);
   document.querySelectorAll('#taskCard .pick').forEach(b => b.onclick = () => makeCraft(scene, TASKS[+b.dataset.i]));
@@ -263,7 +289,7 @@ function openTask(scene) {
 function makeCraft(scene, t) {
   const poemBox = t.kind === 'poem' ? '<textarea id="poem" maxlength="500" placeholder="寫下妳想對花說的話…"></textarea>' : '';
   showTask(`
-    <div class="big">${t.em}</div>
+    ${craftImg(t, 'craft-big')}
     <h2>${t.name}</h2>
     ${flowerDots(scene)}
     ${poemBox}
@@ -371,9 +397,8 @@ function showCoupon(scene, data) {
 function showReward(scene, t, poem, data) {
   const mon = data.new_monster !== null ? MONSTERS[data.new_monster] : null;
   showTask(`
-    <div class="big">${t.em}</div>
+    ${poem ? poemCard(poem) : craftImg(t, 'craft-reward')}
     <h2>${t.done}</h2>
-    ${poem ? `<p class="sub" style="white-space:pre-wrap">${esc(poem)}</p>` : ''}
     <p class="sub">🪙 拿到 10 枚金幣(現在共 ${data.coins} 枚)</p>
     ${mon ? `<p class="sub">🎁 獲得 <b>${mon.name}</b> 的電腦桌面寵物和手機桌布!</p>
       <button class="main" id="rewardMon">去見 ${mon.name} 🎁</button>` : ''}
@@ -412,18 +437,27 @@ async function openCrafts() {
     document.getElementById('crClose').onclick = closeTask;
     return;
   }
-  const list = data.map(c => {
+  renderCrafts(data);
+}
+
+// 把已經抓回來的作品畫出來(從詩卡按「回我的作品」時直接重畫,不用再跟雲端要一次)
+function renderCrafts(data) {
+  const list = data.map((c, idx) => {
     const t = TASKS.find(x => x.kind === c.kind) || { em: '🌸', name: '作品' };
     const day = new Date(c.created_at).toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei' });
     const dots = (c.flowers || []).map(k => PLANTS[k]
       ? `<div class="dot" title="${PLANTS[k].name}" style="width:18px;height:18px;background:${hex(PLANTS[k].color)}"></div>` : '').join('');
     return `
-      <div style="text-align:left;padding:12px 4px;border-bottom:1px solid #f0e8dc">
-        <div style="display:flex;justify-content:space-between;align-items:center;color:#5b4a3a">
-          <b>${t.em} ${t.name}</b><span style="font-size:13px;color:#a09080">${day}</span>
+      <div class="craft-row${c.poem ? ' has-poem' : ''}" data-i="${idx}">
+        ${craftImg(t, 'craft-thumb')}
+        <div class="craft-info">
+          <div style="display:flex;justify-content:space-between;align-items:center;color:#5b4a3a">
+            <b>${t.name}</b><span style="font-size:13px;color:#a09080">${day}</span>
+          </div>
+          <div class="flowers" style="justify-content:flex-start;margin:8px 0 0">${dots}</div>
+          ${c.poem ? `<p class="sub poem-clip">${esc(c.poem)}</p>
+            <p class="sub" style="margin:4px 0 0;font-size:12px;color:#a09080">點一下看詩卡 ✨</p>` : ''}
         </div>
-        <div class="flowers" style="justify-content:flex-start;margin:8px 0 0">${dots}</div>
-        ${c.poem ? `<p class="sub" style="white-space:pre-wrap;margin:8px 0 0;color:#5b4a3a">${esc(c.poem)}</p>` : ''}
       </div>`;
   }).join('');
   showTask(`
@@ -432,6 +466,12 @@ async function openCrafts() {
     ${list}
     <button class="back" id="crClose">回花園</button>`);
   document.getElementById('crClose').onclick = closeTask;
+  // 寫詩的作品點開看大詩卡
+  document.querySelectorAll('#taskCard .craft-row.has-poem').forEach(row => row.onclick = () => {
+    showTask(`${poemCard(data[+row.dataset.i].poem)}
+      <button class="back" id="poemBack">回我的作品</button>`);
+    document.getElementById('poemBack').onclick = () => renderCrafts(data);
+  });
 }
 
 let game = null;
