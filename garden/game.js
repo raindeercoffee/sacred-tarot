@@ -48,14 +48,21 @@ class GardenScene extends Phaser.Scene {
     this.load.image('plot', 'img/plot.png');
     STAGE_KEYS.forEach(k => this.load.image(k, `img/${k}.png`));
     PLANTS.forEach((_, i) => this.load.image(`bloom_${i + 1}`, `img/bloom_${i + 1}.png`));
-    MONSTERS.forEach(m => this.load.image(m.key, `img/${m.key}.png`));
+    // 花園裡只畫 60~64px 大,用 192px 的小縮圖就好(大圖留給小怪獸卡片和桌面寵物)
+    MONSTERS.forEach(m => this.load.image(`thumb_${m.key}`, `img/thumb_${m.key}.png`));
+  }
+
+  // 圖有載到才用圖;沒載到就回傳 null,呼叫的地方改畫簡單的圓,不會出現綠色破圖框
+  img(x, y, key) {
+    return this.textures.exists(key) ? this.add.image(x, y, key) : null;
   }
 
   create() {
     this.plots = [];
 
     // 手繪背景鋪滿(原圖剛好是畫面的 3 倍)
-    this.add.image(W / 2, H / 2, 'garden_bg').setDisplaySize(W, H);
+    const bg = this.img(W / 2, H / 2, 'garden_bg');
+    if (bg) bg.setDisplaySize(W, H);
     // 標題/按鈕/狀態列後面墊一塊半透明淺色底,字才看得清楚
     this.add.rectangle(W / 2, 112, W, 224, 0xfffaf2, 0.72);
     this.add.text(W / 2, 55, '呼吸花園', { fontSize: '34px', color: '#5b4a3a', fontStyle: 'bold' }).setOrigin(0.5);
@@ -163,8 +170,9 @@ class GardenScene extends Phaser.Scene {
 
   makePlot(x, y, i) {
     // 泥土中心在 (x, y+25)(跟原本的橢圓同位置);plot.png 的土塊比圖中心低約 7px,所以圖放在 y+18
-    const soil = this.add.image(x, y + 18, 'plot');
-    soil.setScale(PLOT_WIDTH / soil.width);
+    const soil = this.img(x, y + 18, 'plot');
+    if (soil) soil.setScale(PLOT_WIDTH / soil.width);
+    else this.add.ellipse(x, y + 25, 90, 34, 0x8a6a4a);
     // 花的容器放在泥土中心,澆水壓扁時以根部為準
     const plant = this.add.container(x, y + 25);
     this.plots.push({ i, x, y, plant, kind: null, stage: -1 });
@@ -176,17 +184,23 @@ class GardenScene extends Phaser.Scene {
     if (plot.kind === null || plot.stage < 0) return;
     const key = plot.stage >= 3 ? `bloom_${plot.kind + 1}` : STAGE_KEYS[plot.stage];
     // 所有花圖根部都在底部中間(y≈294/300),同一個縮放,7 格才整齊
-    const img = this.add.image(0, 0, key).setOrigin(0.5, 0.98);
-    img.setScale(PLANT_SIZE / img.width);
-    c.add(img);
+    const img = this.img(0, 0, key);
+    if (img) {
+      img.setOrigin(0.5, 0.98).setScale(PLANT_SIZE / img.width);
+      c.add(img);
+    } else {
+      // 圖沒載到:畫一個簡單的圓代替(開花用花的顏色,還沒開用綠色,越長越大)
+      const r = 8 + plot.stage * 6;
+      c.add(this.add.circle(0, -r, r, plot.stage >= 3 ? PLANTS[plot.kind].color : 0x6cc070));
+    }
   }
 
   makeMonster() {
     // 在花園裡晃來晃去的小怪獸 Nomi(圖的腳在最底下,上面約 1/4 是空的)
     const m = this.add.container(60, 600);
-    const body = this.add.image(0, 22, MONSTERS[0].key).setOrigin(0.5, 0.99);
-    body.setScale(60 / body.width);
-    m.add(body);
+    const body = this.img(0, 22, `thumb_${MONSTERS[0].key}`);
+    if (body) body.setOrigin(0.5, 0.99).setScale(60 / body.width);
+    m.add(body || this.add.circle(0, 0, 22, MONSTERS[0].color).setStrokeStyle(2, 0xcccccc));
     this.tweens.add({ targets: m, x: 330, duration: 6000, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     this.tweens.add({ targets: m, y: 592, duration: 400, yoyo: true, repeat: -1 });
   }
@@ -207,10 +221,12 @@ class GardenScene extends Phaser.Scene {
       const got = i < tasksDone;
       c.removeAll(true);
       // 腳底對齊 y=746,圖寬 64;沒收集到的變灰色剪影、不能點
-      const body = this.add.image(0, 746, mon.key).setOrigin(0.5, 0.99);
-      body.setScale(64 / body.width);
+      let body = this.img(0, 746, `thumb_${mon.key}`);
+      if (body) body.setOrigin(0.5, 0.99).setScale(64 / body.width);
+      else body = this.add.circle(0, 722, 24, mon.color).setStrokeStyle(2, 0xcccccc); // 圖沒載到就畫圓
       if (got) body.setInteractive({ useHandCursor: true }).on('pointerdown', () => openMonster(i));
-      else body.setTintFill(0xcccccc);
+      else if (body.setTintFill) body.setTintFill(0xcccccc);
+      else body.setFillStyle(0xcccccc);
       c.add(body);
       c.add(this.add.text(0, 758, got ? mon.name : '???', { fontSize: '14px', color: '#7a6a5a' }).setOrigin(0.5));
     });
@@ -421,6 +437,11 @@ async function openCrafts() {
     document.getElementById('crClose').onclick = closeTask;
     return;
   }
+  renderCrafts(data);
+}
+
+// 把已經抓回來的作品畫出來(從詩卡按「回我的作品」時直接重畫,不用再跟雲端要一次)
+function renderCrafts(data) {
   const list = data.map((c, idx) => {
     const t = TASKS.find(x => x.kind === c.kind) || { em: '🌸', name: '作品' };
     const day = new Date(c.created_at).toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei' });
@@ -434,7 +455,7 @@ async function openCrafts() {
             <b>${t.name}</b><span style="font-size:13px;color:#a09080">${day}</span>
           </div>
           <div class="flowers" style="justify-content:flex-start;margin:8px 0 0">${dots}</div>
-          ${c.poem ? `<p class="sub" style="white-space:pre-wrap;margin:8px 0 0;color:#5b4a3a">${esc(c.poem)}</p>
+          ${c.poem ? `<p class="sub poem-clip">${esc(c.poem)}</p>
             <p class="sub" style="margin:4px 0 0;font-size:12px;color:#a09080">點一下看詩卡 ✨</p>` : ''}
         </div>
       </div>`;
@@ -449,7 +470,7 @@ async function openCrafts() {
   document.querySelectorAll('#taskCard .craft-row.has-poem').forEach(row => row.onclick = () => {
     showTask(`${poemCard(data[+row.dataset.i].poem)}
       <button class="back" id="poemBack">回我的作品</button>`);
-    document.getElementById('poemBack').onclick = openCrafts;
+    document.getElementById('poemBack').onclick = () => renderCrafts(data);
   });
 }
 

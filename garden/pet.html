@@ -94,12 +94,14 @@
 
     const petSrc = 'img/' + mon.key + '.png';
     const cuteSrc = 'img/' + mon.key + '_cute.png';
+    const cuteImg = new Image(); // 撒嬌圖先偷偷載好;沒載到就只做動作、不換圖
     let busy = false;
     function cute() {
       if (busy) return;
       busy = true;
       const pet = $('pet');
-      pet.src = cuteSrc;
+      const swap = cuteImg.complete && cuteImg.naturalWidth > 0;
+      if (swap) pet.src = cuteSrc;
       pet.classList.add('cute');
       $('bubble').textContent = LINES[Math.floor(Math.random() * LINES.length)];
       $('bubble').classList.add('show');
@@ -115,7 +117,7 @@
         setTimeout(() => h.remove(), 2200);
       }
       setTimeout(() => pet.classList.remove('cute'), 900);
-      setTimeout(() => { $('bubble').classList.remove('show'); pet.src = petSrc; busy = false; }, 2200);
+      setTimeout(() => { $('bubble').classList.remove('show'); if (swap) pet.src = petSrc; busy = false; }, 2200);
     }
 
     (async () => {
@@ -127,7 +129,7 @@
       if ((count || 0) <= idx) return locked(`${mon.name} 還沒來喔<br>再完成 ${idx + 1 - (count || 0)} 次花朵任務就會遇見牠<br><a href="play.html">回花園</a>`);
 
       $('pet').src = petSrc;
-      new Image().src = cuteSrc; // 先把撒嬌圖載好,第一次撒嬌才不會閃白
+      cuteImg.src = cuteSrc; // 先把撒嬌圖載好,第一次撒嬌才不會閃白
       $('pet').alt = mon.name;
       $('name').textContent = mon.name;
       $('stage').style.display = 'block';

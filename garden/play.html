@@ -33,7 +33,6 @@
     #task .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     #task .pick { padding: 14px 6px; font-size: 15px; border: 2px solid #e2d6c4; border-radius: 14px;
       background: #fffaf2; color: #5b4a3a; cursor: pointer; }
-    #task .pick .em { display: block; font-size: 28px; margin-bottom: 4px; }
     #task .flowers { display: flex; justify-content: center; gap: 6px; margin: 14px 0; flex-wrap: wrap; }
     #task .dot { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.12); }
     #task textarea { width: 100%; box-sizing: border-box; height: 110px; padding: 10px; font-size: 16px;
@@ -61,6 +60,9 @@
     #task .craft-thumb { flex: 0 0 64px; width: 64px; height: 64px; object-fit: contain; }
     #task .craft-thumb.craft-em { font-size: 40px; line-height: 64px; }
     #task .craft-info { flex: 1; min-width: 0; }
+    /* 列表裡的詩最多顯示 2 行,完整的詩點開詩卡看 */
+    #task .poem-clip { margin: 8px 0 0; color: #5b4a3a; white-space: pre-wrap; overflow: hidden;
+      display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
   </style>
 </head>
 <body>
