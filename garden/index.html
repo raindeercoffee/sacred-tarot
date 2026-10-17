@@ -16,7 +16,8 @@
   <style>
     html, body { margin: 0; height: 100%; background: #f4efe6; overflow: hidden;
       font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif; }
-    #game { width: 100vw; height: 100vh; }
+    /* 100dvh = 手機上真的看得到的高度(扣掉網址列),舊瀏覽器退回 100vh */
+    #game { width: 100vw; height: 100vh; height: 100dvh; }
     #login { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
       background: #f4efe6; padding: 16px; box-sizing: border-box; }
     #login .card { width: 100%; max-width: 340px; background: #fff; border: 2px solid #e2d6c4;

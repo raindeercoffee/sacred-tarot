@@ -196,13 +196,12 @@ class GardenScene extends Phaser.Scene {
   }
 
   makeMonster() {
-    // 在花園裡晃來晃去的小怪獸 Nomi(圖的腳在最底下,上面約 1/4 是空的)
-    const m = this.add.container(60, 600);
+    // 小怪獸 Nomi 待在花園左下角,原地慢慢上下漂浮(圖的腳在最底下,上面約 1/4 是空的)
+    const m = this.add.container(55, 600);
     const body = this.img(0, 22, `thumb_${MONSTERS[0].key}`);
     if (body) body.setOrigin(0.5, 0.99).setScale(60 / body.width);
     m.add(body || this.add.circle(0, 0, 22, MONSTERS[0].color).setStrokeStyle(2, 0xcccccc));
-    this.tweens.add({ targets: m, x: 330, duration: 6000, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-    this.tweens.add({ targets: m, y: 592, duration: 400, yoyo: true, repeat: -1 });
+    this.tweens.add({ targets: m, y: 592, duration: 1800, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
   }
 
   makeCollection() {
