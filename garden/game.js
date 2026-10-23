@@ -35,6 +35,9 @@ const STAGE_KEYS = ['stage_seed', 'stage_sprout', 'stage_young']; // 第 0/1/2 �
 const PLANT_SIZE = 96;   // 花/階段圖顯示大小(原圖 300×300)
 const PLOT_WIDTH = 100;  // 一格泥土顯示寬(原圖 300×150)
 
+// 遊戲引擎預設用英文字母量字高,中文字比較高,頭頂會被切掉 → 改用中文字來量
+const ZH_TEST = '|MÉqgy國花園';
+
 // 台灣今天的日期,例如 2026-10-01
 function taipeiToday() {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Taipei' });
@@ -65,23 +68,23 @@ class GardenScene extends Phaser.Scene {
     if (bg) bg.setDisplaySize(W, H);
     // 標題/按鈕/狀態列後面墊一塊半透明淺色底,字才看得清楚
     this.add.rectangle(W / 2, 112, W, 224, 0xfffaf2, 0.72);
-    this.add.text(W / 2, 55, '呼吸花園', { fontSize: '34px', color: '#5b4a3a', fontStyle: 'bold' }).setOrigin(0.5);
-    this.tip = this.add.text(W / 2, 100, '', { fontSize: '16px', color: '#7a6a5a' }).setOrigin(0.5);
+    this.add.text(W / 2, 55, '呼吸花園', { testString: ZH_TEST, fontSize: '34px', color: '#5b4a3a', fontStyle: 'bold' }).setOrigin(0.5);
+    this.tip = this.add.text(W / 2, 100, '', { testString: ZH_TEST, fontSize: '16px', color: '#7a6a5a' }).setOrigin(0.5);
 
-    this.add.text(W - 16, 20, '登出', { fontSize: '14px', color: '#a09080' })
+    this.add.text(W - 16, 20, '登出', { testString: ZH_TEST, fontSize: '14px', color: '#a09080' })
       .setOrigin(1, 0).setInteractive({ useHandCursor: true })
       .on('pointerdown', async () => { await sb.auth.signOut(); location.reload(); });
 
     // padding 讓手指好點一點(字本身的位置不變)
-    this.add.text(16, 15, '🎟️ 折扣碼', { fontSize: '14px', color: '#7a6a5a', padding: { x: 0, y: 5 } })
+    this.add.text(16, 15, '🎟️ 折扣碼', { testString: ZH_TEST, fontSize: '14px', color: '#7a6a5a', padding: { x: 0, y: 5 } })
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => openCoupons(this));
 
-    this.add.text(16, 39, '📖 我的作品', { fontSize: '14px', color: '#7a6a5a', padding: { x: 0, y: 5 } })
+    this.add.text(16, 39, '📖 我的作品', { testString: ZH_TEST, fontSize: '14px', color: '#7a6a5a', padding: { x: 0, y: 5 } })
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => openCrafts());
 
-    this.status = this.add.text(W / 2, 200, '', { fontSize: '15px', color: '#7a6a5a' }).setOrigin(0.5);
+    this.status = this.add.text(W / 2, 200, '', { testString: ZH_TEST, fontSize: '15px', color: '#7a6a5a' }).setOrigin(0.5);
 
     this.makeCareButton();
     PLOT_POS.forEach(([x, y], i) => this.makePlot(x, y, i));
@@ -92,7 +95,7 @@ class GardenScene extends Phaser.Scene {
 
   makeCareButton() {
     this.btnBg = this.add.rectangle(W / 2, 160, 240, 52, 0x6cc070).setStrokeStyle(3, 0x4f9a55);
-    this.btnText = this.add.text(W / 2, 160, '', { fontSize: '20px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
+    this.btnText = this.add.text(W / 2, 160, '', { testString: ZH_TEST, fontSize: '20px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
     this.btnBg.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
       if (!this.btnEnabled) return;
       if (this.btnMode === 'task') openTask(this);
@@ -206,8 +209,8 @@ class GardenScene extends Phaser.Scene {
 
   makeCollection() {
     this.add.rectangle(W / 2, 720, W - 30, 150, 0xffffff).setStrokeStyle(2, 0xe2d6c4);
-    this.add.text(W / 2, 665, '小怪獸圖鑑', { fontSize: '18px', color: '#5b4a3a', fontStyle: 'bold' }).setOrigin(0.5);
-    this.collectionHint = this.add.text(W / 2, 685, '', { fontSize: '12px', color: '#a09080' }).setOrigin(0.5);
+    this.add.text(W / 2, 665, '小怪獸圖鑑', { testString: ZH_TEST, fontSize: '18px', color: '#5b4a3a', fontStyle: 'bold' }).setOrigin(0.5);
+    this.collectionHint = this.add.text(W / 2, 685, '', { testString: ZH_TEST, fontSize: '12px', color: '#a09080' }).setOrigin(0.5);
     this.collection = MONSTERS.map((_, i) => this.add.container(95 + i * 100, 0));
     this.drawCollection(0);
   }
@@ -227,7 +230,7 @@ class GardenScene extends Phaser.Scene {
       else if (body.setTintFill) body.setTintFill(0xcccccc);
       else body.setFillStyle(0xcccccc);
       c.add(body);
-      c.add(this.add.text(0, 758, got ? mon.name : '???', { fontSize: '14px', color: '#7a6a5a' }).setOrigin(0.5));
+      c.add(this.add.text(0, 758, got ? mon.name : '???', { testString: ZH_TEST, fontSize: '14px', color: '#7a6a5a' }).setOrigin(0.5));
     });
   }
 }
