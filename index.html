@@ -11,6 +11,8 @@
 <!-- 給搜尋引擎和分享卡片看的資料（畫面上看不到） -->
 <meta name="description" content="神聖抽牌：托特塔羅與能量牌線上抽牌。選擇探索內心或分析狀況，抽出本日小語與療癒指引，也能複製結果請 AI 解讀。">
 <link rel="canonical" href="https://raindeercoffee.com/sacred-tarot/">
+<!-- 給 AI 讀的純文字版（免費抽牌、真人解讀價格、常見問答都在裡面） -->
+<link rel="alternate" type="text/markdown" href="https://raindeercoffee.com/sacred-tarot/index.md" title="神聖抽牌（純文字版）">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:title" content="神聖抽牌 · Sacred Thoth Tarot Oracle">
@@ -44,6 +46,22 @@
     "sameAs": ["https://www.instagram.com/sun_priestess_riva/"]
   },
   "hasPart": { "@id": "https://raindeercoffee.com/sacred-tarot/moonlight/#page" }
+}
+</script>
+<!-- 常見問答的身分證（和首頁「常見問答」同一份內容，改的時候兩邊一起改） -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "inLanguage": "zh-TW",
+  "mainEntity": [
+    { "@type": "Question", "name": "神聖抽牌要付費嗎？", "acceptedAnswer": { "@type": "Answer", "text": "線上抽牌免費，不用登入，手機打開就能抽：本日小語、療癒指引、托特塔羅（1 張或 3 張）、易經、脈輪、小木屋能量牌。" } },
+    { "@type": "Question", "name": "抽完牌怎麼解讀？", "acceptedAnswer": { "@type": "Answer", "text": "按「複製文字＋指令」，把抽到的牌和解讀方式一起貼到你習慣的 AI（ChatGPT、Gemini、Claude 都可以）。想保有隱私，可以開 AI 的臨時對話。" } },
+    { "@type": "Question", "name": "可以找真人解讀嗎？多少錢？", "acceptedAnswer": { "@type": "Answer", "text": "可以，由 Riva 一對一解讀，有三種方式：樹下聊聊 40 分鐘 NT$500，帶著抽到的牌多聊一點；林中營火 60 分鐘 NT$1,500，用塔羅、花精、易經等不同系統，從好幾個角度看清楚一件複雜的事；森林年輪 90 分鐘 NT$3,000，細細走過你接下來的一整年。" } },
+    { "@type": "Question", "name": "怎麼預約真人解讀？", "acceptedAnswer": { "@type": "Answer", "text": "在 Instagram 私訊 Riva（@sun_priestess_riva）想聊的方向，約好時間、確認後再告訴你匯款方式。解讀是陪伴與參考，不取代醫療、法律、財務等專業建議。" } },
+    { "@type": "Question", "name": "月光寶盒是什麼？多少錢？", "acceptedAnswer": { "@type": "Answer", "text": "免費寶盒是 Podcast《A面B面》，聊電影、人性與玄學。付費的月光寶盒 NT$500／一年，保證更新 20 集，每集分上、下兩段並附文字重點；手機點開就能聽，不用註冊、不用登入。" } },
+    { "@type": "Question", "name": "可以請 Riva 喝杯咖啡嗎？", "acceptedAnswer": { "@type": "Answer", "text": "可以，用匯款表達心意：林間美式 NT$60、小鹿拿鐵 NT$100、森林手沖 NT$150，或隨你的心意。心意滿 NT$150，7 天內會在私訊送你一幅專屬的「靈魂能量圖」。" } }
+  ]
 }
 </script>
 
@@ -199,6 +217,25 @@
             <a href="moonlight/" style="box-sizing:border-box; padding:22px 6px; display:flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; color:#f2d99a; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:1.1rem; letter-spacing:0.18em; cursor:pointer; border-radius:18px; transition:all 0.35s; white-space:nowrap; box-shadow:0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,200,0.1); background:linear-gradient(135deg, rgba(120,128,210,0.22), rgba(40,44,96,0.3)); border:1px solid #c9a86a;" style-hover="background:linear-gradient(135deg, rgba(140,148,230,0.32), rgba(50,54,110,0.4)); border-color:#f2d99a; box-shadow:0 0 32px rgba(160,170,240,0.28);">月光寶盒 🗝️</a>
           </div>
         </div>
+
+        <!-- 常見問答：答案直接寫在頁面裡，客人和 AI 都讀得到（和 <head> 的常見問答身分證同一份，改的時候兩邊一起改） -->
+        <details class="home-faq" style="max-width:420px; margin:30px auto 0; border:1px solid rgba(201,168,106,0.3); border-radius:4px; background:rgba(10,13,26,0.4); padding:0 18px;">
+          <summary style="padding:14px 0; cursor:pointer; text-align:center; font-family:'Cormorant Garamond','Noto Serif TC',serif; font-size:0.84rem; color:#d8b978; letter-spacing:0.24em;">・ 常見問答 ・</summary>
+          <dl style="margin:0 0 16px; font-size:0.8rem; line-height:1.9; letter-spacing:0.04em;">
+            <dt style="color:#f2d99a; margin-top:4px;">神聖抽牌要付費嗎？</dt>
+            <dd style="margin:2px 0 14px; color:#e8dcc0;">線上抽牌免費，不用登入，手機打開就能抽：本日小語、療癒指引、托特塔羅（1 張或 3 張）、易經、脈輪、小木屋能量牌。</dd>
+            <dt style="color:#f2d99a;">抽完牌怎麼解讀？</dt>
+            <dd style="margin:2px 0 14px; color:#e8dcc0;">按「複製文字＋指令」，把抽到的牌和解讀方式一起貼到你習慣的 AI（ChatGPT、Gemini、Claude 都可以）。想保有隱私，可以開 AI 的臨時對話。</dd>
+            <dt style="color:#f2d99a;">可以找真人解讀嗎？多少錢？</dt>
+            <dd style="margin:2px 0 14px; color:#e8dcc0;">可以，由 Riva 一對一解讀，有三種方式：<br>樹下聊聊・40 分鐘・NT$500：帶著抽到的牌多聊一點。<br>林中營火・60 分鐘・NT$1,500：用塔羅、花精、易經等不同系統，從好幾個角度看清楚一件複雜的事。<br>森林年輪・90 分鐘・NT$3,000：細細走過你接下來的一整年。</dd>
+            <dt style="color:#f2d99a;">怎麼預約真人解讀？</dt>
+            <dd style="margin:2px 0 14px; color:#e8dcc0;">在 Instagram 私訊 Riva（@sun_priestess_riva）想聊的方向，約好時間、確認後再告訴你匯款方式。解讀是陪伴與參考，不取代醫療、法律、財務等專業建議。</dd>
+            <dt style="color:#f2d99a;">月光寶盒是什麼？多少錢？</dt>
+            <dd style="margin:2px 0 14px; color:#e8dcc0;">免費寶盒是 Podcast《A面B面》，聊電影、人性與玄學。付費的月光寶盒 NT$500／一年，保證更新 20 集，每集分上、下兩段並附文字重點；手機點開就能聽，不用註冊、不用登入。</dd>
+            <dt style="color:#f2d99a;">可以請 Riva 喝杯咖啡嗎？</dt>
+            <dd style="margin:2px 0 0; color:#e8dcc0;">可以，用匯款表達心意：林間美式 NT$60、小鹿拿鐵 NT$100、森林手沖 NT$150，或隨你的心意。心意滿 NT$150，7 天內會在私訊送你一幅專屬的「靈魂能量圖」。</dd>
+          </dl>
+        </details>
       </div>
     </sc-if>
 
