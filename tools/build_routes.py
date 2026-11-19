@@ -8,7 +8,7 @@
     python tools/build_routes.py
 
 會更新：各網址資料夾的 index.html、sitemap.xml、tools/generated.txt（產生過的清單）
-只會刪除 generated.txt 裡記過、這次不再需要的檔案；月光寶盒、呼吸花園等手寫的頁不會被動到。
+只會刪除 generated.txt 裡記過、這次不再需要的檔案；月光寶盒等手寫的頁不會被動到。
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ SOURCE = ROOT / "index.html"
 MANIFEST = ROOT / "tools" / "generated.txt"
 HOME_TITLE = "神聖抽牌 · Sacred Thoth Tarot Oracle"
 # 不是 index.html 產生的、但也要放進網站地圖的頁
-EXTRA_PAGES = ["/moonlight/", "/garden/"]
+EXTRA_PAGES = ["/moonlight/"]
 
 
 def load_routes(text: str) -> dict[str, dict]:

@@ -25,7 +25,6 @@
   - 易經占卜：https://raindeercoffee.com/sacred-tarot/draw/iching/
   - 脈輪抽牌：https://raindeercoffee.com/sacred-tarot/draw/chakra/
   - 小木屋能量牌：https://raindeercoffee.com/sacred-tarot/draw/cabin/
-- 呼吸花園（療癒養花小遊戲，需要登入）：https://raindeercoffee.com/sacred-tarot/garden/
 
 抽完牌按「複製文字＋指令」，就能貼到 ChatGPT、Gemini、Claude 等 AI 請它解讀。
 
