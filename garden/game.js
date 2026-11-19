@@ -71,9 +71,15 @@ class GardenScene extends Phaser.Scene {
     this.add.text(W / 2, 55, '呼吸花園', { testString: ZH_TEST, fontSize: '34px', color: '#5b4a3a', fontStyle: 'bold' }).setOrigin(0.5);
     this.tip = this.add.text(W / 2, 100, '', { testString: ZH_TEST, fontSize: '16px', color: '#7a6a5a' }).setOrigin(0.5);
 
-    this.add.text(W - 16, 20, '登出', { testString: ZH_TEST, fontSize: '14px', color: '#a09080' })
+    // 用瀏覽器認人的客人:右上角是「保存紀錄」(留信箱密碼就能永遠保存);已經有帳號的人:「登出」
+    const guest = !ME || ME.is_anonymous;
+    this.add.text(W - 16, 15, guest ? '💾 保存紀錄' : '登出', { testString: ZH_TEST, fontSize: '14px', color: guest ? '#4f9a55' : '#a09080', padding: { x: 0, y: 5 } })
       .setOrigin(1, 0).setInteractive({ useHandCursor: true })
-      .on('pointerdown', async () => { await sb.auth.signOut(); location.reload(); });
+      .on('pointerdown', async () => {
+        if (guest) return showAccount('save');
+        await sb.auth.signOut();
+        location.reload();
+      });
 
     // padding 讓手指好點一點(字本身的位置不變)
     this.add.text(16, 15, '🎟️ 折扣碼', { testString: ZH_TEST, fontSize: '14px', color: '#7a6a5a', padding: { x: 0, y: 5 } })
@@ -477,9 +483,12 @@ function renderCrafts(data) {
 }
 
 let game = null;
-function startGame() {
+let ME = null; // 現在是誰(is_anonymous = 用瀏覽器認的客人)
+async function startGame() {
   document.getElementById('login').style.display = 'none';
   if (game) return;
+  const { data } = await sb.auth.getUser();
+  ME = data.user;
   game = new Phaser.Game({
     type: Phaser.AUTO,
     parent: 'game',
@@ -491,8 +500,40 @@ function startGame() {
   });
 }
 
-// ---------- 登入頁 ----------
+// ---------- 帳號卡片 ----------
+// 平常一進來就用瀏覽器認人(不用登入)。卡片只在三種時候打開:
+//   save   = 客人想保存紀錄 → 留信箱密碼,現在的花園整個接上去
+//   switch = 已經有帳號 → 登入,換成帳號裡的花園
+//   login  = 備用:用瀏覽器認人失敗時,才退回舊的登入/註冊
 const $ = id => document.getElementById(id);
+let accountMode = 'login';
+
+const ACCOUNT_TEXT = {
+  login: { title: '呼吸花園', sub: '登入來照顧妳的花園 🌱', main: '登入', second: '第一次來?點這裡註冊', close: false },
+  save: {
+    title: '💾 保存我的花園',
+    sub: '現在花園只記在這個瀏覽器裡,<br>換手機或清掉瀏覽紀錄就會不見。<br>留下信箱和密碼,花園就會永遠保存,<br>換手機也能登入回來。',
+    main: '保存紀錄', second: '我已經有帳號,直接登入', close: true,
+  },
+  switch: {
+    title: '登入我的帳號',
+    sub: '登入後會換成帳號裡的花園,<br>這個瀏覽器現在的花園就留不住囉。',
+    main: '登入', second: '回上一步', close: true,
+  },
+};
+
+function showAccount(mode) {
+  accountMode = mode;
+  const t = ACCOUNT_TEXT[mode];
+  $('lgTitle').textContent = t.title;
+  $('lgSub').innerHTML = t.sub;
+  $('btnLogin').textContent = t.main;
+  $('btnSignup').textContent = t.second;
+  $('btnClose').style.display = t.close ? 'block' : 'none';
+  $('password').autocomplete = mode === 'save' ? 'new-password' : 'current-password';
+  say('');
+  $('login').style.display = 'flex';
+}
 
 function say(text, ok) {
   $('msg').style.color = ok ? '#4f9a55' : '#c0504d';
@@ -510,21 +551,41 @@ function readForm() {
 function chineseError(err) {
   const m = (err && err.message) || '';
   if (m.includes('Invalid login')) return '信箱或密碼不對';
-  if (m.includes('already registered')) return '這個信箱註冊過了,直接按「登入」';
+  if (m.includes('already registered') || m.includes('already been registered') || (err && err.code === 'email_exists'))
+    return accountMode === 'save' ? '這個信箱已經有帳號了,請按「我已經有帳號,直接登入」' : '這個信箱註冊過了,直接按「登入」';
   if (m.includes('Email not confirmed')) return '信箱還沒確認,請先去收信';
   if (m.includes('valid email') || m.includes('invalid')) return '信箱格式不對';
   return '出了點問題:' + m;
 }
 
+// 客人保存紀錄:把信箱、密碼接到現在這個瀏覽器帳號上,花園資料不用搬
+async function saveRecords(f) {
+  say('保存中…', true);
+  const { error: e1 } = await sb.auth.updateUser({ email: f.email });
+  if (e1) return say(chineseError(e1));
+  const { data } = await sb.auth.getUser();
+  if (!data.user || !data.user.email) {
+    return say('請去信箱點確認信,點完再回來按一次「保存紀錄」', true);
+  }
+  const { error: e2 } = await sb.auth.updateUser({ password: f.password });
+  if (e2) return say(chineseError(e2));
+  say('保存好了 ✓ 以後換手機,用這組信箱密碼登入就好', true);
+  setTimeout(() => location.reload(), 1800);
+}
+
 $('btnLogin').onclick = async () => {
   const f = readForm(); if (!f) return;
+  if (accountMode === 'save') return saveRecords(f);
   say('登入中…', true);
   const { error } = await sb.auth.signInWithPassword(f);
   if (error) return say(chineseError(error));
-  startGame();
+  if (game) location.reload(); // 遊戲已經開著(從客人換成帳號):重新整理,換成帳號裡的花園
+  else startGame();
 };
 
 $('btnSignup').onclick = async () => {
+  if (accountMode === 'save') return showAccount('switch');
+  if (accountMode === 'switch') return showAccount('save');
   const f = readForm(); if (!f) return;
   say('註冊中…', true);
   const { data, error } = await sb.auth.signUp(f);
@@ -533,8 +594,14 @@ $('btnSignup').onclick = async () => {
   say('註冊好了!請先去信箱點確認信,再回來登入', true);
 };
 
+$('btnClose').onclick = () => { $('login').style.display = 'none'; };
+
+// 一進來:有帳號或之前來過 → 直接進花園;第一次來 → 用這個瀏覽器認人,不用登入
 (async () => {
   const { data } = await sb.auth.getSession();
-  if (data.session) startGame();
-  else $('login').style.display = 'flex';
+  if (!data.session) {
+    const { error } = await sb.auth.signInAnonymously();
+    if (error) return showAccount('login'); // 用瀏覽器認人失敗,才退回登入頁
+  }
+  startGame();
 })();

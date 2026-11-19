@@ -30,7 +30,7 @@
     #login button { width: 100%; padding: 13px; font-size: 17px; border: none; border-radius: 12px;
       cursor: pointer; margin-top: 4px; }
     #btnLogin { background: #6cc070; color: #fff; font-weight: bold; }
-    #btnSignup { background: none; color: #7a6a5a; text-decoration: underline; font-size: 15px !important; }
+    #login .link { background: none; color: #7a6a5a; text-decoration: underline; font-size: 15px !important; }
     #msg { min-height: 22px; margin-top: 10px; color: #c0504d; font-size: 14px; }
 
     /* 任務視窗 */
@@ -79,12 +79,14 @@
   <div id="game"></div>
   <div id="login">
     <div class="card">
-      <h1>呼吸花園</h1>
-      <p>登入來照顧妳的花園 🌱</p>
+      <!-- 平常不用登入(用瀏覽器認人);這張卡片只在「保存紀錄」「登入舊帳號」時打開 -->
+      <h1 id="lgTitle">呼吸花園</h1>
+      <p id="lgSub">登入來照顧妳的花園 🌱</p>
       <input id="email" type="email" placeholder="信箱" autocomplete="email">
       <input id="password" type="password" placeholder="密碼(至少 6 個字)" autocomplete="current-password">
       <button id="btnLogin">登入</button>
-      <button id="btnSignup">第一次來?點這裡註冊</button>
+      <button id="btnSignup" class="link">第一次來?點這裡註冊</button>
+      <button id="btnClose" class="link" style="display:none">回花園</button>
       <div id="msg"></div>
     </div>
   </div>
