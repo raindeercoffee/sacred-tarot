@@ -1,0 +1,40 @@
+# 叫醒機器人:Supabase 免費版一個禮拜沒人來就會自動暫停。
+# 這個機器人每週一、四去花園資料庫敲一次門,讓它一直醒著。
+# 網址和公開金鑰直接從 garden/config.js 讀,換資料庫只要改那一個檔。
+# 敲門失敗時這次執行會變紅色,GitHub 會寄信通知。
+name: 叫醒花園資料庫
+
+on:
+  schedule:
+    - cron: '17 3 * * 1,4'   # 台灣時間週一、週四中午 11:17
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: garden/config.js
+          sparse-checkout-cone-mode: false
+      - name: 去花園資料庫敲門
+        run: |
+          URL=$(grep -oE "https://[a-z0-9]+\.supabase\.co" garden/config.js | head -n1)
+          KEY=$(grep -oE "sb_publishable_[A-Za-z0-9_-]+" garden/config.js | head -n1)
+          if [ -z "$URL" ] || [ -z "$KEY" ]; then
+            echo "在 garden/config.js 找不到資料庫網址或金鑰"; exit 1
+          fi
+          for i in 1 2 3; do
+            CODE=$(curl -s -o /tmp/body.txt -w "%{http_code}" \
+              "$URL/rest/v1/plots?select=slot&limit=1" \
+              -H "apikey: $KEY" -H "Authorization: Bearer $KEY" || echo 000)
+            echo "第 $i 次敲門,回應碼 $CODE"
+            if [ "$CODE" = "200" ]; then echo "資料庫醒著 ✅"; exit 0; fi
+            sleep 20
+          done
+          cat /tmp/body.txt || true
+          echo "資料庫沒回應,可能已經睡著了,要去 Supabase 後台叫醒"
+          exit 1
